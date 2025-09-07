@@ -11,6 +11,12 @@ const blog = defineCollection({
 			// Add custom fields beyond the RSS schema
 			updatedDate: z.coerce.date().optional(),
 			heroImage: image().optional(),
+			// SEO-specific fields
+			ogImage: image().optional(), // Custom Open Graph image
+			keywords: z.array(z.string()).optional(), // SEO keywords
+			canonicalURL: z.string().url().optional(), // Custom canonical URL
+			robots: z.string().optional(), // Custom robots meta tag value
+			author: z.string().optional(), // Article author
 		}),
 });
 

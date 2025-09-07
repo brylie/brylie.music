@@ -6,17 +6,42 @@ import FormattedDate from "../components/FormattedDate.astro";
 
 type Props = CollectionEntry<"blog">["data"];
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const {
+  title,
+  description,
+  pubDate,
+  updatedDate,
+  heroImage,
+  ogImage,
+  keywords,
+  canonicalURL,
+  robots,
+  author,
+} = Astro.props;
+
+// Ensure required fields have values (they should based on the RSS schema)
+if (!title || !description || !pubDate) {
+  throw new Error(
+    `BlogPost is missing required fields: title=${title}, description=${description}, pubDate=${pubDate}`
+  );
+}
 ---
 
-<Layout title={title} description={description}>
+<Layout
+  title={title}
+  description={description}
+  image={heroImage}
+  ogImage={ogImage}
+  keywords={keywords}
+  canonicalURL={canonicalURL}
+  robots={robots}
+  author={author}
+  pubDate={pubDate}
+  updatedDate={updatedDate}
+>
   <article>
     <div class="hero-image">
-      {
-        heroImage && (
-          <Image width={1020} height={510} src={heroImage} alt="" />
-        )
-      }
+      {heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
     </div>
     <div class="prose">
       <div class="title">
