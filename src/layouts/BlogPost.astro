@@ -1,0 +1,77 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import Layout from "./Layout.astro";
+import FormattedDate from "../components/FormattedDate.astro";
+
+type Props = CollectionEntry<"blog">["data"];
+
+const {
+  title,
+  description,
+  pubDate,
+  updatedDate,
+  heroImage,
+  ogImage,
+  keywords,
+  canonicalURL,
+  robots,
+  author,
+} = Astro.props;
+
+// Ensure required fields have values (they should based on the RSS schema)
+if (!title || !description || !pubDate) {
+  throw new Error(
+    `BlogPost is missing required fields: title=${title}, description=${description}, pubDate=${pubDate}`
+  );
+}
+---
+
+<Layout
+  title={title}
+  description={description}
+  image={heroImage}
+  ogImage={ogImage}
+  keywords={keywords}
+  canonicalURL={canonicalURL}
+  robots={robots}
+  author={author}
+  pubDate={pubDate}
+  updatedDate={updatedDate}
+>
+  <div class="max-w-4xl mx-auto px-4 py-8">
+    <article class="bg-gray-900 rounded-lg shadow-xl overflow-hidden">
+      {heroImage && (
+        <div class="w-full">
+          <Image 
+            width={1020} 
+            height={510} 
+            src={heroImage} 
+            alt="" 
+            class="w-full h-64 sm:h-80 lg:h-96 object-cover"
+          />
+        </div>
+      )}
+      
+      <div class="p-6 sm:p-8 lg:p-12">
+        <header class="text-center mb-8 pb-6 border-b border-gray-700">
+          <div class="mb-4 text-sm text-gray-400">
+            <FormattedDate date={pubDate} />
+            {updatedDate && (
+              <div class="mt-1 italic text-gray-500">
+                Last updated on <FormattedDate date={updatedDate} />
+              </div>
+            )}
+          </div>
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-0 leading-tight">
+            {title}
+          </h1>
+        </header>
+        
+        <div class="prose prose-lg prose-invert max-w-none">
+          <slot />
+        </div>
+      </div>
+    </article>
+  </div>
+</Layout>
