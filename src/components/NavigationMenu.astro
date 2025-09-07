@@ -6,20 +6,23 @@ import { Icon } from "astro-icon/components";
 
 <nav class="flex items-center justify-between px-4 py-3">
   <h2 class="m-0 text-xl font-bold">
-    <a href="/" class="text-white hover:text-blue-300 no-underline transition-colors">
+    <a
+      href="/"
+      class="text-white hover:text-blue-300 no-underline transition-colors"
+    >
       {SITE_TITLE}
     </a>
   </h2>
-  
+
   <!-- Desktop Navigation -->
   <div class="hidden md:flex items-center space-x-6">
     <HeaderLink href="/">Home</HeaderLink>
     <HeaderLink href="/blog">Blog</HeaderLink>
     <HeaderLink href="/about">About</HeaderLink>
   </div>
-  
+
   <!-- Mobile Menu Button -->
-  <button 
+  <button
     id="mobile-menu-toggle"
     class="md:hidden p-2 text-gray-400 hover:text-white focus:outline-none focus:text-white"
     aria-label="Toggle mobile menu"
@@ -27,36 +30,36 @@ import { Icon } from "astro-icon/components";
   >
     <Icon name="mdi:menu" size={24} />
   </button>
-  
+
   <!-- Social Links -->
   <div class="hidden md:flex items-center space-x-3">
-    <a 
-      href="/rss.xml" 
-      target="_blank" 
+    <a
+      href="/rss.xml"
+      target="_blank"
       title="RSS Feed"
       class="text-gray-400 hover:text-blue-400 transition-colors p-1"
     >
       <span class="sr-only">Subscribe to RSS Feed</span>
       <Icon name="mdi:rss" size={24} />
     </a>
-    <a 
-      href="https://m.webtoo.ls/@astro" 
+    <a
+      href="https://m.webtoo.ls/@astro"
       target="_blank"
       class="text-gray-400 hover:text-blue-400 transition-colors p-1"
     >
       <span class="sr-only">Follow Astro on Mastodon</span>
       <Icon name="mdi:mastodon" size={24} />
     </a>
-    <a 
-      href="https://twitter.com/astrodotbuild" 
+    <a
+      href="https://twitter.com/astrodotbuild"
       target="_blank"
       class="text-gray-400 hover:text-blue-400 transition-colors p-1"
     >
       <span class="sr-only">Follow Astro on Twitter</span>
       <Icon name="mdi:twitter" size={24} />
     </a>
-    <a 
-      href="https://github.com/withastro/astro" 
+    <a
+      href="https://github.com/withastro/astro"
       target="_blank"
       class="text-gray-400 hover:text-blue-400 transition-colors p-1"
     >
@@ -67,40 +70,45 @@ import { Icon } from "astro-icon/components";
 </nav>
 
 <!-- Mobile Navigation Menu -->
-<div id="mobile-menu" class="hidden md:hidden bg-gray-800 border-t border-gray-700">
+<div
+  id="mobile-menu"
+  class="hidden md:hidden bg-gray-800 border-t border-gray-700"
+>
   <div class="px-4 py-3 space-y-3">
     <HeaderLink href="/" class="block w-full">Home</HeaderLink>
     <HeaderLink href="/blog" class="block w-full">Blog</HeaderLink>
     <HeaderLink href="/about" class="block w-full">About</HeaderLink>
-    
-    <div class="flex items-center justify-center space-x-4 pt-4 border-t border-gray-700">
-      <a 
-        href="/rss.xml" 
-        target="_blank" 
+
+    <div
+      class="flex items-center justify-center space-x-4 pt-4 border-t border-gray-700"
+    >
+      <a
+        href="/rss.xml"
+        target="_blank"
         title="RSS Feed"
         class="text-gray-400 hover:text-blue-400 transition-colors p-1"
       >
         <span class="sr-only">Subscribe to RSS Feed</span>
         <Icon name="mdi:rss" size={24} />
       </a>
-      <a 
-        href="https://m.webtoo.ls/@astro" 
+      <a
+        href="https://m.webtoo.ls/@astro"
         target="_blank"
         class="text-gray-400 hover:text-blue-400 transition-colors p-1"
       >
         <span class="sr-only">Follow Astro on Mastodon</span>
         <Icon name="mdi:mastodon" size={24} />
       </a>
-      <a 
-        href="https://twitter.com/astrodotbuild" 
+      <a
+        href="https://twitter.com/astrodotbuild"
         target="_blank"
         class="text-gray-400 hover:text-blue-400 transition-colors p-1"
       >
         <span class="sr-only">Follow Astro on Twitter</span>
         <Icon name="mdi:twitter" size={24} />
       </a>
-      <a 
-        href="https://github.com/withastro/astro" 
+      <a
+        href="https://github.com/withastro/astro"
         target="_blank"
         class="text-gray-400 hover:text-blue-400 transition-colors p-1"
       >
@@ -113,29 +121,30 @@ import { Icon } from "astro-icon/components";
 
 <script is:inline>
   // Mobile menu toggle functionality
-  document.addEventListener('DOMContentLoaded', () => {
-    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-    const mobileMenu = document.getElementById('mobile-menu');
-    
+  document.addEventListener("DOMContentLoaded", () => {
+    const mobileMenuToggle = document.getElementById("mobile-menu-toggle");
+    const mobileMenu = document.getElementById("mobile-menu");
+
     if (mobileMenuToggle && mobileMenu) {
-      mobileMenuToggle.addEventListener('click', () => {
-        const isExpanded = mobileMenuToggle.getAttribute('aria-expanded') === 'true';
-        
+      mobileMenuToggle.addEventListener("click", () => {
+        const isExpanded =
+          mobileMenuToggle.getAttribute("aria-expanded") === "true";
+
         if (isExpanded) {
-          mobileMenu.classList.add('hidden');
-          mobileMenuToggle.setAttribute('aria-expanded', 'false');
+          mobileMenu.classList.add("hidden");
+          mobileMenuToggle.setAttribute("aria-expanded", "false");
         } else {
-          mobileMenu.classList.remove('hidden');
-          mobileMenuToggle.setAttribute('aria-expanded', 'true');
+          mobileMenu.classList.remove("hidden");
+          mobileMenuToggle.setAttribute("aria-expanded", "true");
         }
       });
-      
+
       // Close mobile menu when clicking on a link
-      const mobileLinks = mobileMenu.querySelectorAll('a');
-      mobileLinks.forEach(link => {
-        link.addEventListener('click', () => {
-          mobileMenu.classList.add('hidden');
-          mobileMenuToggle.setAttribute('aria-expanded', 'false');
+      const mobileLinks = mobileMenu.querySelectorAll("a");
+      mobileLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          mobileMenu.classList.add("hidden");
+          mobileMenuToggle.setAttribute("aria-expanded", "false");
         });
       });
     }

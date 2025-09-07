@@ -3,7 +3,6 @@
 // all pages through the use of the <BaseHead /> component.
 import "../styles/global.css";
 import type { ImageMetadata } from "astro";
-import FallbackImage from "../assets/blog-placeholder-1.jpg";
 import { SITE_TITLE } from "../consts";
 import Unfont from 'unplugin-fonts/dist/astro/component.astro';
 
@@ -28,7 +27,7 @@ const customCanonicalURL = Astro.props.canonicalURL
 const {
   title,
   description,
-  image = FallbackImage,
+  image,
   ogImage,
   keywords,
   robots,
@@ -83,7 +82,7 @@ const socialImage = ogImage || image;
 <meta property="og:url" content={Astro.url} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(socialImage.src, Astro.url)} />
+{socialImage && <meta property="og:image" content={new URL(socialImage.src, Astro.url)} />}
 {author && <meta property="article:author" content={author} />}
 {
   pubDate && (
@@ -104,4 +103,4 @@ const socialImage = ogImage || image;
 <meta property="twitter:url" content={Astro.url} />
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={new URL(socialImage.src, Astro.url)} />
+{socialImage && <meta property="twitter:image" content={new URL(socialImage.src, Astro.url)} />}
