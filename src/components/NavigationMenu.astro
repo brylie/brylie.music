@@ -4,66 +4,140 @@ import HeaderLink from "./HeaderLink.astro";
 import { Icon } from "astro-icon/components";
 ---
 
-<nav>
-  <h2><a href="/">{SITE_TITLE}</a></h2>
-  <div class="internal-links">
+<nav class="flex items-center justify-between px-4 py-3">
+  <h2 class="m-0 text-xl font-bold">
+    <a href="/" class="text-white hover:text-blue-300 no-underline transition-colors">
+      {SITE_TITLE}
+    </a>
+  </h2>
+  
+  <!-- Desktop Navigation -->
+  <div class="hidden md:flex items-center space-x-6">
     <HeaderLink href="/">Home</HeaderLink>
     <HeaderLink href="/blog">Blog</HeaderLink>
     <HeaderLink href="/about">About</HeaderLink>
   </div>
-  <div class="social-links">
-    <a href="/rss.xml" target="_blank" title="RSS Feed">
+  
+  <!-- Mobile Menu Button -->
+  <button 
+    id="mobile-menu-toggle"
+    class="md:hidden p-2 text-gray-400 hover:text-white focus:outline-none focus:text-white"
+    aria-label="Toggle mobile menu"
+    aria-expanded="false"
+  >
+    <Icon name="mdi:menu" size={24} />
+  </button>
+  
+  <!-- Social Links -->
+  <div class="hidden md:flex items-center space-x-3">
+    <a 
+      href="/rss.xml" 
+      target="_blank" 
+      title="RSS Feed"
+      class="text-gray-400 hover:text-blue-400 transition-colors p-1"
+    >
       <span class="sr-only">Subscribe to RSS Feed</span>
-      <Icon name="mdi:rss" size={32} />
+      <Icon name="mdi:rss" size={24} />
     </a>
-    <a href="https://m.webtoo.ls/@astro" target="_blank">
+    <a 
+      href="https://m.webtoo.ls/@astro" 
+      target="_blank"
+      class="text-gray-400 hover:text-blue-400 transition-colors p-1"
+    >
       <span class="sr-only">Follow Astro on Mastodon</span>
-      <Icon name="mdi:mastodon" size={32} />
+      <Icon name="mdi:mastodon" size={24} />
     </a>
-    <a href="https://twitter.com/astrodotbuild" target="_blank">
+    <a 
+      href="https://twitter.com/astrodotbuild" 
+      target="_blank"
+      class="text-gray-400 hover:text-blue-400 transition-colors p-1"
+    >
       <span class="sr-only">Follow Astro on Twitter</span>
-      <Icon name="mdi:twitter" size={32} />
+      <Icon name="mdi:twitter" size={24} />
     </a>
-    <a href="https://github.com/withastro/astro" target="_blank">
+    <a 
+      href="https://github.com/withastro/astro" 
+      target="_blank"
+      class="text-gray-400 hover:text-blue-400 transition-colors p-1"
+    >
       <span class="sr-only">Go to Astro's GitHub repo</span>
-      <Icon name="mdi:github" size={32} />
+      <Icon name="mdi:github" size={24} />
     </a>
   </div>
 </nav>
-<style>
-  nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 0;
-    padding: 0 1em;
-  }
-  nav h2 {
-    margin: 0;
-    font-size: 1em;
-  }
 
-  nav h2 a,
-  nav h2 a.active {
-    text-decoration: none;
-  }
-  nav a {
-    padding: 1em 0.5em;
-    color: var(--black);
-    border-bottom: 4px solid transparent;
-    text-decoration: none;
-  }
-  nav a.active {
-    text-decoration: none;
-    border-bottom-color: var(--accent);
-  }
-  .social-links,
-  .social-links a {
-    display: flex;
-  }
-  @media (max-width: 720px) {
-    .social-links {
-      display: none;
+<!-- Mobile Navigation Menu -->
+<div id="mobile-menu" class="hidden md:hidden bg-gray-800 border-t border-gray-700">
+  <div class="px-4 py-3 space-y-3">
+    <HeaderLink href="/" class="block w-full">Home</HeaderLink>
+    <HeaderLink href="/blog" class="block w-full">Blog</HeaderLink>
+    <HeaderLink href="/about" class="block w-full">About</HeaderLink>
+    
+    <div class="flex items-center justify-center space-x-4 pt-4 border-t border-gray-700">
+      <a 
+        href="/rss.xml" 
+        target="_blank" 
+        title="RSS Feed"
+        class="text-gray-400 hover:text-blue-400 transition-colors p-1"
+      >
+        <span class="sr-only">Subscribe to RSS Feed</span>
+        <Icon name="mdi:rss" size={24} />
+      </a>
+      <a 
+        href="https://m.webtoo.ls/@astro" 
+        target="_blank"
+        class="text-gray-400 hover:text-blue-400 transition-colors p-1"
+      >
+        <span class="sr-only">Follow Astro on Mastodon</span>
+        <Icon name="mdi:mastodon" size={24} />
+      </a>
+      <a 
+        href="https://twitter.com/astrodotbuild" 
+        target="_blank"
+        class="text-gray-400 hover:text-blue-400 transition-colors p-1"
+      >
+        <span class="sr-only">Follow Astro on Twitter</span>
+        <Icon name="mdi:twitter" size={24} />
+      </a>
+      <a 
+        href="https://github.com/withastro/astro" 
+        target="_blank"
+        class="text-gray-400 hover:text-blue-400 transition-colors p-1"
+      >
+        <span class="sr-only">Go to Astro's GitHub repo</span>
+        <Icon name="mdi:github" size={24} />
+      </a>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  // Mobile menu toggle functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (mobileMenuToggle && mobileMenu) {
+      mobileMenuToggle.addEventListener('click', () => {
+        const isExpanded = mobileMenuToggle.getAttribute('aria-expanded') === 'true';
+        
+        if (isExpanded) {
+          mobileMenu.classList.add('hidden');
+          mobileMenuToggle.setAttribute('aria-expanded', 'false');
+        } else {
+          mobileMenu.classList.remove('hidden');
+          mobileMenuToggle.setAttribute('aria-expanded', 'true');
+        }
+      });
+      
+      // Close mobile menu when clicking on a link
+      const mobileLinks = mobileMenu.querySelectorAll('a');
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('hidden');
+          mobileMenuToggle.setAttribute('aria-expanded', 'false');
+        });
+      });
     }
-  }
-</style>
+  });
+</script>

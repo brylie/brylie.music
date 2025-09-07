@@ -3,41 +3,34 @@ import { Icon } from "astro-icon/components";
 const today = new Date();
 ---
 
-<footer>
-  &copy; {today.getFullYear()} Your name here. All rights reserved.
-  <div class="social-links">
-    <a href="https://m.webtoo.ls/@astro" target="_blank">
+<footer class="py-8 px-4 bg-gray-900 border-t border-gray-800 text-center">
+  <p class="text-gray-400 mb-4">
+    &copy; {today.getFullYear()} Your name here. All rights reserved.
+  </p>
+  <div class="flex justify-center items-center space-x-4">
+    <a 
+      href="https://m.webtoo.ls/@astro" 
+      target="_blank"
+      class="text-gray-400 hover:text-blue-400 transition-colors p-2"
+    >
       <span class="sr-only">Follow Astro on Mastodon</span>
-      <Icon name="mdi:mastodon" size={32} />
+      <Icon name="mdi:mastodon" size={28} />
     </a>
-    <a href="https://twitter.com/astrodotbuild" target="_blank">
+    <a 
+      href="https://twitter.com/astrodotbuild" 
+      target="_blank"
+      class="text-gray-400 hover:text-blue-400 transition-colors p-2"
+    >
       <span class="sr-only">Follow Astro on Twitter</span>
-      <Icon name="mdi:twitter" size={32} />
+      <Icon name="mdi:twitter" size={28} />
     </a>
-    <a href="https://github.com/withastro/astro" target="_blank">
+    <a 
+      href="https://github.com/withastro/astro" 
+      target="_blank"
+      class="text-gray-400 hover:text-blue-400 transition-colors p-2"
+    >
       <span class="sr-only">Go to Astro's GitHub repo</span>
-      <Icon name="mdi:github" size={32} />
+      <Icon name="mdi:github" size={28} />
     </a>
   </div>
 </footer>
-<style>
-  footer {
-    padding: 2em 1em 6em 1em;
-    background: linear-gradient(var(--gray-gradient)) no-repeat;
-    color: rgb(var(--gray));
-    text-align: center;
-  }
-  .social-links {
-    display: flex;
-    justify-content: center;
-    gap: 1em;
-    margin-top: 1em;
-  }
-  .social-links a {
-    text-decoration: none;
-    color: rgb(var(--gray));
-  }
-  .social-links a:hover {
-    color: rgb(var(--gray-dark));
-  }
-</style>

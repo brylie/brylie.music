@@ -32,7 +32,7 @@ const {
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <BaseHead
       title={title}
@@ -47,26 +47,13 @@ const {
       updatedDate={updatedDate}
     />
   </head>
-  <body>
-    <header>
+  <body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col">
+    <header class="bg-gray-900 border-b border-gray-800 shadow-lg">
       <NavigationMenu />
     </header>
-    <main>
+    <main class="flex-1">
       <slot />
     </main>
     <Footer />
   </body>
 </html>
-
-<style>
-  header {
-    margin: 0;
-    background: white;
-    box-shadow: 0 2px 8px rgba(var(--black), 5%);
-  }
-  main {
-    width: calc(100% - 2em);
-    max-width: 100%;
-    margin: 0;
-  }
-</style>
