@@ -7,6 +7,7 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
 import icon from 'astro-icon';
+import Unfonts from 'unplugin-fonts/astro';
 
 // https://astro.build/config
 export default defineConfig({
@@ -45,7 +46,12 @@ export default defineConfig({
       // XSL stylesheet for production (causes CORS in development)
       xslURL: '/sitemap.xsl'
     }), 
-    icon() 
+    icon(),
+    Unfonts({
+      fontsource: {
+        families: ['Atkinson Hyperlegible']
+      }
+    })
   ],
 
   vite: {

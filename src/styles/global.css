@@ -1,24 +1,8 @@
 @import "tailwindcss";
 
-/* Font faces for Atkinson font family */
-@font-face {
-	font-family: "Atkinson";
-	src: url("/fonts/atkinson-regular.woff") format("woff");
-	font-weight: 400;
-	font-style: normal;
-	font-display: swap;
-}
-@font-face {
-	font-family: "Atkinson";
-	src: url("/fonts/atkinson-bold.woff") format("woff");
-	font-weight: 700;
-	font-style: normal;
-	font-display: swap;
-}
-
 /* Base dark theme configuration */
 :root {
-	font-family: "Atkinson", system-ui, -apple-system, sans-serif;
+	font-family: "Atkinson Hyperlegible", system-ui, -apple-system, sans-serif;
 	color-scheme: dark;
 }
 
@@ -29,7 +13,7 @@ html {
 }
 
 body {
-	font-family: "Atkinson", system-ui, -apple-system, sans-serif;
+	font-family: "Atkinson Hyperlegible", system-ui, -apple-system, sans-serif;
 	margin: 0;
 	padding: 0;
 	background-color: #030712; /* gray-950 */

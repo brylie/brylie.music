@@ -5,7 +5,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        'sans': ['Atkinson', 'system-ui', '-apple-system', 'sans-serif'],
+        'sans': ['Atkinson Hyperlegible', 'system-ui', '-apple-system', 'sans-serif'],
       },
       typography: (theme) => ({
         invert: {
