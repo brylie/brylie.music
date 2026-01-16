@@ -11,7 +11,6 @@ streamingLinks:
   bandcamp: "https://brylie.bandcamp.com/album/solo"
   appleMusic: "https://music.apple.com/fi/album/solo/1819288691"
   spotify: "https://open.spotify.com/album/04UHRUCtmvoSAnDNBucEWw"
-downloadUrl: "https://freemusicarchive.org/music/Brylie_Christopher_Oxley/solo"
 ---
 
 Latest album showcasing refined piano impressionism, featuring delicate compositions that explore introspective themes through minimalist piano techniques.
