@@ -1,0 +1,146 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import ReleaseCard from "../../components/ReleaseCard.astro";
+
+// Fetch and sort releases by date (newest first)
+const releases = (await getCollection("releases")).sort(
+  (a, b) => b.data.releaseDate.valueOf() - a.data.releaseDate.valueOf()
+);
+
+const pageTitle = "Music Releases";
+const pageDescription =
+  "Complete discography of music releases by Brylie Christopher, including albums, EPs, and singles. All works released under Creative Commons licensing.";
+
+// Generate schema.org for SEO
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: new URL("/", Astro.site || Astro.url.origin).href,
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Releases",
+      item: Astro.url.href,
+    },
+  ],
+};
+
+const collectionSchema = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: pageTitle,
+  description: pageDescription,
+  url: Astro.url.href,
+  breadcrumb: breadcrumbSchema,
+  mainEntity: {
+    "@type": "ItemList",
+    numberOfItems: releases.length,
+    itemListElement: releases.map((release, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "MusicAlbum",
+        name: release.data.title,
+        description: release.data.description,
+        datePublished: release.data.releaseDate.toISOString().split("T")[0],
+        url: new URL(
+          `/releases/${release.data.urlSlug || release.id}/`,
+          Astro.site || Astro.url.origin
+        ).href,
+        genre: release.data.genre?.join(", "),
+        byArtist: {
+          "@type": "MusicGroup",
+          name: "Brylie Christopher",
+          url: new URL("/", Astro.site || Astro.url.origin).href,
+        },
+        license: release.data.license,
+      },
+    })),
+  },
+};
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(collectionSchema)}
+  />
+
+  <div class="max-w-6xl mx-auto px-4 py-12">
+    <nav
+      class="mb-8"
+      aria-label="Breadcrumb"
+      itemscope
+      itemtype="https://schema.org/BreadcrumbList"
+    >
+      <ol class="flex items-center gap-2 text-sm text-gray-400">
+        <li
+          itemprop="itemListElement"
+          itemscope
+          itemtype="https://schema.org/ListItem"
+        >
+          <a
+            href="/"
+            class="hover:text-blue-300 transition-colors"
+            itemprop="item"
+          >
+            <span itemprop="name">Home</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li aria-hidden="true">/</li>
+        <li
+          itemprop="itemListElement"
+          itemscope
+          itemtype="https://schema.org/ListItem"
+          class="text-gray-300"
+          aria-current="page"
+        >
+          <span itemprop="name">Releases</span>
+          <meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </nav>
+
+    <header class="text-center mb-12">
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+        Music Releases
+      </h1>
+      <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+        Complete discography of albums, EPs, and singles. All works released
+        under Creative Commons licensing.
+      </p>
+    </header>
+
+    {
+      releases.length === 0 ? (
+        <div class="text-center py-12">
+          <p class="text-gray-400 text-lg">No releases found.</p>
+        </div>
+      ) : (
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {releases.map((release) => (
+            <ReleaseCard release={release} />
+          ))}
+        </div>
+      )
+    }
+
+    <div class="mt-12 text-center">
+      <div class="bg-gray-900 rounded-lg p-6 inline-block">
+        <p class="text-lg text-blue-300 mb-2">🆓 Creative Commons Licensed</p>
+        <p class="text-gray-300">
+          All music is freely available for creative projects, wellness
+          applications, and media productions.
+        </p>
+      </div>
+    </div>
+  </div>
+</Layout>

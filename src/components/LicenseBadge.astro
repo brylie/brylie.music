@@ -1,0 +1,38 @@
+---
+import { Icon } from "astro-icon/components";
+import { buildLicenseUrl } from "../utils/license";
+
+interface Props {
+  license: string;
+  size?: number;
+}
+
+const { license, size = 20 } = Astro.props;
+
+// Parse SPDX license identifier (e.g., "CC-BY-4.0" -> "BY 4.0")
+const parseLicense = (spdx: string) => {
+  const match = spdx.match(/CC-(.+)-(\d+\.\d+)/i);
+  if (!match) return { type: "CC", version: "4.0" };
+  return {
+    type: match[1].toUpperCase(),
+    version: match[2],
+  };
+};
+
+const { type, version } = parseLicense(license);
+
+const licenseUrl = buildLicenseUrl(license);
+const ariaLabel = `Licensed under Creative Commons ${type} ${version}`;
+---
+
+<a
+  href={licenseUrl}
+  target="_blank"
+  rel="license noopener noreferrer"
+  class="inline-flex items-center gap-2 text-gray-300 hover:text-blue-300 transition-colors"
+  aria-label={ariaLabel}
+  title={ariaLabel}
+>
+  <Icon name="simple-icons:creativecommons" size={size} />
+  <span class="text-sm font-medium">CC {type} {version}</span>
+</a>
