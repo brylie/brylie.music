@@ -43,9 +43,9 @@ const schemaOrg = {
   license: licenseUrl,
   url: new URL(`/releases/${slug}/`, Astro.site || Astro.url.origin).href,
   albumReleaseType:
-    data.releaseType === "EP"
+    data.releaseType?.toLowerCase() === "ep"
       ? "EPRelease"
-      : data.releaseType === "single"
+      : data.releaseType?.toLowerCase() === "single"
         ? "SingleRelease"
         : "AlbumRelease",
   ...(data.downloadUrl && {
