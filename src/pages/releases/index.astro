@@ -12,15 +12,36 @@ const pageTitle = "Music Releases";
 const pageDescription =
   "Complete discography of music releases by Brylie Christopher, including albums, EPs, and singles. All works released under Creative Commons licensing.";
 
-// Generate schema.org ItemList for the collection
-const schemaOrg = {
+// Generate schema.org for SEO
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: new URL("/", Astro.site || Astro.url.origin).href,
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Releases",
+      item: Astro.url.href,
+    },
+  ],
+};
+
+const collectionSchema = {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
   name: pageTitle,
   description: pageDescription,
   url: Astro.url.href,
+  breadcrumb: breadcrumbSchema,
   mainEntity: {
     "@type": "ItemList",
+    numberOfItems: releases.length,
     itemListElement: releases.map((release, index) => ({
       "@type": "ListItem",
       position: index + 1,
@@ -29,7 +50,17 @@ const schemaOrg = {
         name: release.data.title,
         description: release.data.description,
         datePublished: release.data.releaseDate.toISOString().split("T")[0],
-        url: `/releases/${release.data.urlSlug || release.id}/`,
+        url: new URL(
+          `/releases/${release.data.urlSlug || release.id}/`,
+          Astro.site || Astro.url.origin
+        ).href,
+        genre: release.data.genre?.join(", "),
+        byArtist: {
+          "@type": "MusicGroup",
+          name: "Brylie Christopher",
+          url: new URL("/", Astro.site || Astro.url.origin).href,
+        },
+        license: release.data.license,
       },
     })),
   },
@@ -37,16 +68,44 @@ const schemaOrg = {
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
-  <script type="application/ld+json" set:html={JSON.stringify(schemaOrg)} />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(collectionSchema)}
+  />
 
   <div class="max-w-6xl mx-auto px-4 py-12">
-    <nav class="mb-8" aria-label="Breadcrumb">
+    <nav
+      class="mb-8"
+      aria-label="Breadcrumb"
+      itemscope
+      itemtype="https://schema.org/BreadcrumbList"
+    >
       <ol class="flex items-center gap-2 text-sm text-gray-400">
-        <li>
-          <a href="/" class="hover:text-blue-300 transition-colors">Home</a>
+        <li
+          itemprop="itemListElement"
+          itemscope
+          itemtype="https://schema.org/ListItem"
+        >
+          <a
+            href="/"
+            class="hover:text-blue-300 transition-colors"
+            itemprop="item"
+          >
+            <span itemprop="name">Home</span>
+          </a>
+          <meta itemprop="position" content="1" />
         </li>
         <li aria-hidden="true">/</li>
-        <li class="text-gray-300" aria-current="page">Releases</li>
+        <li
+          itemprop="itemListElement"
+          itemscope
+          itemtype="https://schema.org/ListItem"
+          class="text-gray-300"
+          aria-current="page"
+        >
+          <span itemprop="name">Releases</span>
+          <meta itemprop="position" content="2" />
+        </li>
       </ol>
     </nav>
 

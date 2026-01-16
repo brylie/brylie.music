@@ -24,22 +24,43 @@ const platforms = [
   { key: "youtube", icon: "mdi:youtube", label: "YouTube Music" },
 ] as const;
 
-// Generate schema.org MusicAlbum JSON-LD
+// Generate schema.org MusicAlbum JSON-LD with enhanced metadata
+const licenseUrl =
+  data.licenseUrl ||
+  `https://creativecommons.org/licenses/${data.license.toLowerCase().replace("cc-", "").replace(/^by/, "by").replace("-", "/")}/`;
+
 const schemaOrg = {
   "@context": "https://schema.org",
   "@type": "MusicAlbum",
   name: data.title,
   description: data.description,
   byArtist: {
-    "@type": "Person",
+    "@type": "MusicGroup",
     name: data.artist || "Brylie Christopher",
+    url: new URL("/", Astro.site || Astro.url.origin).href,
   },
   datePublished: data.releaseDate.toISOString().split("T")[0],
-  genre: data.genre?.join(", "),
-  license:
-    data.licenseUrl ||
-    `https://creativecommons.org/licenses/${data.license.toLowerCase().replace("cc-", "").replace("-", "/")}/`,
-  url: `/releases/${slug}/`,
+  genre: data.genre,
+  license: licenseUrl,
+  url: new URL(`/releases/${slug}/`, Astro.site || Astro.url.origin).href,
+  albumReleaseType:
+    data.releaseType === "EP"
+      ? "EPRelease"
+      : data.releaseType === "single"
+        ? "SingleRelease"
+        : "AlbumRelease",
+  ...(data.downloadUrl && {
+    offers: {
+      "@type": "Offer",
+      availability: "https://schema.org/InStock",
+      price: "0",
+      priceCurrency: "USD",
+      url: data.downloadUrl,
+    },
+  }),
+  ...(data.coverImage && {
+    image: new URL(data.coverImage.src, Astro.site || Astro.url.origin).href,
+  }),
 };
 ---
 
@@ -119,4 +140,6 @@ const schemaOrg = {
 
   <meta itemprop="datePublished" content={data.releaseDate.toISOString()} />
   {data.genre && <meta itemprop="genre" content={data.genre.join(", ")} />}
+  {data.license && <link itemprop="license" href={licenseUrl} />}
+  {data.artist && <meta itemprop="byArtist" content={data.artist} />}
 </article>
