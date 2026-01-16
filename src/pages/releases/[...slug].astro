@@ -31,25 +31,66 @@ const platforms = [
   { key: "youtube", icon: "mdi:youtube", label: "YouTube Music" },
 ] as const;
 
-// Generate comprehensive schema.org MusicAlbum JSON-LD
-const schemaOrg = {
+// Generate SEO schemas
+const slug = data.urlSlug || release.id;
+const licenseUrl =
+  data.licenseUrl ||
+  `https://creativecommons.org/licenses/${data.license.toLowerCase().replace("cc-", "").replace(/^by/, "by").replace("-", "/")}/`;
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: new URL("/", Astro.site || Astro.url.origin).href,
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Releases",
+      item: new URL("/releases/", Astro.site || Astro.url.origin).href,
+    },
+    {
+      "@type": "ListItem",
+      position: 3,
+      name: data.title,
+      item: Astro.url.href,
+    },
+  ],
+};
+
+const albumSchema = {
   "@context": "https://schema.org",
   "@type": "MusicAlbum",
   name: data.title,
   description: data.description,
   byArtist: {
-    "@type": "Person",
+    "@type": "MusicGroup",
     name: data.artist || "Brylie Christopher",
+    url: new URL("/", Astro.site || Astro.url.origin).href,
   },
   datePublished: data.releaseDate.toISOString().split("T")[0],
   albumReleaseType: `https://schema.org/${data.releaseType.charAt(0).toUpperCase() + data.releaseType.slice(1)}Release`,
   genre: data.genre,
-  license:
-    data.licenseUrl ||
-    `https://creativecommons.org/licenses/${data.license.toLowerCase().replace("cc-", "").replace("-", "/")}/`,
+  license: licenseUrl,
   url: Astro.url.href,
-  image: data.coverImage?.src,
+  image: data.coverImage?.src
+    ? new URL(data.coverImage.src, Astro.site || Astro.url.origin).href
+    : undefined,
   inLanguage: "en",
+  breadcrumb: breadcrumbSchema,
+  ...(data.downloadUrl && {
+    offers: {
+      "@type": "Offer",
+      availability: "https://schema.org/InStock",
+      price: "0",
+      priceCurrency: "USD",
+      url: data.downloadUrl,
+    },
+  }),
   ...(data.tracks && {
     track: data.tracks.map((track, index) => ({
       "@type": "MusicRecording",
@@ -57,9 +98,11 @@ const schemaOrg = {
       name: track.title,
       duration: track.duration,
       byArtist: {
-        "@type": "Person",
+        "@type": "MusicGroup",
         name: data.artist || "Brylie Christopher",
       },
+      license: licenseUrl,
+      inLanguage: "en",
     })),
     numTracks: data.tracks.length,
   }),
@@ -81,22 +124,56 @@ const pageDescription = data.description;
   description={pageDescription}
   image={data.ogImage || data.coverImage}
 >
-  <script type="application/ld+json" set:html={JSON.stringify(schemaOrg)} />
+  <script type="application/ld+json" set:html={JSON.stringify(albumSchema)} />
 
   <div class="max-w-4xl mx-auto px-4 py-12">
-    <nav class="mb-8" aria-label="Breadcrumb">
+    <nav
+      class="mb-8"
+      aria-label="Breadcrumb"
+      itemscope
+      itemtype="https://schema.org/BreadcrumbList"
+    >
       <ol class="flex items-center gap-2 text-sm text-gray-400">
-        <li>
-          <a href="/" class="hover:text-blue-300 transition-colors">Home</a>
-        </li>
-        <li aria-hidden="true">/</li>
-        <li>
-          <a href="/releases/" class="hover:text-blue-300 transition-colors"
-            >Releases</a
+        <li
+          itemprop="itemListElement"
+          itemscope
+          itemtype="https://schema.org/ListItem"
+        >
+          <a
+            href="/"
+            class="hover:text-blue-300 transition-colors"
+            itemprop="item"
           >
+            <span itemprop="name">Home</span>
+          </a>
+          <meta itemprop="position" content="1" />
         </li>
         <li aria-hidden="true">/</li>
-        <li class="text-gray-300" aria-current="page">{data.title}</li>
+        <li
+          itemprop="itemListElement"
+          itemscope
+          itemtype="https://schema.org/ListItem"
+        >
+          <a
+            href="/releases/"
+            class="hover:text-blue-300 transition-colors"
+            itemprop="item"
+          >
+            <span itemprop="name">Releases</span>
+          </a>
+          <meta itemprop="position" content="2" />
+        </li>
+        <li aria-hidden="true">/</li>
+        <li
+          itemprop="itemListElement"
+          itemscope
+          itemtype="https://schema.org/ListItem"
+          class="text-gray-300"
+          aria-current="page"
+        >
+          <span itemprop="name">{data.title}</span>
+          <meta itemprop="position" content="3" />
+        </li>
       </ol>
     </nav>
 
@@ -137,7 +214,7 @@ const pageDescription = data.description;
                   <span
                     itemprop="byArtist"
                     itemscope
-                    itemtype="https://schema.org/Person"
+                    itemtype="https://schema.org/MusicGroup"
                   >
                     <span itemprop="name">{data.artist}</span>
                   </span>
@@ -319,6 +396,8 @@ const pageDescription = data.description;
       }
 
       <meta itemprop="datePublished" content={data.releaseDate.toISOString()} />
+      <link itemprop="license" href={licenseUrl} />
+      {data.downloadUrl && <link itemprop="offers" href={data.downloadUrl} />}
     </article>
 
     <div class="mt-8 text-center">
