@@ -1,7 +1,7 @@
 ---
 title: "Murmurations"
 description: "Collective movements in sound and harmony"
-releaseDate: 2024-05-01
+releaseDate: 2024-07-31
 releaseType: "album"
 genre: ["ambient", "electronic", "generative"]
 license: "CC-BY-4.0"
