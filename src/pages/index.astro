@@ -11,71 +11,181 @@ const releases = (await getCollection("releases")).sort(
 
 // Get the 6 most recent releases for the homepage
 const recentReleases = releases.slice(0, 6);
+
+// Generate comprehensive schema.org structured data
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "MusicGroup",
+  name: "Brylie Christopher",
+  description:
+    "Finland-based musician creating abstract electronic minimalism and mixed instrumental compositions",
+  url: Astro.url.href,
+  genre: [
+    "Electronic",
+    "Ambient",
+    "Experimental",
+    "IDM",
+    "Minimalism",
+    "Piano",
+  ],
+  foundingLocation: {
+    "@type": "Place",
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: "FI",
+    },
+  },
+  album: recentReleases.map((release) => ({
+    "@type": "MusicAlbum",
+    name: release.data.title,
+    datePublished: release.data.releaseDate.toISOString().split("T")[0],
+    url: new URL(
+      `/releases/${release.data.urlSlug || release.id}/`,
+      Astro.site || Astro.url.origin
+    ).href,
+  })),
+  sameAs: [
+    "https://soundcloud.com/brylie",
+    "https://brylie.bandcamp.com",
+    "https://freemusicarchive.org/music/Brylie_Christopher_Oxley",
+  ],
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: SITE_TITLE,
+  description:
+    "Finland-based musician creating abstract electronic minimalism and mixed instrumental compositions. All works released under Creative Commons licensing.",
+  url: Astro.url.href,
+  author: {
+    "@type": "MusicGroup",
+    name: "Brylie Christopher",
+  },
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate:
+        new URL("/releases/", Astro.site || Astro.url.origin).href +
+        "?q={search_term_string}",
+    },
+    "query-input": "required name=search_term_string",
+  },
+};
 ---
 
 <Layout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+  <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+
   <div class="max-w-4xl mx-auto px-4 py-12">
-    <div class="text-center mb-16">
-      <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
+    <header
+      class="text-center mb-16"
+      itemscope
+      itemtype="https://schema.org/MusicGroup"
+    >
+      <h1
+        class="text-4xl md:text-6xl font-bold text-white mb-6"
+        itemprop="name"
+      >
         🎵 Brylie Christopher
       </h1>
-      <p class="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+      <p
+        class="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed"
+        itemprop="description"
+      >
         Finland-based musician creating abstract electronic minimalism and mixed
         instrumental compositions. All works released under Creative Commons
         licensing.
       </p>
-    </div>
+      <meta itemprop="genre" content="Electronic" />
+      <meta itemprop="genre" content="Ambient" />
+      <meta itemprop="genre" content="Experimental" />
+      <link itemprop="url" href={Astro.url.href} />
+    </header>
 
     <div class="bg-gray-900 rounded-lg shadow-xl p-8 mb-8">
-      <p class="text-lg text-gray-200 mb-8 leading-relaxed">
-        Brylie Christopher's creative output spans a wide spectrum of electronic
-        and instrumental music, marked by atmospheric pieces that weave together
-        diverse instruments, timbres, and textures. His genre-blending
-        compositions are used for wellness, film, podcasts, and video games,
-        with works featured in independent documentaries.
-      </p>
-
-      <h2 class="text-3xl font-semibold text-white mb-6">Recent Discography</h2>
-      <div class="grid md:grid-cols-2 gap-6 mb-8">
-        {recentReleases.map((release) => <ReleaseCard release={release} />)}
+      <div
+        itemprop="about"
+        itemscope
+        itemtype="https://schema.org/CreativeWork"
+      >
+        <p
+          class="text-lg text-gray-200 mb-8 leading-relaxed"
+          itemprop="description"
+        >
+          Brylie Christopher's creative output spans a wide spectrum of
+          electronic and instrumental music, marked by atmospheric pieces that
+          weave together diverse instruments, timbres, and textures. His
+          genre-blending compositions are used for wellness, film, podcasts, and
+          video games, with works featured in independent documentaries.
+        </p>
       </div>
 
-      <div class="bg-gray-800 rounded-lg p-6">
-        <h3 class="text-xl font-semibold text-white mb-4">🎨 Musical Style</h3>
-        <ul class="space-y-2 text-gray-200">
+      <section aria-labelledby="recent-releases">
+        <h2 id="recent-releases" class="text-3xl font-semibold text-white mb-6">
+          Recent Discography
+        </h2>
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+          {recentReleases.map((release) => <ReleaseCard release={release} />)}
+        </div>
+        <div class="text-center">
+          <a
+            href="/releases/"
+            class="inline-block bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+          >
+            View All Releases
+          </a>
+        </div>
+      </section>
+
+      <section
+        class="bg-gray-800 rounded-lg p-6 mt-8"
+        aria-labelledby="musical-style"
+      >
+        <h3 id="musical-style" class="text-xl font-semibold text-white mb-4">
+          🎨 Musical Style
+        </h3>
+        <ul class="space-y-2 text-gray-200" role="list">
           <li class="flex items-start">
-            <span class="text-blue-400 mr-3">•</span>
-            Abstract electronic minimalism
+            <span class="text-blue-400 mr-3" aria-hidden="true">•</span>
+            <span>Abstract electronic minimalism</span>
           </li>
           <li class="flex items-start">
-            <span class="text-blue-400 mr-3">•</span>
-            Mixed instrumental compositions
+            <span class="text-blue-400 mr-3" aria-hidden="true">•</span>
+            <span>Mixed instrumental compositions</span>
           </li>
           <li class="flex items-start">
-            <span class="text-blue-400 mr-3">•</span>
-            Genre-blending atmospheric pieces
+            <span class="text-blue-400 mr-3" aria-hidden="true">•</span>
+            <span>Genre-blending atmospheric pieces</span>
           </li>
           <li class="flex items-start">
-            <span class="text-blue-400 mr-3">•</span>
-            Diverse instruments, timbres, and textures
+            <span class="text-blue-400 mr-3" aria-hidden="true">•</span>
+            <span>Diverse instruments, timbres, and textures</span>
           </li>
         </ul>
-      </div>
+      </section>
     </div>
 
-    <div class="text-center">
+    <section class="text-center" aria-labelledby="licensing-info">
       <div class="bg-gray-900 rounded-lg p-6 mb-6">
-        <p class="text-lg text-blue-300 mb-2">🆓 Creative Commons Licensed</p>
+        <h2 id="licensing-info" class="text-lg text-blue-300 mb-2">
+          🆓 Creative Commons Licensed
+        </h2>
         <p class="text-gray-300">
           All of Brylie's music is released under Creative Commons licensing,
           making it freely available for creative projects, wellness
           applications, and media productions.
         </p>
       </div>
-      <p class="text-gray-400">
-        Music for wellness • Film scoring • Podcast soundtracks • Video game
-        atmospheres • Independent documentaries
-      </p>
-    </div>
+      <div itemscope itemtype="https://schema.org/Organization">
+        <meta itemprop="name" content="Brylie Christopher Music" />
+        <p class="text-gray-400" itemprop="description">
+          Music for wellness • Film scoring • Podcast soundtracks • Video game
+          atmospheres • Independent documentaries
+        </p>
+      </div>
+    </section>
   </div>
 </Layout>
