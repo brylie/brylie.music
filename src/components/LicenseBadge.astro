@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import { buildLicenseUrl } from "../utils/license";
 
 interface Props {
   license: string;
@@ -20,13 +21,7 @@ const parseLicense = (spdx: string) => {
 
 const { type, version } = parseLicense(license);
 
-// Generate license URL from SPDX identifier
-const getLicenseUrl = (spdx: string) => {
-  const normalized = spdx.toLowerCase().replace(/^cc-/i, "").replace(/-/g, "/");
-  return `https://creativecommons.org/licenses/${normalized}/`;
-};
-
-const licenseUrl = getLicenseUrl(license);
+const licenseUrl = buildLicenseUrl(license);
 const ariaLabel = `Licensed under Creative Commons ${type} ${version}`;
 ---
 

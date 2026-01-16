@@ -3,6 +3,7 @@ import rss from '@astrojs/rss';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 import sanitizeHtml from 'sanitize-html';
 import MarkdownIt from 'markdown-it';
+import { buildLicenseUrl } from '../utils/license.ts';
 
 const parser = new MarkdownIt();
 
@@ -27,7 +28,7 @@ export async function GET(context) {
 	const releaseItems = releases.map((release) => {
 		const slug = release.data.urlSlug || release.id;
 		const licenseInfo = release.data.license
-			? `<p><strong>License:</strong> <a href="https://creativecommons.org/licenses/${release.data.license.toLowerCase().replace('cc-', '').replace('-', '/')}/" target="_blank">${release.data.license}</a></p>`
+			? `<p><strong>License:</strong> <a href="${buildLicenseUrl(release.data.license)}" target="_blank">${release.data.license}</a></p>`
 			: '';
 
 		// Build streaming links HTML

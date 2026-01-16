@@ -3,6 +3,7 @@ import { Icon } from "astro-icon/components";
 import FormattedDate from "./FormattedDate.astro";
 import LicenseBadge from "./LicenseBadge.astro";
 import type { CollectionEntry } from "astro:content";
+import { buildLicenseUrl } from "../utils/license";
 
 interface Props {
   release: CollectionEntry<"releases">;
@@ -25,9 +26,7 @@ const platforms = [
 ] as const;
 
 // Generate schema.org MusicAlbum JSON-LD with enhanced metadata
-const licenseUrl =
-  data.licenseUrl ||
-  `https://creativecommons.org/licenses/${data.license.toLowerCase().replace("cc-", "").replace(/^by/, "by").replace("-", "/")}/`;
+const licenseUrl = data.licenseUrl || buildLicenseUrl(data.license);
 
 const schemaOrg = {
   "@context": "https://schema.org",
