@@ -1,0 +1,334 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import FormattedDate from "../../components/FormattedDate.astro";
+import LicenseBadge from "../../components/LicenseBadge.astro";
+import { Icon } from "astro-icon/components";
+import { YouTube } from "@astro-community/astro-embed-youtube";
+import MarkdownIt from "markdown-it";
+
+const parser = new MarkdownIt();
+
+export async function getStaticPaths() {
+  const releases = await getCollection("releases");
+  return releases.map((release) => ({
+    params: { slug: release.data.urlSlug || release.id },
+    props: { release },
+  }));
+}
+
+const { release } = Astro.props;
+const { data, body } = release;
+const renderedContent = parser.render(body || "");
+
+// Platform icons mapping (alphabetically ordered)
+const platforms = [
+  { key: "appleMusic", icon: "mdi:apple", label: "Apple Music" },
+  { key: "bandcamp", icon: "mdi:bandcamp", label: "Bandcamp" },
+  { key: "fma", icon: "mdi:music-circle", label: "Free Music Archive" },
+  { key: "soundcloud", icon: "mdi:soundcloud", label: "SoundCloud" },
+  { key: "spotify", icon: "mdi:spotify", label: "Spotify" },
+  { key: "youtube", icon: "mdi:youtube", label: "YouTube Music" },
+] as const;
+
+// Generate comprehensive schema.org MusicAlbum JSON-LD
+const schemaOrg = {
+  "@context": "https://schema.org",
+  "@type": "MusicAlbum",
+  name: data.title,
+  description: data.description,
+  byArtist: {
+    "@type": "Person",
+    name: data.artist || "Brylie Christopher",
+  },
+  datePublished: data.releaseDate.toISOString().split("T")[0],
+  albumReleaseType: `https://schema.org/${data.releaseType.charAt(0).toUpperCase() + data.releaseType.slice(1)}Release`,
+  genre: data.genre,
+  license:
+    data.licenseUrl ||
+    `https://creativecommons.org/licenses/${data.license.toLowerCase().replace("cc-", "").replace("-", "/")}/`,
+  url: Astro.url.href,
+  image: data.coverImage?.src,
+  inLanguage: "en",
+  ...(data.tracks && {
+    track: data.tracks.map((track, index) => ({
+      "@type": "MusicRecording",
+      position: index + 1,
+      name: track.title,
+      duration: track.duration,
+      byArtist: {
+        "@type": "Person",
+        name: data.artist || "Brylie Christopher",
+      },
+    })),
+    numTracks: data.tracks.length,
+  }),
+  ...(data.recordLabel && {
+    recordLabel: {
+      "@type": "Organization",
+      name: data.recordLabel,
+    },
+  }),
+  ...(data.catalogNumber && { catalogNumber: data.catalogNumber }),
+};
+
+const pageTitle = `${data.title} - Music Release`;
+const pageDescription = data.description;
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  image={data.ogImage || data.coverImage}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(schemaOrg)} />
+
+  <div class="max-w-4xl mx-auto px-4 py-12">
+    <nav class="mb-8" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-2 text-sm text-gray-400">
+        <li>
+          <a href="/" class="hover:text-blue-300 transition-colors">Home</a>
+        </li>
+        <li aria-hidden="true">/</li>
+        <li>
+          <a href="/releases/" class="hover:text-blue-300 transition-colors"
+            >Releases</a
+          >
+        </li>
+        <li aria-hidden="true">/</li>
+        <li class="text-gray-300" aria-current="page">{data.title}</li>
+      </ol>
+    </nav>
+
+    <article
+      class="bg-gray-900 rounded-lg shadow-xl p-8"
+      itemscope
+      itemtype="https://schema.org/MusicAlbum"
+    >
+      <header class="mb-8">
+        <h1
+          class="text-4xl md:text-5xl font-bold text-white mb-4"
+          itemprop="name"
+        >
+          {data.title}
+        </h1>
+
+        <div class="flex flex-wrap items-center gap-4 text-gray-300 mb-4">
+          <div class="flex items-center gap-2">
+            <Icon name="mdi:calendar" size={20} aria-hidden="true" />
+            <FormattedDate date={data.releaseDate} />
+          </div>
+
+          <span class="text-gray-600" aria-hidden="true">•</span>
+
+          <div class="flex items-center gap-2 capitalize">
+            <Icon name="mdi:album" size={20} aria-hidden="true" />
+            <span>{data.releaseType}</span>
+          </div>
+
+          {
+            data.artist && (
+              <>
+                <span class="text-gray-600" aria-hidden="true">
+                  •
+                </span>
+                <div class="flex items-center gap-2">
+                  <Icon name="mdi:account-music" size={20} aria-hidden="true" />
+                  <span
+                    itemprop="byArtist"
+                    itemscope
+                    itemtype="https://schema.org/Person"
+                  >
+                    <span itemprop="name">{data.artist}</span>
+                  </span>
+                </div>
+              </>
+            )
+          }
+        </div>
+
+        <div class="mb-6">
+          <LicenseBadge license={data.license} size={24} />
+        </div>
+
+        {
+          data.genre && data.genre.length > 0 && (
+            <div class="flex flex-wrap gap-2 mb-6">
+              {data.genre.map((genre) => (
+                <span
+                  class="bg-gray-800 text-blue-300 px-3 py-1 rounded-full text-sm"
+                  itemprop="genre"
+                >
+                  {genre}
+                </span>
+              ))}
+            </div>
+          )
+        }
+      </header>
+
+      {
+        data.coverImage && (
+          <div class="mb-8">
+            <img
+              src={data.coverImage.src}
+              alt={`${data.title} cover art`}
+              class="w-full max-w-lg mx-auto aspect-square object-cover rounded-lg shadow-lg"
+              itemprop="image"
+            />
+          </div>
+        )
+      }
+
+      <div
+        class="prose prose-invert prose-lg max-w-none mb-8"
+        itemprop="description"
+      >
+        <Fragment set:html={renderedContent} />
+      </div>
+
+      {
+        data.youtubeVideoId && (
+          <div class="mb-8">
+            <h2 class="text-2xl font-semibold text-white mb-4">Music Video</h2>
+            <div class="aspect-video rounded-lg overflow-hidden">
+              <YouTube id={data.youtubeVideoId} />
+            </div>
+          </div>
+        )
+      }
+
+      {
+        data.tracks && data.tracks.length > 0 && (
+          <div class="mb-8">
+            <h2 class="text-2xl font-semibold text-white mb-4">
+              Track Listing
+            </h2>
+            <div class="bg-gray-800 rounded-lg overflow-hidden">
+              <table class="w-full">
+                <thead class="bg-gray-700">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-gray-300 font-semibold">
+                      #
+                    </th>
+                    <th class="px-4 py-3 text-left text-gray-300 font-semibold">
+                      Title
+                    </th>
+                    <th class="px-4 py-3 text-right text-gray-300 font-semibold">
+                      Duration
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.tracks.map((track, index) => (
+                    <tr
+                      class="border-t border-gray-700 hover:bg-gray-750 transition-colors"
+                      itemprop="track"
+                      itemscope
+                      itemtype="https://schema.org/MusicRecording"
+                    >
+                      <td class="px-4 py-3 text-gray-400">
+                        <span itemprop="position">{index + 1}</span>
+                      </td>
+                      <td class="px-4 py-3 text-gray-200" itemprop="name">
+                        {track.title}
+                      </td>
+                      <td
+                        class="px-4 py-3 text-right text-gray-400"
+                        itemprop="duration"
+                      >
+                        {track.duration}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )
+      }
+
+      {
+        data.collaborators && data.collaborators.length > 0 && (
+          <div class="mb-8">
+            <h2 class="text-2xl font-semibold text-white mb-4">
+              Collaborators
+            </h2>
+            <div class="flex flex-wrap gap-3">
+              {data.collaborators.map((collaborator) => (
+                <span class="bg-gray-800 text-gray-200 px-4 py-2 rounded-lg">
+                  {collaborator}
+                </span>
+              ))}
+            </div>
+          </div>
+        )
+      }
+
+      {
+        (data.recordLabel || data.catalogNumber) && (
+          <div class="mb-8 bg-gray-800 rounded-lg p-6">
+            <h2 class="text-xl font-semibold text-white mb-3">
+              Release Details
+            </h2>
+            <dl class="space-y-2">
+              {data.recordLabel && (
+                <div class="flex gap-3">
+                  <dt class="text-gray-400 font-medium">Label:</dt>
+                  <dd class="text-gray-200">{data.recordLabel}</dd>
+                </div>
+              )}
+              {data.catalogNumber && (
+                <div class="flex gap-3">
+                  <dt class="text-gray-400 font-medium">Catalog #:</dt>
+                  <dd class="text-gray-200">{data.catalogNumber}</dd>
+                </div>
+              )}
+            </dl>
+          </div>
+        )
+      }
+
+      {
+        data.streamingLinks && (
+          <div class="bg-gray-800 rounded-lg p-6">
+            <h2 class="text-2xl font-semibold text-white mb-4">
+              Listen & Purchase
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {platforms.map(({ key, icon, label }) => {
+                const url = data.streamingLinks?.[key];
+                if (!url) return null;
+
+                return (
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="flex items-center gap-3 bg-gray-700 hover:bg-gray-600 text-gray-200 hover:text-blue-300 px-4 py-3 rounded-lg transition-colors"
+                    aria-label={`Listen on ${label}`}
+                  >
+                    <Icon name={icon} size={28} aria-hidden="true" />
+                    <span class="font-medium">{label}</span>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        )
+      }
+
+      <meta itemprop="datePublished" content={data.releaseDate.toISOString()} />
+    </article>
+
+    <div class="mt-8 text-center">
+      <a
+        href="/releases/"
+        class="inline-flex items-center gap-2 text-blue-300 hover:text-blue-200 transition-colors"
+      >
+        <Icon name="mdi:arrow-left" size={20} aria-hidden="true" />
+        <span>View All Releases</span>
+      </a>
+    </div>
+  </div>
+</Layout>

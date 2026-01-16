@@ -1,0 +1,122 @@
+---
+import { Icon } from "astro-icon/components";
+import FormattedDate from "./FormattedDate.astro";
+import LicenseBadge from "./LicenseBadge.astro";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  release: CollectionEntry<"releases">;
+}
+
+const { release } = Astro.props;
+const { data } = release;
+
+// Get slug from urlSlug or use release.id (filename without extension)
+const slug = data.urlSlug || release.id;
+
+// Platform icons mapping (alphabetically ordered)
+const platforms = [
+  { key: "appleMusic", icon: "mdi:apple", label: "Apple Music" },
+  { key: "bandcamp", icon: "mdi:bandcamp", label: "Bandcamp" },
+  { key: "fma", icon: "mdi:music-circle", label: "Free Music Archive" },
+  { key: "soundcloud", icon: "mdi:soundcloud", label: "SoundCloud" },
+  { key: "spotify", icon: "mdi:spotify", label: "Spotify" },
+  { key: "youtube", icon: "mdi:youtube", label: "YouTube Music" },
+] as const;
+
+// Generate schema.org MusicAlbum JSON-LD
+const schemaOrg = {
+  "@context": "https://schema.org",
+  "@type": "MusicAlbum",
+  name: data.title,
+  description: data.description,
+  byArtist: {
+    "@type": "Person",
+    name: data.artist || "Brylie Christopher",
+  },
+  datePublished: data.releaseDate.toISOString().split("T")[0],
+  genre: data.genre?.join(", "),
+  license:
+    data.licenseUrl ||
+    `https://creativecommons.org/licenses/${data.license.toLowerCase().replace("cc-", "").replace("-", "/")}/`,
+  url: `/releases/${slug}/`,
+};
+---
+
+<article
+  class="bg-gray-800 rounded-lg p-6 hover:shadow-xl transition-shadow"
+  itemscope
+  itemtype="https://schema.org/MusicAlbum"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(schemaOrg)} />
+
+  {
+    data.coverImage && (
+      <div class="mb-4">
+        <img
+          src={data.coverImage.src}
+          alt={`${data.title} cover art`}
+          class="w-full aspect-square object-cover rounded-lg"
+          itemprop="image"
+        />
+      </div>
+    )
+  }
+
+  <h3 class="text-xl font-semibold text-blue-300 mb-2" itemprop="name">
+    <a
+      href={`/releases/${slug}/`}
+      class="hover:text-blue-200 transition-colors"
+      itemprop="url"
+    >
+      {data.title}
+    </a>
+  </h3>
+
+  <div class="text-gray-400 text-sm mb-3">
+    <FormattedDate date={data.releaseDate} />
+  </div>
+
+  <p class="text-gray-200 mb-4" itemprop="description">
+    {data.description}
+  </p>
+
+  <div class="flex items-center justify-between flex-wrap gap-4">
+    <div class="flex-shrink-0">
+      <LicenseBadge license={data.license} size={18} />
+    </div>
+
+    {
+      data.streamingLinks && (
+        <div
+          class="flex items-center gap-3 flex-wrap"
+          role="list"
+          aria-label="Streaming platforms"
+        >
+          {platforms.map(({ key, icon, label }) => {
+            const url = data.streamingLinks?.[key];
+            if (!url) return null;
+
+            return (
+              <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-gray-300 hover:text-blue-300 transition-colors inline-flex items-center gap-2"
+                aria-label={`Listen on ${label}`}
+                title={`Listen on ${label}`}
+                role="listitem"
+              >
+                <Icon name={icon} size={24} aria-hidden="true" />
+                <span class="hidden md:inline text-sm">{label}</span>
+              </a>
+            );
+          })}
+        </div>
+      )
+    }
+  </div>
+
+  <meta itemprop="datePublished" content={data.releaseDate.toISOString()} />
+  {data.genre && <meta itemprop="genre" content={data.genre.join(", ")} />}
+</article>

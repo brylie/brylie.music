@@ -1,6 +1,16 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
+import { getCollection } from "astro:content";
+import ReleaseCard from "../components/ReleaseCard.astro";
+
+// Fetch and sort releases by date (newest first)
+const releases = (await getCollection("releases")).sort(
+  (a, b) => b.data.releaseDate.valueOf() - a.data.releaseDate.valueOf()
+);
+
+// Get the 6 most recent releases for the homepage
+const recentReleases = releases.slice(0, 6);
 ---
 
 <Layout title={SITE_TITLE} description={SITE_DESCRIPTION}>
@@ -27,78 +37,7 @@ import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
 
       <h2 class="text-3xl font-semibold text-white mb-6">Recent Discography</h2>
       <div class="grid md:grid-cols-2 gap-6 mb-8">
-        <div class="bg-gray-800 rounded-lg p-6">
-          <h3 class="text-xl font-semibold text-blue-300 mb-2">
-            <a
-              href="https://soundcloud.com/brylie/sets/solo"
-              class="hover:text-blue-200 transition-colors"
-              target="_blank"
-              rel="noopener noreferrer">Solo</a
-            >
-          </h3>
-          <p class="text-gray-400 text-sm mb-3">2025</p>
-          <p class="text-gray-200">
-            Latest album showcasing refined piano impressionism
-          </p>
-        </div>
-
-        <div class="bg-gray-800 rounded-lg p-6">
-          <h3 class="text-xl font-semibold text-blue-300 mb-2">
-            <a
-              href="https://soundcloud.com/brylie/sets/tides-of-change"
-              class="hover:text-blue-200 transition-colors"
-              target="_blank"
-              rel="noopener noreferrer">Tides of Change</a
-            >
-          </h3>
-          <p class="text-gray-400 text-sm mb-3">2024</p>
-          <p class="text-gray-200">
-            Flowing compositions capturing transformation
-          </p>
-        </div>
-
-        <div class="bg-gray-800 rounded-lg p-6">
-          <h3 class="text-xl font-semibold text-blue-300 mb-2">
-            <a
-              href="https://soundcloud.com/brylie/sets/murmurations"
-              class="hover:text-blue-200 transition-colors"
-              target="_blank"
-              rel="noopener noreferrer">Murmurations</a
-            >
-          </h3>
-          <p class="text-gray-400 text-sm mb-3">2024</p>
-          <p class="text-gray-200">Collective movements in sound and harmony</p>
-        </div>
-
-        <div class="bg-gray-800 rounded-lg p-6">
-          <h3 class="text-xl font-semibold text-blue-300 mb-2">
-            <a
-              href="https://soundcloud.com/brylie/sets/epicycles"
-              class="hover:text-blue-200 transition-colors"
-              target="_blank"
-              rel="noopener noreferrer">Epicycles</a
-            >
-          </h3>
-          <p class="text-gray-400 text-sm mb-3">2024</p>
-          <p class="text-gray-200">
-            Cyclical patterns and recurring musical themes
-          </p>
-        </div>
-
-        <div class="bg-gray-800 rounded-lg p-6 md:col-span-2">
-          <h3 class="text-xl font-semibold text-blue-300 mb-2">
-            <a
-              href="https://soundcloud.com/brylie/sets/neither-and-both"
-              class="hover:text-blue-200 transition-colors"
-              target="_blank"
-              rel="noopener noreferrer">Neither and Both</a
-            >
-          </h3>
-          <p class="text-gray-400 text-sm mb-3">2023</p>
-          <p class="text-gray-200">
-            Exploring duality through ambient soundscapes
-          </p>
-        </div>
+        {recentReleases.map((release) => <ReleaseCard release={release} />)}
       </div>
 
       <div class="bg-gray-800 rounded-lg p-6">
