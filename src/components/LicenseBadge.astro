@@ -22,7 +22,7 @@ const { type, version } = parseLicense(license);
 
 // Generate license URL from SPDX identifier
 const getLicenseUrl = (spdx: string) => {
-  const normalized = spdx.toLowerCase().replace("cc-", "").replace("-", "/");
+  const normalized = spdx.toLowerCase().replace(/^cc-/i, "").replace(/-/g, "/");
   return `https://creativecommons.org/licenses/${normalized}/`;
 };
 
