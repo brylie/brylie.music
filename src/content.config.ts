@@ -5,18 +5,24 @@ import { rssSchema } from '@astrojs/rss';
 const blog = defineCollection({
 	// Load Markdown and MDX files in the `src/content/blog/` directory.
 	loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
-	// Type-check frontmatter using RSS schema with additional fields
+	// Type-check frontmatter using schema.org BlogPosting field names
 	schema: ({ image }) =>
-		rssSchema.extend({
-			// Add custom fields beyond the RSS schema
-			updatedDate: z.coerce.date().optional(),
+		z.object({
+			// Core BlogPosting fields (schema.org names)
+			title: z.string(),
+			description: z.string(),
+			datePublished: z.coerce.date(),
+			dateModified: z.coerce.date().optional(),
+			author: z.string().optional(),
+			
+			// Visual assets
 			heroImage: image().optional(),
-			// SEO-specific fields
 			ogImage: image().optional(), // Custom Open Graph image
+			
+			// SEO-specific fields
 			keywords: z.array(z.string()).optional(), // SEO keywords
 			canonicalURL: z.string().url().optional(), // Custom canonical URL
 			robots: z.string().optional(), // Custom robots meta tag value
-			author: z.string().optional(), // Article author
 		}),
 });
 
