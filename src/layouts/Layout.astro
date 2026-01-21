@@ -13,8 +13,9 @@ export interface Props {
   canonicalURL?: string;
   robots?: string;
   author?: string;
-  pubDate?: Date;
-  updatedDate?: Date;
+  datePublished?: Date;
+  dateModified?: Date;
+  structuredData?: object;
 }
 
 const {
@@ -26,8 +27,9 @@ const {
   canonicalURL,
   robots,
   author,
-  pubDate,
-  updatedDate,
+  datePublished,
+  dateModified,
+  structuredData,
 } = Astro.props;
 ---
 
@@ -43,9 +45,12 @@ const {
       canonicalURL={canonicalURL}
       robots={robots}
       author={author}
-      pubDate={pubDate}
-      updatedDate={updatedDate}
+      datePublished={datePublished}
+      dateModified={dateModified}
     />
+    {structuredData && (
+      <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    )}
   </head>
   <body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col">
     <header class="bg-gray-900 border-b border-gray-800 shadow-lg">

@@ -4,25 +4,28 @@ import type { CollectionEntry } from "astro:content";
 import Layout from "./Layout.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 
-type Props = CollectionEntry<"blog">["data"];
+type Props = CollectionEntry<"blog">["data"] & {
+  structuredData?: object;
+};
 
 const {
   title,
   description,
-  pubDate,
-  updatedDate,
+  datePublished,
+  dateModified,
   heroImage,
   ogImage,
   keywords,
   canonicalURL,
   robots,
   author,
+  structuredData,
 } = Astro.props;
 
-// Ensure required fields have values (they should based on the RSS schema)
-if (!title || !description || !pubDate) {
+// Ensure required fields have values (they should based on the schema)
+if (!title || !description || !datePublished) {
   throw new Error(
-    `BlogPost is missing required fields: title=${title}, description=${description}, pubDate=${pubDate}`
+    `BlogPost is missing required fields: title=${title}, description=${description}, datePublished=${datePublished}`
   );
 }
 ---
@@ -36,8 +39,9 @@ if (!title || !description || !pubDate) {
   canonicalURL={canonicalURL}
   robots={robots}
   author={author}
-  pubDate={pubDate}
-  updatedDate={updatedDate}
+  datePublished={datePublished}
+  dateModified={dateModified}
+  structuredData={structuredData}
 >
   <div class="max-w-4xl mx-auto px-4 py-8">
     <article class="bg-gray-900 rounded-lg shadow-xl overflow-hidden">
@@ -56,10 +60,10 @@ if (!title || !description || !pubDate) {
       <div class="p-6 sm:p-8 lg:p-12">
         <header class="text-center mb-8 pb-6 border-b border-gray-700">
           <div class="mb-4 text-sm text-gray-400">
-            <FormattedDate date={pubDate} />
-            {updatedDate && (
+            <FormattedDate date={datePublished} />
+            {dateModified && (
               <div class="mt-1 italic text-gray-500">
-                Last updated on <FormattedDate date={updatedDate} />
+                Last updated on <FormattedDate date={dateModified} />
               </div>
             )}
           </div>
