@@ -6,6 +6,8 @@ releaseType: "album"
 genre: ["new age", "ambient", "electronic"]
 license: "CC-BY-4.0"
 streamingLinks:
+  bandcamp: "https://brylie.bandcamp.com/album/good-medicine"
+  fma: "https://freemusicarchive.org/music/Brylie_Christopher_Oxley/good-medicine"
   soundcloud: "https://soundcloud.com/brylie/sets/good-medicine"
   appleMusic: "https://music.apple.com/fi/album/good-medicine/1870527931"
   spotify: "https://open.spotify.com/album/7HochmsbV1KwvhUW9fvTdb"
