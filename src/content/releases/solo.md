@@ -1,6 +1,6 @@
 ---
 title: "Solo"
-description: "Latest album showcasing refined piano impressionism"
+description: "Refined piano impressionism"
 releaseDate: 2025-05-01
 releaseType: "album"
 genre: ["piano", "impressionism", "contemporary classical"]
@@ -13,4 +13,4 @@ streamingLinks:
   spotify: "https://open.spotify.com/album/04UHRUCtmvoSAnDNBucEWw"
 ---
 
-Latest album showcasing refined piano impressionism, featuring delicate compositions that explore introspective themes through minimalist piano techniques.
+Refined piano impressionism, featuring delicate compositions that explore introspective themes through minimalist piano techniques.
