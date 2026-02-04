@@ -1,5 +1,5 @@
 ---
-title: "New Beginnings"
+title: "Good Medicine"
 description: "Pausing for a moment of healing and reflection"
 releaseDate: 2026-01-30
 releaseType: "album"
