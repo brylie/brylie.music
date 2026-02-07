@@ -89,4 +89,39 @@ describe('safeJsonLdString', () => {
       expect(result.toLowerCase()).not.toMatch(/<\/?script>/i);
     });
   });
+
+  test('handles undefined data gracefully', () => {
+    const result = safeJsonLdString(undefined);
+    
+    // Should return 'null' for undefined
+    expect(result).toBe('null');
+  });
+
+  test('handles circular references without throwing', () => {
+    // Create an object with a circular reference
+    const circularData: any = { name: 'Test' };
+    circularData.self = circularData;
+    
+    const result = safeJsonLdString(circularData);
+    
+    // Should return 'null' instead of throwing
+    expect(result).toBe('null');
+  });
+
+  test('handles symbols and functions that JSON.stringify cannot serialize', () => {
+    const dataWithUnserialized = {
+      name: 'Test',
+      symbol: Symbol('test'),
+      func: () => console.log('test'),
+    };
+    
+    const result = safeJsonLdString(dataWithUnserialized);
+    
+    // Should successfully serialize (symbols and functions are omitted by JSON.stringify)
+    expect(result).not.toBe('null');
+    const parsed = JSON.parse(result);
+    expect(parsed.name).toBe('Test');
+    expect(parsed.symbol).toBeUndefined();
+    expect(parsed.func).toBeUndefined();
+  });
 });

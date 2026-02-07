@@ -174,7 +174,21 @@ export const SEO_DEFAULTS = {
  * <script type="application/ld+json" set:html={safeJsonLdString(schemaData)} />
  */
 export function safeJsonLdString(data: unknown): string {
-  return JSON.stringify(data)
+  let json: string | undefined;
+  
+  try {
+    json = JSON.stringify(data);
+  } catch {
+    // Handle serialization errors (e.g., circular references)
+    return 'null';
+  }
+  
+  // Handle undefined result from JSON.stringify
+  if (json == null) {
+    return 'null';
+  }
+  
+  return json
     .replace(/</g, '\\u003c')  // Escape < to prevent </script> breaking
     .replace(/>/g, '\\u003e')  // Escape > for consistency
     .replace(/\u2028/g, '\\u2028')  // Escape line separator
