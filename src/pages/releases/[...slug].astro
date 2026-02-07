@@ -6,6 +6,7 @@ import LicenseBadge from "../../components/LicenseBadge.astro";
 import { Icon } from "astro-icon/components";
 import { YouTube } from "astro-embed";
 import MarkdownIt from "markdown-it";
+import { safeJsonLdString } from "../../utils/seo";
 
 const parser = new MarkdownIt();
 
@@ -124,7 +125,7 @@ const pageDescription = data.description;
   description={pageDescription}
   image={data.ogImage || data.coverImage}
 >
-  <script type="application/ld+json" set:html={JSON.stringify(albumSchema)} />
+  <script type="application/ld+json" set:html={safeJsonLdString(albumSchema)} />
 
   <div class="max-w-4xl mx-auto px-4 py-12">
     <nav

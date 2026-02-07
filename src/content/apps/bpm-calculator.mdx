@@ -1,0 +1,55 @@
+---
+title: "BPM Calculator"
+description: "Convert tempo (BPM) to millisecond durations for musical note subdivisions including dotted and triplet variations."
+component: "BpmCalculator"
+category: "rhythm"
+keywords:
+  - "BPM"
+  - "tempo"
+  - "milliseconds"
+  - "timing"
+  - "rhythm"
+  - "delay"
+  - "music production"
+  - "note duration"
+---
+
+import BpmCalculator from '../../components/apps/BpmCalculator.svelte';
+
+<BpmCalculator client:load />
+
+The BPM Calculator is an essential tool for musicians, producers, and audio engineers who need precise timing values for musical note subdivisions. Enter any tempo (in beats per minute) and instantly see the duration in milliseconds for:
+
+- **Standard notes**: whole, half, quarter, eighth, sixteenth, and 32nd notes
+- **Dotted variations**: notes extended by 50% (1.5x)
+- **Triplet variations**: three notes in the space of two (2/3x)
+
+## Use Cases
+
+### Audio Production
+
+- Set delay times that sync perfectly with your track's tempo
+- Configure LFO rates for rhythmic modulation effects
+- Time reverb pre-delay to groove with the music
+
+### Live Performance
+
+- Program step sequencer timing
+- Sync visual effects to musical beats
+- Calculate loop lengths for seamless phrase looping
+
+### Web Development
+
+- Synchronize animations with musical timing
+- Build rhythm-based games or interactive experiences
+- Create music visualizers with accurate beat detection
+
+## How It Works
+
+The calculator uses the fundamental relationship between tempo and time:
+
+- At 120 BPM, each beat (quarter note) lasts exactly 500 milliseconds
+- This is calculated as: `60,000ms / 120 BPM = 500ms`
+- All other subdivisions derive from this base value
+
+Try different tempos to see how timing changes across the musical spectrum, from slow ballads (~60 BPM) to fast electronic music (~140+ BPM).

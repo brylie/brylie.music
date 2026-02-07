@@ -4,6 +4,7 @@ import FormattedDate from "./FormattedDate.astro";
 import LicenseBadge from "./LicenseBadge.astro";
 import type { CollectionEntry } from "astro:content";
 import { buildLicenseUrl } from "../utils/license";
+import { safeJsonLdString } from "../utils/seo";
 
 interface Props {
   release: CollectionEntry<"releases">;
@@ -68,7 +69,7 @@ const schemaOrg = {
   itemscope
   itemtype="https://schema.org/MusicAlbum"
 >
-  <script type="application/ld+json" set:html={JSON.stringify(schemaOrg)} />
+  <script type="application/ld+json" set:html={safeJsonLdString(schemaOrg)} />
 
   {
     data.coverImage && (
