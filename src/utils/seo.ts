@@ -162,3 +162,21 @@ export const SEO_DEFAULTS = {
     robots: ROBOTS_DIRECTIVES.NO_INDEX,
   },
 } as const;
+
+/**
+ * Safely serializes JSON for embedding in HTML <script type="application/ld+json"> tags.
+ * Prevents XSS by escaping script-breaking characters that could prematurely close the script tag.
+ * 
+ * @param data - The data to serialize
+ * @returns A safe JSON string that can be used with set:html
+ * 
+ * @example
+ * <script type="application/ld+json" set:html={safeJsonLdString(schemaData)} />
+ */
+export function safeJsonLdString(data: unknown): string {
+  return JSON.stringify(data)
+    .replace(/</g, '\\u003c')  // Escape < to prevent </script> breaking
+    .replace(/>/g, '\\u003e')  // Escape > for consistency
+    .replace(/\u2028/g, '\\u2028')  // Escape line separator
+    .replace(/\u2029/g, '\\u2029'); // Escape paragraph separator
+}

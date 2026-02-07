@@ -3,6 +3,7 @@ import BaseHead from "../components/BaseHead.astro";
 import NavigationMenu from "../components/NavigationMenu.astro";
 import Footer from "../components/Footer.astro";
 import type { ImageMetadata } from "astro";
+import { safeJsonLdString } from "../utils/seo";
 
 export interface Props {
   title: string;
@@ -48,9 +49,14 @@ const {
       datePublished={datePublished}
       dateModified={dateModified}
     />
-    {structuredData && (
-      <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
-    )}
+    {
+      structuredData && (
+        <script
+          type="application/ld+json"
+          set:html={safeJsonLdString(structuredData)}
+        />
+      )
+    }
   </head>
   <body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col">
     <header class="bg-gray-900 border-b border-gray-800 shadow-lg">

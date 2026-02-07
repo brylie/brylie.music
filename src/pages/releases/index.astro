@@ -2,10 +2,11 @@
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import ReleaseCard from "../../components/ReleaseCard.astro";
+import { safeJsonLdString } from "../../utils/seo";
 
 // Fetch and sort releases by date (newest first)
 const releases = (await getCollection("releases")).sort(
-  (a, b) => b.data.releaseDate.valueOf() - a.data.releaseDate.valueOf()
+  (a, b) => b.data.releaseDate.valueOf() - a.data.releaseDate.valueOf(),
 );
 
 const pageTitle = "Music Releases";
@@ -52,7 +53,7 @@ const collectionSchema = {
         datePublished: release.data.releaseDate.toISOString().split("T")[0],
         url: new URL(
           `/releases/${release.data.urlSlug || release.id}/`,
-          Astro.site || Astro.url.origin
+          Astro.site || Astro.url.origin,
         ).href,
         genre: release.data.genre?.join(", "),
         byArtist: {
@@ -70,7 +71,7 @@ const collectionSchema = {
 <Layout title={pageTitle} description={pageDescription}>
   <script
     type="application/ld+json"
-    set:html={JSON.stringify(collectionSchema)}
+    set:html={safeJsonLdString(collectionSchema)}
   />
 
   <div class="max-w-6xl mx-auto px-4 py-12">
