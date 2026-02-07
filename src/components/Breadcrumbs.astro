@@ -35,7 +35,10 @@ const { items } = Astro.props;
             aria-current={item.current ? "page" : undefined}
           >
             {item.current ? (
-              <span itemprop="name">{item.name}</span>
+              <>
+                <span itemprop="name">{item.name}</span>
+                <meta itemprop="item" content={item.href} />
+              </>
             ) : (
               <a
                 href={item.href}
