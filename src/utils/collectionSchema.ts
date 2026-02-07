@@ -22,14 +22,18 @@ export function generateCollectionPageSchema(
     mainEntity: {
       "@type": "ItemList",
       numberOfItems: apps.length,
-      itemListElement: apps.map((app, index) => ({
-        "@type": "ListItem",
-        position: index + 1,
-        item: generateAppSchema(
+      itemListElement: apps.map((app, index) => {
+        // Remove redundant @context from nested schema
+        const { '@context': _, ...appSchema } = generateAppSchema(
           app,
           new URL(`/apps/${app.id}`, siteUrl).href
-        ),
-      })),
+        );
+        return {
+          "@type": "ListItem",
+          position: index + 1,
+          item: appSchema,
+        };
+      }),
     },
   };
 }
