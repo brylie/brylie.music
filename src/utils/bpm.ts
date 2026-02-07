@@ -24,6 +24,35 @@ export const SUBDIVISIONS = {
 } as const;
 
 /**
+ * Result of calculateAllSubdivisions containing durations for all note types
+ */
+export interface SubdivisionDurations {
+	// Standard notes
+	whole: number;
+	half: number;
+	quarter: number;
+	eighth: number;
+	sixteenth: number;
+	thirtySecond: number;
+	
+	// Dotted variations (1.5x duration)
+	dottedWhole: number;
+	dottedHalf: number;
+	dottedQuarter: number;
+	dottedEighth: number;
+	dottedSixteenth: number;
+	// Note: Dotted 32nd omitted as it's extremely rare in practical musical contexts
+	
+	// Triplet variations (2/3 duration)
+	wholeTriplet: number;
+	halfTriplet: number;
+	quarterTriplet: number;
+	eighthTriplet: number;
+	sixteenthTriplet: number;
+	// Note: 32nd triplet omitted as it's extremely rare in practical musical contexts
+}
+
+/**
  * Calculate the duration of a musical note in milliseconds.
  * 
  * @param bpm - Beats per minute (tempo)
@@ -83,7 +112,7 @@ export function calculateTriplet(noteLength: number): number {
  * @param bpm - Beats per minute (tempo)
  * @returns Object containing durations for all note types
  */
-export function calculateAllSubdivisions(bpm: number) {
+export function calculateAllSubdivisions(bpm: number): SubdivisionDurations {
 	const whole = calculateNoteLength(bpm, SUBDIVISIONS.WHOLE);
 	const half = calculateNoteLength(bpm, SUBDIVISIONS.HALF);
 	const quarter = calculateNoteLength(bpm, SUBDIVISIONS.QUARTER);
