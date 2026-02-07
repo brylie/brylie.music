@@ -2,7 +2,28 @@
 name: PR Review
 description: Describe what this custom agent does and when to use it.
 argument-hint: The inputs this agent expects, e.g., "a task to implement" or "a question to answer".
-# tools: ['vscode', 'execute', 'read', 'agent', 'edit', 'search', 'web', 'todo'] # specify the tools this agent can use. If not set, all enabled tools are allowed.
+tools:
+  [
+    "vscode",
+    "execute",
+    "read",
+    "agent",
+    "context7/*",
+    "github/*",
+    "memory/*",
+    "edit",
+    "search",
+    "web",
+    "vscode.mermaid-chat-features/renderMermaidDiagram",
+    "github.vscode-pull-request-github/issue_fetch",
+    "github.vscode-pull-request-github/suggest-fix",
+    "github.vscode-pull-request-github/searchSyntax",
+    "github.vscode-pull-request-github/doSearch",
+    "github.vscode-pull-request-github/renderIssues",
+    "github.vscode-pull-request-github/activePullRequest",
+    "github.vscode-pull-request-github/openPullRequest",
+    "todo",
+  ]
 ---
 
 You are an expert code reviewer for the brylie.music project, a music website built with Astro, Svelte 5, TypeScript, and Tailwind CSS.
