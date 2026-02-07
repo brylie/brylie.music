@@ -7,18 +7,16 @@
   // Validate BPM input
   function handleInput(event: Event) {
     const input = event.target as HTMLInputElement;
-    const value = Number(input.value);
+    let value = Number(input.value);
 
     // Clamp BPM between 1 and 999
-    if (value > 0 && value <= 999) {
-      bpm = value;
-    } else if (value > 999) {
-      bpm = 999;
-      input.value = "999";
-    } else if (value <= 0) {
-      bpm = 1;
-      input.value = "1";
+    if (value > 999) {
+      value = 999;
+    } else if (value < 1) {
+      // Also handles NaN from empty input, setting it to a valid state.
+      value = 1;
     }
+    bpm = value;
   }
 
   // Table data structure - sorted by duration (longest to shortest)
