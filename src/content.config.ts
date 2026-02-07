@@ -96,4 +96,38 @@ const releases = defineCollection({
 		}),
 });
 
-export const collections = { blog, releases };
+const apps = defineCollection({
+	// Load Markdown and MDX files in the `src/content/apps/` directory.
+	loader: glob({ 
+		base: './src/content/apps', 
+		pattern: '**/*.{md,mdx}'
+	}),
+	// Type-check frontmatter for musical apps/tools
+	schema: ({ image }) =>
+		z.object({
+			// Core metadata
+			title: z.string(),
+			description: z.string(),
+			
+			// Component to embed (e.g., "BpmCalculator")
+			component: z.string(),
+			
+			// Optional categorization
+			category: z.enum(['rhythm', 'learning', 'creative', 'utility']).optional(),
+			
+			// Visual assets
+			icon: image().optional(),
+			ogImage: image().optional(),
+			
+			// Cross-platform publishing
+			appStoreUrl: z.string().url().optional(), // iOS App Store
+			playStoreUrl: z.string().url().optional(), // Google Play Store
+			webUrl: z.string().url().optional(), // Standalone web app URL
+			
+			// SEO fields
+			keywords: z.array(z.string()).optional(),
+			canonicalURL: z.string().url().optional(),
+		}),
+});
+
+export const collections = { blog, releases, apps };

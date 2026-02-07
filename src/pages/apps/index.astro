@@ -1,0 +1,140 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import { getCategoryBadgeClasses } from "../../utils/appCategories";
+import {
+  generateBreadcrumbSchema,
+  type BreadcrumbItem,
+} from "../../utils/breadcrumbs";
+import { generateAppSchema } from "../../utils/appSchema";
+
+// Fetch all apps (no sorting needed - alphabetical by default)
+const apps = await getCollection("apps");
+
+const pageTitle = "Musical Apps";
+const pageDescription =
+  "Interactive musical applications and tools built with web standards. From simple utilities like BPM calculators to sophisticated learning tools and creative applications.";
+
+// Generate breadcrumbs
+const breadcrumbItems: BreadcrumbItem[] = [
+  {
+    name: "Home",
+    href: new URL("/", Astro.site || Astro.url.origin).href,
+  },
+  {
+    name: "Apps",
+    href: Astro.url.href,
+    current: true,
+  },
+];
+
+const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbItems);
+
+const collectionSchema = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: pageTitle,
+  description: pageDescription,
+  url: Astro.url.href,
+  breadcrumb: breadcrumbSchema,
+  mainEntity: {
+    "@type": "ItemList",
+    numberOfItems: apps.length,
+    itemListElement: apps.map((app, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: generateAppSchema(
+        app,
+        new URL(`/apps/${app.id}/`, Astro.site || Astro.url.origin).href,
+      ),
+    })),
+  },
+};
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(collectionSchema)}
+  />
+
+  <div class="max-w-6xl mx-auto px-4 py-12">
+    <Breadcrumbs items={breadcrumbItems} />
+
+    <header class="text-center mb-12">
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+        Musical Apps
+      </h1>
+      <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+        Interactive tools and applications for musicians, producers, and music
+        enthusiasts. Built with web standards for accessibility and portability.
+      </p>
+    </header>
+
+    {
+      apps.length === 0 ? (
+        <div class="text-center py-12">
+          <p class="text-gray-400 text-lg">No apps found.</p>
+        </div>
+      ) : (
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {apps.map((app) => (
+            <article class="bg-gray-900 rounded-lg border border-gray-700 hover:border-blue-500 transition-all duration-300 overflow-hidden group">
+              <a
+                href={`/apps/${app.id}/`}
+                class="block p-6 h-full flex flex-col"
+              >
+                <div class="flex items-start justify-between mb-4">
+                  <h2 class="text-xl font-bold text-white group-hover:text-blue-300 transition-colors">
+                    {app.data.title}
+                  </h2>
+                  {app.data.category && (
+                    <span
+                      class={`px-2 py-1 text-xs rounded-full ${getCategoryBadgeClasses(app.data.category)}`}
+                    >
+                      {app.data.category}
+                    </span>
+                  )}
+                </div>
+
+                <p class="text-gray-300 mb-4 flex-grow">
+                  {app.data.description}
+                </p>
+
+                {(app.data.appStoreUrl || app.data.playStoreUrl) && (
+                  <div class="flex gap-2 mt-4 pt-4 border-t border-gray-800">
+                    {app.data.appStoreUrl && (
+                      <span class="text-xs text-gray-400">
+                        📱 Available on iOS
+                      </span>
+                    )}
+                    {app.data.playStoreUrl && (
+                      <span class="text-xs text-gray-400">
+                        🤖 Available on Android
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                <div class="mt-4 text-blue-400 text-sm font-semibold group-hover:translate-x-1 transition-transform">
+                  Try it now →
+                </div>
+              </a>
+            </article>
+          ))}
+        </div>
+      )
+    }
+
+    <div class="mt-12 text-center">
+      <div class="bg-gray-900 rounded-lg p-6 inline-block">
+        <p class="text-lg text-blue-300 mb-2">🌐 Web Standards</p>
+        <p class="text-gray-300">
+          Built with HTML, CSS, and JavaScript. No installation required - works
+          directly in your browser.
+        </p>
+      </div>
+    </div>
+  </div>
+</Layout>

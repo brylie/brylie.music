@@ -1,0 +1,53 @@
+---
+/**
+ * Breadcrumb navigation component with schema.org markup
+ * Generates both visual breadcrumbs and structured data from a single source
+ */
+
+export interface BreadcrumbItem {
+  name: string;
+  href: string;
+  current?: boolean;
+}
+
+interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav
+  class="mb-8"
+  aria-label="Breadcrumb"
+  itemscope
+  itemtype="https://schema.org/BreadcrumbList"
+>
+  <ol class="flex items-center gap-2 text-sm text-gray-400">
+    {
+      items.map((item, index) => [
+        <li
+          itemprop="itemListElement"
+          itemscope
+          itemtype="https://schema.org/ListItem"
+          class={item.current ? "text-gray-300" : ""}
+          aria-current={item.current ? "page" : undefined}
+        >
+          {item.current ? (
+            <span itemprop="name">{item.name}</span>
+          ) : (
+            <a
+              href={item.href}
+              class="hover:text-blue-300 transition-colors"
+              itemprop="item"
+            >
+              <span itemprop="name">{item.name}</span>
+            </a>
+          )}
+          <meta itemprop="position" content={String(index + 1)} />
+        </li>,
+        index < items.length - 1 && <li aria-hidden="true">/</li>,
+      ])
+    }
+  </ol>
+</nav>

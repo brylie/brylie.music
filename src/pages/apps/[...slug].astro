@@ -1,0 +1,136 @@
+---
+import { type CollectionEntry, getCollection, render } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import { getCategoryBadgeClasses } from "../../utils/appCategories";
+import {
+  generateBreadcrumbSchema,
+  type BreadcrumbItem,
+} from "../../utils/breadcrumbs";
+import { generateAppSchema } from "../../utils/appSchema";
+
+export async function getStaticPaths() {
+  const apps = await getCollection("apps");
+  return apps.map((app) => ({
+    params: { slug: app.id },
+    props: app,
+  }));
+}
+
+type Props = CollectionEntry<"apps">;
+
+const app = Astro.props;
+const { Content } = await render(app);
+
+// Generate structured data
+const appUrl = new URL(`/apps/${app.id}`, Astro.site).toString();
+const structuredData = generateAppSchema(app, appUrl);
+
+// Breadcrumb data
+const breadcrumbItems: BreadcrumbItem[] = [
+  {
+    name: "Home",
+    href: new URL("/", Astro.site || Astro.url.origin).href,
+  },
+  {
+    name: "Apps",
+    href: new URL("/apps", Astro.site || Astro.url.origin).href,
+  },
+  {
+    name: app.data.title,
+    href: appUrl,
+    current: true,
+  },
+];
+
+const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbItems);
+---
+
+<Layout
+  title={app.data.title}
+  description={app.data.description}
+  keywords={app.data.keywords}
+  canonicalURL={app.data.canonicalURL}
+  ogImage={app.data.ogImage}
+  structuredData={[structuredData, breadcrumbSchema]}
+>
+  <div class="max-w-4xl mx-auto px-4 py-12">
+    <Breadcrumbs items={breadcrumbItems} />
+
+    <!-- App Header -->
+    <header class="mb-8">
+      <div class="flex items-center gap-3 mb-4">
+        <h1 class="text-4xl md:text-5xl font-bold text-white">
+          {app.data.title}
+        </h1>
+        {
+          app.data.category && (
+            <span
+              class={`px-3 py-1 text-sm rounded-full border ${getCategoryBadgeClasses(app.data.category)}`}
+            >
+              {app.data.category}
+            </span>
+          )
+        }
+      </div>
+      <p class="text-xl text-gray-300">{app.data.description}</p>
+
+      <!-- App Store Links -->
+      {
+        (app.data.appStoreUrl || app.data.playStoreUrl || app.data.webUrl) && (
+          <div class="flex gap-4 mt-6">
+            {app.data.appStoreUrl && (
+              <a
+                href={app.data.appStoreUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-lg transition-colors text-sm"
+              >
+                <span>📱</span>
+                <span>App Store</span>
+              </a>
+            )}
+            {app.data.playStoreUrl && (
+              <a
+                href={app.data.playStoreUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-lg transition-colors text-sm"
+              >
+                <span>🤖</span>
+                <span>Play Store</span>
+              </a>
+            )}
+            {app.data.webUrl && (
+              <a
+                href={app.data.webUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-lg transition-colors text-sm"
+              >
+                <span>🌐</span>
+                <span>Standalone App</span>
+              </a>
+            )}
+          </div>
+        )
+      }
+    </header>
+
+    <!-- App Description (MDX content with embedded components) -->
+    <article class="prose prose-invert prose-lg max-w-none">
+      <Content />
+    </article>
+
+    <!-- Back to Apps -->
+    <div class="mt-12 pt-8 border-t border-gray-800">
+      <a
+        href="/apps"
+        class="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors"
+      >
+        <span>←</span>
+        <span>Back to all apps</span>
+      </a>
+    </div>
+  </div>
+</Layout>
