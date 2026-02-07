@@ -7,7 +7,7 @@ import {
   generateBreadcrumbSchema,
   type BreadcrumbItem,
 } from "../../utils/breadcrumbs";
-import { generateAppSchema } from "../../utils/appSchema";
+import { generateCollectionPageSchema } from "../../utils/collectionSchema";
 
 // Fetch all apps (no sorting needed - alphabetical by default)
 const apps = await getCollection("apps");
@@ -31,26 +31,14 @@ const breadcrumbItems: BreadcrumbItem[] = [
 
 const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbItems);
 
-const collectionSchema = {
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  name: pageTitle,
-  description: pageDescription,
-  url: Astro.url.href,
-  breadcrumb: breadcrumbSchema,
-  mainEntity: {
-    "@type": "ItemList",
-    numberOfItems: apps.length,
-    itemListElement: apps.map((app, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      item: generateAppSchema(
-        app,
-        new URL(`/apps/${app.id}`, Astro.site || Astro.url.origin).href,
-      ),
-    })),
-  },
-};
+const collectionSchema = generateCollectionPageSchema(
+  pageTitle,
+  pageDescription,
+  Astro.url.href,
+  breadcrumbSchema,
+  apps,
+  Astro.site || Astro.url.origin,
+);
 ---
 
 <Layout
