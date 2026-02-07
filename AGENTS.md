@@ -90,7 +90,7 @@ const { prop1, prop2 } = Astro.props;
 - Component-specific styles: use Astro's scoped `<style>` tags if needed
 
 ### File Organization
-```
+```text
 src/
 ├── components/           # Reusable Astro/Svelte components
 │   ├── apps/            # Interactive musical apps (Svelte)
@@ -115,9 +115,10 @@ Content collections use Zod schemas in `src/content.config.ts`:
 
 ```typescript
 import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
 
 const blog = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -177,7 +178,7 @@ Interactive musical applications are built with Svelte and documented in `src/co
 
 ### Commit Messages
 Follow conventional commits:
-```
+```text
 feat(apps): add BPM calculator with millisecond subdivisions
 fix(blog): correct date formatting in post metadata
 docs(readme): update installation instructions

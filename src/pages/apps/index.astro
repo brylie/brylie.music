@@ -46,19 +46,18 @@ const collectionSchema = {
       position: index + 1,
       item: generateAppSchema(
         app,
-        new URL(`/apps/${app.id}/`, Astro.site || Astro.url.origin).href,
+        new URL(`/apps/${app.id}`, Astro.site || Astro.url.origin).href,
       ),
     })),
   },
 };
 ---
 
-<Layout title={pageTitle} description={pageDescription}>
-  <script
-    type="application/ld+json"
-    set:html={JSON.stringify(collectionSchema)}
-  />
-
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  structuredData={collectionSchema}
+>
   <div class="max-w-6xl mx-auto px-4 py-12">
     <Breadcrumbs items={breadcrumbItems} />
 

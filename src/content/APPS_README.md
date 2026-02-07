@@ -50,12 +50,12 @@ The apps section showcases interactive musical tools that serve multiple audienc
 
 ### Directory Layout
 
-```
+```text
 src/
 ├── content/
 │   └── apps/
 │       ├── README.md (this file)
-│       └── bpm-calculator.md (app metadata)
+│       └── bpm-calculator.mdx (app metadata)
 ├── components/
 │   └── apps/
 │       └── BpmCalculator.svelte (interactive component)
@@ -305,7 +305,7 @@ When adding apps:
 ## Resources
 
 - [Astro Content Collections](https://docs.astro.build/en/guides/content-collections/)
-- [Svelte 5 Documentation](https://svelte-5-preview.vercel.app/docs/introduction)
+- [Svelte 5 Documentation](https://svelte.dev/docs)
 - [Vitest Documentation](https://vitest.dev/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API) (for audio-processing apps)

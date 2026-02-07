@@ -38,7 +38,8 @@ Inside of your Astro project, you'll see the following folders and files:
 ├── vitest.config.ts     # Vitest test configuration
 └── tsconfig.json        # TypeScript configuration
 ```
-Musical Apps
+
+## Musical Apps
 
 This site features interactive musical applications built with web standards (Svelte + TypeScript). Apps range from simple utilities like BPM calculators to more sophisticated tools for learning and creative music production.
 
@@ -62,7 +63,8 @@ All commands are run from the root of the project, from a terminal:
 | `npm run dev`     | Starts local dev server at `localhost:4321`  |
 | `npm run build`   | Build your production site to `./dist/`      |
 | `npm run preview` | Preview your build locally, before deploying |
-| `Technology Stack |
+
+## Technology Stack
 
 - **Astro**: Static site generation with content collections
 - **Svelte 5**: Interactive UI components
@@ -74,7 +76,7 @@ All commands are run from the root of the project, from a terminal:
 ## 👀 Want to learn more?
 
 - [Astro Documentation](https://docs.astro.build)
-- [Svelte 5 Documentation](https://svelte-5-preview.vercel.app/docs)
+- [Svelte 5 Documentation](https://svelte.dev/docs)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Vitest](https://vitest.dev/)
 

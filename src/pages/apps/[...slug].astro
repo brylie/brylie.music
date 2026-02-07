@@ -23,7 +23,10 @@ const app = Astro.props;
 const { Content } = await render(app);
 
 // Generate structured data
-const appUrl = new URL(`/apps/${app.id}`, Astro.site).toString();
+const appUrl = new URL(
+  `/apps/${app.id}`,
+  Astro.site || Astro.url.origin,
+).toString();
 const structuredData = generateAppSchema(app, appUrl);
 
 // Breadcrumb data
