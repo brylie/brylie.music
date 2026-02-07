@@ -25,29 +25,31 @@ const { items } = Astro.props;
 >
   <ol class="flex items-center gap-2 text-sm text-gray-400">
     {
-      items.map((item, index) => [
-        <li
-          itemprop="itemListElement"
-          itemscope
-          itemtype="https://schema.org/ListItem"
-          class={item.current ? "text-gray-300" : ""}
-          aria-current={item.current ? "page" : undefined}
-        >
-          {item.current ? (
-            <span itemprop="name">{item.name}</span>
-          ) : (
-            <a
-              href={item.href}
-              class="hover:text-blue-300 transition-colors"
-              itemprop="item"
-            >
+      items.map((item, index) => (
+        <>
+          <li
+            itemprop="itemListElement"
+            itemscope
+            itemtype="https://schema.org/ListItem"
+            class={item.current ? "text-gray-300" : ""}
+            aria-current={item.current ? "page" : undefined}
+          >
+            {item.current ? (
               <span itemprop="name">{item.name}</span>
-            </a>
-          )}
-          <meta itemprop="position" content={String(index + 1)} />
-        </li>,
-        index < items.length - 1 && <li aria-hidden="true">/</li>,
-      ])
+            ) : (
+              <a
+                href={item.href}
+                class="hover:text-blue-300 transition-colors"
+                itemprop="item"
+              >
+                <span itemprop="name">{item.name}</span>
+              </a>
+            )}
+            <meta itemprop="position" content={String(index + 1)} />
+          </li>
+          {index < items.length - 1 ? <li aria-hidden="true">/</li> : null}
+        </>
+      ))
     }
   </ol>
 </nav>
