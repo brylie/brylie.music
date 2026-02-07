@@ -47,6 +47,10 @@ const breadcrumbItems: BreadcrumbItem[] = [
 ];
 
 const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbItems);
+
+// Shared classes for store link buttons
+const storeLinkClasses =
+  "inline-flex items-center gap-2 px-4 py-2 bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-lg transition-colors text-sm";
 ---
 
 <Layout
@@ -87,7 +91,7 @@ const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbItems);
                 href={app.data.appStoreUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-lg transition-colors text-sm"
+                class={storeLinkClasses}
               >
                 <span>📱</span>
                 <span>App Store</span>
@@ -98,7 +102,7 @@ const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbItems);
                 href={app.data.playStoreUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-lg transition-colors text-sm"
+                class={storeLinkClasses}
               >
                 <span>🤖</span>
                 <span>Play Store</span>
@@ -109,7 +113,7 @@ const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbItems);
                 href={app.data.webUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-lg transition-colors text-sm"
+                class={storeLinkClasses}
               >
                 <span>🌐</span>
                 <span>Standalone App</span>
