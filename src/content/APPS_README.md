@@ -54,7 +54,7 @@ The apps section showcases interactive musical tools that serve multiple audienc
 src/
 ├── content/
 │   └── apps/
-│       ├── README.md (this file)
+│       ├── APPS_README.md (this file)
 │       └── bpm-calculator.mdx (app metadata)
 ├── components/
 │   └── apps/
