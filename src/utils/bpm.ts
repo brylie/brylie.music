@@ -48,7 +48,7 @@ export function calculateNoteLength(bpm: number, subdivision: number): number {
 	// Calculate milliseconds for the given subdivision
 	// A quarter note has subdivision=4, so we divide by 4/4 = 1
 	// An eighth note has subdivision=8, so we divide by 8/4 = 2
-	return msPerBeat / (subdivision / SUBDIVISIONS.QUARTER);
+	return msPerBeat * (SUBDIVISIONS.QUARTER / subdivision);
 }
 
 /**
