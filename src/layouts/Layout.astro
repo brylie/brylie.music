@@ -16,7 +16,7 @@ export interface Props {
   author?: string;
   datePublished?: Date;
   dateModified?: Date;
-  structuredData?: object | object[];
+  structuredData?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
