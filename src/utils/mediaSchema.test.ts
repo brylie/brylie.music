@@ -288,6 +288,50 @@ describe("generateMediaSchema", () => {
     expect(schema.thumbnailUrl).toBe("https://example.com/images/cover.jpg");
   });
 
+  test("falls back to YouTube thumbnail when no coverImage", () => {
+    const mockMedia: CollectionEntry<"media"> = {
+      id: "test-video",
+      collection: "media",
+      data: {
+        title: "Test Video",
+        description: "A test video",
+        datePublished: new Date("2023-08-03"),
+        mediaType: "video",
+        youtubeId: "abc123",
+        license: "CC-BY-4.0",
+      },
+    } as CollectionEntry<"media">;
+
+    const schema = generateMediaSchema(
+      mockMedia,
+      "https://example.com/media/test-video"
+    );
+
+    expect(schema.thumbnailUrl).toBe("https://img.youtube.com/vi/abc123/hqdefault.jpg");
+  });
+
+  test("falls back to Internet Archive thumbnail when no coverImage or YouTube", () => {
+    const mockMedia: CollectionEntry<"media"> = {
+      id: "test-video",
+      collection: "media",
+      data: {
+        title: "Test Video",
+        description: "A test video",
+        datePublished: new Date("2023-08-03"),
+        mediaType: "video",
+        iaIdentifier: "ia-video-123",
+        license: "CC-BY-4.0",
+      },
+    } as CollectionEntry<"media">;
+
+    const schema = generateMediaSchema(
+      mockMedia,
+      "https://example.com/media/test-video"
+    );
+
+    expect(schema.thumbnailUrl).toBe("https://archive.org/download/ia-video-123/__ia_thumb.jpg");
+  });
+
   test("prioritizes YouTube over other platforms", () => {
     const mockMedia: CollectionEntry<"media"> = {
       id: "test-video",

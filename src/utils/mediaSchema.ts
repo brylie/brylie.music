@@ -74,11 +74,16 @@ export function generateMediaSchema(
   }
 
   // Build thumbnail URL
-  const thumbnailUrl = media.data.coverImage
-    ? siteUrl
+  let thumbnailUrl: string | undefined;
+  if (media.data.coverImage) {
+    thumbnailUrl = siteUrl
       ? new URL(media.data.coverImage.src, siteUrl).toString()
-      : media.data.coverImage.src
-    : undefined;
+      : media.data.coverImage.src;
+  } else if (media.data.youtubeId) {
+    thumbnailUrl = `https://img.youtube.com/vi/${media.data.youtubeId}/hqdefault.jpg`;
+  } else if (media.data.iaIdentifier) {
+    thumbnailUrl = `https://archive.org/download/${media.data.iaIdentifier}/__ia_thumb.jpg`;
+  }
 
   // Build base schema
   const baseSchema: Record<string, any> = {
