@@ -55,6 +55,10 @@ describe("getVideoMimeType", () => {
   test("handles relative URLs", () => {
     expect(getVideoMimeType("/videos/sample.mp4")).toBe("video/mp4");
   });
+
+  test("handles case insensitivity", () => {
+    expect(getVideoMimeType("https://example.com/VIDEO.WEBM")).toBe("video/webm");
+  });
 });
 
 describe("getAudioMimeType", () => {
@@ -119,6 +123,5 @@ describe("getAudioMimeType", () => {
 
   test("handles case insensitivity", () => {
     expect(getAudioMimeType("https://example.com/AUDIO.MP3")).toBe("audio/mpeg");
-    expect(getVideoMimeType("https://example.com/VIDEO.WEBM")).toBe("video/webm");
   });
 });
