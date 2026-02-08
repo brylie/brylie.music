@@ -177,7 +177,15 @@ const media = defineCollection({
 			// SEO fields
 			canonicalURL: z.string().url().optional(),
 			robots: z.string().optional(),
-		}),
+		}).refine(
+			data => Boolean(
+				data.youtubeId ||
+				data.iaIdentifier ||
+				data.videoUrl ||
+				data.audioUrl
+			),
+			{ message: 'At least one of youtubeId, iaIdentifier, videoUrl, or audioUrl must be provided' }
+		),
 });
 
 export const collections = { blog, releases, apps, media };
