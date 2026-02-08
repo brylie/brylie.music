@@ -26,6 +26,22 @@ const getMediaTypeBadgeClasses = (mediaType: string) => {
   }
 };
 
+// Generate thumbnail URL
+let thumbnailUrl: string | undefined;
+let thumbnailAlt = `${data.title} thumbnail`;
+
+if (data.coverImage) {
+  // Use provided cover image
+  thumbnailUrl = data.coverImage.src;
+} else if (data.youtubeId) {
+  // Generate YouTube thumbnail
+  thumbnailUrl = `https://img.youtube.com/vi/${data.youtubeId}/maxresdefault.jpg`;
+  thumbnailAlt = `${data.title} video thumbnail`;
+} else if (data.iaIdentifier) {
+  // Generate Internet Archive thumbnail - use download URL for better quality/sizing
+  thumbnailUrl = `https://archive.org/download/${data.iaIdentifier}/__ia_thumb.jpg`;
+}
+
 // Generate schema.org JSON-LD
 const mediaUrl = new URL(
   `/media/${media.id}`,
@@ -45,27 +61,39 @@ const schemaOrg = generateMediaSchema(
 >
   <script type="application/ld+json" set:html={safeJsonLdString(schemaOrg)} />
 
-  {
-    data.coverImage && (
-      <a href={`/media/${media.id}/`}>
-        <div class="relative aspect-video overflow-hidden">
+  <a href={`/media/${media.id}/`}>
+    <div class="relative aspect-video overflow-hidden bg-gray-900">
+      {
+        thumbnailUrl ? (
           <img
-            src={data.coverImage.src}
-            alt={`${data.title} thumbnail`}
-            class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+            src={thumbnailUrl}
+            alt={thumbnailAlt}
+            class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 min-h-full min-w-full"
             itemprop="thumbnailUrl"
+            loading="lazy"
           />
-          <div class="absolute top-3 right-3">
-            <span
-              class={`px-3 py-1 text-xs font-semibold rounded-full ${getMediaTypeBadgeClasses(data.mediaType)}`}
-            >
-              {data.mediaType}
-            </span>
+        ) : (
+          <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
+            <div class="text-center">
+              <div class="text-6xl mb-2">
+                {data.mediaType === "video" && "🎬"}
+                {data.mediaType === "audio" && "🎵"}
+                {data.mediaType === "interactive" && "✨"}
+              </div>
+              <p class="text-gray-500 text-sm">{data.mediaType}</p>
+            </div>
           </div>
-        </div>
-      </a>
-    )
-  }
+        )
+      }
+      <div class="absolute top-3 right-3">
+        <span
+          class={`px-3 py-1 text-xs font-semibold rounded-full backdrop-blur-sm ${getMediaTypeBadgeClasses(data.mediaType)}`}
+        >
+          {data.mediaType}
+        </span>
+      </div>
+    </div>
+  </a>
 
   <div class="p-6">
     <h3 class="text-xl font-semibold text-blue-300 mb-2" itemprop="name">
