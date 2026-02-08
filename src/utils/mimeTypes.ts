@@ -50,7 +50,13 @@ function getFileExtension(url: string): string {
     const lastDot = url.lastIndexOf(".");
     const lastSlash = url.lastIndexOf("/");
     if (lastDot === -1 || lastDot < lastSlash) return "";
-    return url.slice(lastDot + 1).toLowerCase();
+    let extension = url.slice(lastDot + 1).toLowerCase();
+    // Strip query params and fragments
+    const specialCharIndex = extension.search(/[?#]/);
+    if (specialCharIndex !== -1) {
+      extension = extension.slice(0, specialCharIndex);
+    }
+    return extension;
   }
 }
 
