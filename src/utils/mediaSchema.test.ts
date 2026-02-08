@@ -4,6 +4,7 @@ import {
   getInternetArchiveEmbedUrl,
   getInternetArchiveDetailsUrl,
   getInternetArchiveDownloadUrl,
+  convertDurationToISO8601,
 } from "./mediaSchema";
 import type { CollectionEntry } from "astro:content";
 
@@ -169,7 +170,7 @@ describe("generateMediaSchema", () => {
       "https://example.com/media/test-video"
     );
 
-    expect(schema.duration).toBe("4:32");
+    expect(schema.duration).toBe("PT4M32S");
   });
 
   test("includes video quality for video media with resolution", () => {
@@ -336,5 +337,44 @@ describe("Internet Archive helpers", () => {
     expect(url).toBe(
       "https://archive.org/download/bco-2023-08-03-media-detox/BCO-2023-08-03-MediaDetox.mp4"
     );
+  });
+});
+
+describe("convertDurationToISO8601", () => {
+  test("converts M:SS format to ISO 8601", () => {
+    expect(convertDurationToISO8601("4:42")).toBe("PT4M42S");
+    expect(convertDurationToISO8601("0:30")).toBe("PT30S");
+    expect(convertDurationToISO8601("9:05")).toBe("PT9M5S");
+  });
+
+  test("converts MM:SS format to ISO 8601", () => {
+    expect(convertDurationToISO8601("12:34")).toBe("PT12M34S");
+    expect(convertDurationToISO8601("45:00")).toBe("PT45M");
+    expect(convertDurationToISO8601("00:59")).toBe("PT59S");
+  });
+
+  test("converts H:MM:SS format to ISO 8601", () => {
+    expect(convertDurationToISO8601("1:23:45")).toBe("PT1H23M45S");
+    expect(convertDurationToISO8601("2:00:00")).toBe("PT2H");
+    expect(convertDurationToISO8601("0:05:30")).toBe("PT5M30S");
+    expect(convertDurationToISO8601("3:15:00")).toBe("PT3H15M");
+  });
+
+  test("returns ISO 8601 strings unchanged", () => {
+    expect(convertDurationToISO8601("PT4M42S")).toBe("PT4M42S");
+    expect(convertDurationToISO8601("PT1H23M45S")).toBe("PT1H23M45S");
+    expect(convertDurationToISO8601("PT30S")).toBe("PT30S");
+    expect(convertDurationToISO8601("PT2H")).toBe("PT2H");
+  });
+
+  test("handles edge cases", () => {
+    expect(convertDurationToISO8601("0:00")).toBe("PT0S");
+    expect(convertDurationToISO8601("0:00:00")).toBe("PT0S");
+  });
+
+  test("falls back to original value for invalid formats", () => {
+    expect(convertDurationToISO8601("invalid")).toBe("invalid");
+    expect(convertDurationToISO8601("1:2:3:4")).toBe("1:2:3:4");
+    expect(convertDurationToISO8601("abc:def")).toBe("abc:def");
   });
 });

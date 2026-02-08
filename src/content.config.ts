@@ -150,7 +150,7 @@ const media = defineCollection({
 			mediaType: z.enum(['video', 'audio', 'interactive']),
 			
 			// Media-specific metadata
-			duration: z.string().optional(), // Human-readable format "4:32"
+			duration: z.string().optional(), // Human-readable format "4:32" (converted to ISO 8601 for Schema.org)
 			resolution: z.string().optional(), // e.g., "1920x1080", "4K"
 			
 			// Platform identifiers (optional, at least one should be provided)

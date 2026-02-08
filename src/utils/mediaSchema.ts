@@ -1,6 +1,50 @@
 import type { CollectionEntry } from "astro:content";
 
 /**
+ * Converts human-readable duration formats to ISO 8601 duration strings
+ * Supports formats: "M:SS", "MM:SS", "H:MM:SS"
+ * Examples: "4:42" → "PT4M42S", "1:23:45" → "PT1H23M45S"
+ * Falls back to original value if already ISO 8601 (starts with "PT")
+ */
+export function convertDurationToISO8601(duration: string): string {
+  // If already ISO 8601 format, return as-is
+  if (duration.startsWith("PT")) {
+    return duration;
+  }
+
+  // Split by colon to parse time components
+  const parts = duration.split(":").map((p) => parseInt(p, 10));
+
+  // Handle invalid input
+  if (parts.some(isNaN) || parts.length < 1 || parts.length > 3) {
+    return duration; // Fallback to original
+  }
+
+  let hours = 0;
+  let minutes = 0;
+  let seconds = 0;
+
+  if (parts.length === 3) {
+    // H:MM:SS format
+    [hours, minutes, seconds] = parts;
+  } else if (parts.length === 2) {
+    // M:SS or MM:SS format
+    [minutes, seconds] = parts;
+  } else {
+    // Single number (seconds only)
+    seconds = parts[0];
+  }
+
+  // Build ISO 8601 duration string
+  let iso8601 = "PT";
+  if (hours > 0) iso8601 += `${hours}H`;
+  if (minutes > 0) iso8601 += `${minutes}M`;
+  if (seconds > 0 || (hours === 0 && minutes === 0)) iso8601 += `${seconds}S`;
+
+  return iso8601;
+}
+
+/**
  * Generates Schema.org structured data for media content
  * Returns VideoObject, AudioObject, or CreativeWork based on mediaType
  */
@@ -55,7 +99,7 @@ export function generateMediaSchema(
     }),
     ...(contentUrl && { contentUrl }),
     ...(thumbnailUrl && { thumbnailUrl }),
-    ...(media.data.duration && { duration: media.data.duration }),
+    ...(media.data.duration && { duration: convertDurationToISO8601(media.data.duration) }),
     ...(media.data.keywords && { keywords: media.data.keywords.join(", ") }),
     license: media.data.licenseUrl || `https://creativecommons.org/licenses/by/4.0/`,
   };
