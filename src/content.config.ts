@@ -2,6 +2,12 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { rssSchema } from '@astrojs/rss';
 
+// Supported Creative Commons licenses (SPDX identifiers)
+const CreativeCommonsLicense = z.enum([
+	'CC-BY-4.0',    // Attribution 4.0 International
+	'CC0-1.0',      // Public Domain Dedication
+]);
+
 const blog = defineCollection({
 	// Load Markdown and MDX files in the `src/content/blog/` directory.
 	loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
@@ -42,7 +48,7 @@ const releases = defineCollection({
 			genre: z.array(z.string()).optional(),
 
 			// Creative Commons licensing (SPDX identifier)
-			license: z.string().default('CC-BY-4.0'),
+			license: CreativeCommonsLicense.default('CC-BY-4.0'),
 			licenseUrl: z.string().url().optional(),
 
 			// Optional custom URL slug (defaults to kebab-case title)
@@ -164,9 +170,8 @@ const media = defineCollection({
 			coverImage: image().optional(), // Thumbnail/poster image
 			ogImage: image().optional(), // Custom Open Graph image
 			
-			// Licensing (Creative Commons)
-			license: z.string().default('CC-BY-4.0'),
-			licenseUrl: z.string().url().optional(),
+			// Licensing (Creative Commons SPDX identifier)
+			license: CreativeCommonsLicense.default('CC-BY-4.0'),
 			
 			// Categorization and discovery
 			topics: z.array(z.string()).optional(), // Tags/topics (e.g., ['music', 'modular', 'eurorack'])

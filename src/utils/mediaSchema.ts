@@ -1,4 +1,5 @@
 import type { CollectionEntry } from "astro:content";
+import { buildLicenseUrl } from "./license";
 
 /**
  * Converts human-readable duration formats to ISO 8601 duration strings
@@ -106,7 +107,7 @@ export function generateMediaSchema(
     ...(thumbnailUrl && { thumbnailUrl }),
     ...(media.data.duration && { duration: convertDurationToISO8601(media.data.duration) }),
     ...(media.data.keywords && { keywords: media.data.keywords.join(", ") }),
-    license: media.data.licenseUrl || `https://creativecommons.org/licenses/by/4.0/`,
+    license: buildLicenseUrl(media.data.license),
   };
 
   // Add video-specific fields
