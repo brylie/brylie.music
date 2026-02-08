@@ -4,6 +4,7 @@ import LicenseBadge from "./LicenseBadge.astro";
 import type { CollectionEntry } from "astro:content";
 import { safeJsonLdString } from "../utils/seo";
 import { generateMediaSchema } from "../utils/mediaSchema";
+import { getMediaTypeBadgeClasses } from "../utils/uiHelpers";
 
 interface Props {
   media: CollectionEntry<"media">;
@@ -11,20 +12,6 @@ interface Props {
 
 const { media } = Astro.props;
 const { data } = media;
-
-// Get media type badge colors
-const getMediaTypeBadgeClasses = (mediaType: string) => {
-  switch (mediaType) {
-    case "video":
-      return "bg-purple-500/20 text-purple-300 border border-purple-500/50";
-    case "audio":
-      return "bg-blue-500/20 text-blue-300 border border-blue-500/50";
-    case "interactive":
-      return "bg-green-500/20 text-green-300 border border-green-500/50";
-    default:
-      return "bg-gray-500/20 text-gray-300 border border-gray-500/50";
-  }
-};
 
 // Generate thumbnail URL
 let thumbnailUrl: string | undefined;

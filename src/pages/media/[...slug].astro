@@ -15,6 +15,7 @@ import {
   getInternetArchiveEmbedUrl,
   getInternetArchiveDetailsUrl,
 } from "../../utils/mediaSchema";
+import { getMediaTypeBadgeClasses } from "../../utils/uiHelpers";
 
 export async function getStaticPaths() {
   const media = await getCollection("media");
@@ -28,20 +29,6 @@ type Props = CollectionEntry<"media">;
 
 const media = Astro.props;
 const { Content } = await render(media);
-
-// Get media type badge colors
-const getMediaTypeBadgeClasses = (mediaType: string) => {
-  switch (mediaType) {
-    case "video":
-      return "bg-purple-500/20 text-purple-300 border border-purple-500/50";
-    case "audio":
-      return "bg-blue-500/20 text-blue-300 border border-blue-500/50";
-    case "interactive":
-      return "bg-green-500/20 text-green-300 border border-green-500/50";
-    default:
-      return "bg-gray-500/20 text-gray-300 border border-gray-500/50";
-  }
-};
 
 // Generate structured data
 const mediaUrl = new URL(
