@@ -164,7 +164,7 @@ export function getInternetArchiveDetailsUrl(identifier: string): string {
  */
 export function getInternetArchiveDownloadUrl(identifier: string, filename?: string): string {
   if (filename) {
-    return `https://archive.org/download/${identifier}/${filename}`;
+    return `https://archive.org/download/${identifier}/${encodeURIComponent(filename)}`;
   }
   return `https://archive.org/download/${identifier}`;
 }
