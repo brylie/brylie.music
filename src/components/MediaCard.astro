@@ -41,7 +41,10 @@ const schemaOrg = generateMediaSchema(
 >
   <script type="application/ld+json" set:html={safeJsonLdString(schemaOrg)} />
 
-  <a href={`/media/${media.id}/`}>
+  <a
+    href={`/media/${media.id}/`}
+    aria-label={!thumbnailUrl ? `${data.title} - ${data.mediaType}` : undefined}
+  >
     <div class="relative aspect-video overflow-hidden bg-gray-900">
       {
         thumbnailUrl ? (
