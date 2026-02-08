@@ -1,0 +1,137 @@
+---
+import FormattedDate from "./FormattedDate.astro";
+import LicenseBadge from "./LicenseBadge.astro";
+import type { CollectionEntry } from "astro:content";
+import { safeJsonLdString } from "../utils/seo";
+import {
+  generateMediaSchema,
+  getMediaThumbnailUrl,
+} from "../utils/mediaSchema";
+import { getMediaTypeBadgeClasses } from "../utils/uiHelpers";
+
+interface Props {
+  media: CollectionEntry<"media">;
+}
+
+const { media } = Astro.props;
+const { data } = media;
+
+// Generate thumbnail URL using shared helper
+const thumbnailUrl = getMediaThumbnailUrl(media);
+const thumbnailAlt = data.youtubeId
+  ? `${data.title} video thumbnail`
+  : `${data.title} thumbnail`;
+
+// Generate schema.org JSON-LD
+const mediaUrl = new URL(
+  `/media/${media.id}`,
+  Astro.site || Astro.url.origin,
+).toString();
+const schemaOrg = generateMediaSchema(
+  media,
+  mediaUrl,
+  (Astro.site || Astro.url.origin).toString(),
+);
+---
+
+<article
+  class="bg-gray-800 rounded-lg overflow-hidden hover:shadow-xl transition-shadow"
+  itemscope
+  itemtype={`https://schema.org/${schemaOrg["@type"]}`}
+>
+  <script type="application/ld+json" set:html={safeJsonLdString(schemaOrg)} />
+
+  <a
+    href={`/media/${media.id}/`}
+    aria-label={!thumbnailUrl ? `${data.title} - ${data.mediaType}` : undefined}
+  >
+    <div class="relative aspect-video overflow-hidden bg-gray-900">
+      {
+        thumbnailUrl ? (
+          <img
+            src={thumbnailUrl}
+            alt={thumbnailAlt}
+            class="w-full h-full object-cover hover:scale-105 transition-transform duration-300 min-h-full min-w-full"
+            itemprop="thumbnailUrl"
+            loading="lazy"
+          />
+        ) : (
+          <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
+            <div class="text-center">
+              <div class="text-6xl mb-2">
+                {data.mediaType === "video" && "🎬"}
+                {data.mediaType === "audio" && "🎵"}
+                {data.mediaType === "interactive" && "✨"}
+              </div>
+              <p class="text-gray-500 text-sm">{data.mediaType}</p>
+            </div>
+          </div>
+        )
+      }
+      <div class="absolute top-3 right-3">
+        <span
+          class={`px-3 py-1 text-xs font-semibold rounded-full backdrop-blur-sm ${getMediaTypeBadgeClasses(data.mediaType)}`}
+        >
+          {data.mediaType}
+        </span>
+      </div>
+    </div>
+  </a>
+
+  <div class="p-6">
+    <h3 class="text-xl font-semibold text-blue-300 mb-2" itemprop="name">
+      <a
+        href={`/media/${media.id}/`}
+        class="hover:text-blue-200 transition-colors"
+        itemprop="url"
+      >
+        {data.title}
+      </a>
+    </h3>
+
+    <div class="flex items-center gap-3 text-gray-400 text-sm mb-3">
+      <FormattedDate date={data.datePublished} />
+      {data.duration && <span>• {data.duration}</span>}
+    </div>
+
+    <p class="text-gray-200 mb-4 line-clamp-3" itemprop="description">
+      {data.description}
+    </p>
+
+    {
+      data.topics && data.topics.length > 0 && (
+        <div class="flex flex-wrap gap-2 mb-4">
+          {data.topics.map((topic) => (
+            <span class="text-xs px-2 py-1 bg-gray-700 text-gray-300 rounded">
+              {topic}
+            </span>
+          ))}
+        </div>
+      )
+    }
+
+    <div class="flex items-center justify-between">
+      <LicenseBadge license={data.license} size={18} />
+
+      {
+        data.author && (
+          <span class="text-sm text-gray-400" itemprop="author">
+            {data.author}
+          </span>
+        )
+      }
+    </div>
+  </div>
+
+  <meta itemprop="datePublished" content={data.datePublished.toISOString()} />
+  {
+    data.dateModified && (
+      <meta itemprop="dateModified" content={data.dateModified.toISOString()} />
+    )
+  }
+  {
+    data.keywords && (
+      <meta itemprop="keywords" content={data.keywords.join(", ")} />
+    )
+  }
+</article>

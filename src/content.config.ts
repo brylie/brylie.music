@@ -2,6 +2,12 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { rssSchema } from '@astrojs/rss';
 
+// Supported Creative Commons licenses (SPDX identifiers)
+const CreativeCommonsLicense = z.enum([
+	'CC-BY-4.0',    // Attribution 4.0 International
+	'CC0-1.0',      // Public Domain Dedication
+]);
+
 const blog = defineCollection({
 	// Load Markdown and MDX files in the `src/content/blog/` directory.
 	loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
@@ -42,7 +48,7 @@ const releases = defineCollection({
 			genre: z.array(z.string()).optional(),
 
 			// Creative Commons licensing (SPDX identifier)
-			license: z.string().default('CC-BY-4.0'),
+			license: CreativeCommonsLicense.default('CC-BY-4.0'),
 			licenseUrl: z.string().url().optional(),
 
 			// Optional custom URL slug (defaults to kebab-case title)
@@ -130,4 +136,62 @@ const apps = defineCollection({
 		}),
 });
 
-export const collections = { blog, releases, apps };
+const media = defineCollection({
+	// Load Markdown and MDX files in the `src/content/media/` directory.
+	loader: glob({ 
+		base: './src/content/media', 
+		pattern: '**/*.{md,mdx}'
+	}),
+	// Type-check frontmatter using schema.org aligned fields
+	schema: ({ image }) =>
+		z.object({
+			// Core metadata (schema.org aligned)
+			title: z.string(),
+			description: z.string(),
+			datePublished: z.coerce.date(),
+			dateModified: z.coerce.date().optional(),
+			author: z.string().optional(),
+			
+			// Media type classification
+			mediaType: z.enum(['video', 'audio', 'interactive']),
+			
+			// Media-specific metadata
+			duration: z.string().optional(), // Human-readable format "4:32" (converted to ISO 8601 for Schema.org)
+			resolution: z.string().optional(), // e.g., "1920x1080", "4K"
+			
+			// Platform identifiers (optional, at least one should be provided)
+			youtubeId: z.string().optional(), // YouTube video ID
+			iaIdentifier: z.string().optional(), // Internet Archive identifier
+			videoUrl: z.string().url().optional(), // Direct video URL (self-hosted)
+			audioUrl: z.string().url().optional(), // Direct audio URL
+			mimeType: z.string().optional(), // MIME type for videoUrl/audioUrl (e.g., "video/mp4", "audio/mpeg")
+			
+			// Visual assets
+			coverImage: image().optional(), // Thumbnail/poster image
+			ogImage: image().optional(), // Custom Open Graph image
+			
+			// Licensing (Creative Commons SPDX identifier)
+			license: CreativeCommonsLicense.default('CC-BY-4.0'),
+			
+			// Categorization and discovery
+			topics: z.array(z.string()).optional(), // Tags/topics (e.g., ['music', 'modular', 'eurorack'])
+			keywords: z.array(z.string()).optional(), // SEO keywords
+			
+			// Collaboration
+			collaborators: z.array(z.string()).optional(),
+			
+			// SEO fields
+			canonicalURL: z.string().url().optional(),
+			robots: z.string().optional(),
+		}).refine(
+			data => Boolean(
+				data.youtubeId ||
+				data.iaIdentifier ||
+				data.videoUrl ||
+				data.audioUrl
+			),
+			{ message: 'At least one of youtubeId, iaIdentifier, videoUrl, or audioUrl must be provided' }
+		),
+});
+
+export const collections = { blog, releases, apps, media };

@@ -110,4 +110,51 @@ describe("generateCollectionPageSchema", () => {
     expect(firstItem.name).toBe("Test App");
     expect(firstItem.description).toBe("A test application");
   });
+
+  test("generates media schemas when collectionType is media", () => {
+    const mockMedia: CollectionEntry<"media">[] = [
+      {
+        id: "test-video",
+        collection: "media",
+        data: {
+          title: "Test Video",
+          description: "A test video",
+          datePublished: new Date("2023-08-03"),
+          mediaType: "video",
+          youtubeId: "abc123",
+          license: "CC-BY-4.0",
+        },
+      } as CollectionEntry<"media">,
+    ];
+
+    const schema = generateCollectionPageSchema(
+      "Media Collection",
+      "Test media description",
+      "https://example.com/media",
+      mockBreadcrumbSchema,
+      mockMedia,
+      "https://example.com",
+      "media"
+    );
+
+    expect(schema.mainEntity.numberOfItems).toBe(1);
+    const firstItem = schema.mainEntity.itemListElement[0].item;
+    expect(firstItem["@type"]).toBe("VideoObject");
+    expect(firstItem.name).toBe("Test Video");
+  });
+
+  test("defaults to apps collection type when not specified", () => {
+    const schema = generateCollectionPageSchema(
+      "Test Collection",
+      "Test description",
+      "https://example.com/apps",
+      mockBreadcrumbSchema,
+      mockApps,
+      "https://example.com"
+    );
+
+    const firstItem = schema.mainEntity.itemListElement[0].item;
+    expect(firstItem["@type"]).toBe("SoftwareApplication");
+  });
 });
+

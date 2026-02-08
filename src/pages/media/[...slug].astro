@@ -1,0 +1,287 @@
+---
+import { type CollectionEntry, getCollection, render } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import FormattedDate from "../../components/FormattedDate.astro";
+import LicenseBadge from "../../components/LicenseBadge.astro";
+import { Icon } from "astro-icon/components";
+import { YouTube } from "astro-embed";
+import {
+  generateBreadcrumbSchema,
+  type BreadcrumbItem,
+} from "../../utils/breadcrumbs";
+import {
+  generateMediaSchema,
+  getInternetArchiveEmbedUrl,
+  getInternetArchiveDetailsUrl,
+} from "../../utils/mediaSchema";
+import { getMediaTypeBadgeClasses } from "../../utils/uiHelpers";
+import { getVideoMimeType, getAudioMimeType } from "../../utils/mimeTypes";
+
+export async function getStaticPaths() {
+  const media = await getCollection("media");
+  return media.map((item) => ({
+    params: { slug: item.id },
+    props: item,
+  }));
+}
+
+type Props = CollectionEntry<"media">;
+
+const media = Astro.props;
+const { Content } = await render(media);
+
+// Generate structured data
+const mediaUrl = new URL(
+  `/media/${media.id}`,
+  Astro.site || Astro.url.origin,
+).toString();
+const structuredData = generateMediaSchema(
+  media,
+  mediaUrl,
+  (Astro.site || Astro.url.origin).toString(),
+);
+
+// Breadcrumb data
+const breadcrumbItems: BreadcrumbItem[] = [
+  {
+    name: "Home",
+    href: new URL("/", Astro.site || Astro.url.origin).href,
+  },
+  {
+    name: "Media",
+    href: new URL("/media", Astro.site || Astro.url.origin).href,
+  },
+  {
+    name: media.data.title,
+    href: mediaUrl,
+    current: true,
+  },
+];
+
+const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbItems);
+
+const pageTitle = `${media.data.title} - Media`;
+const pageDescription = media.data.description;
+
+// Compute MIME types for direct media URLs
+const videoMimeType = media.data.videoUrl
+  ? getVideoMimeType(media.data.videoUrl, media.data.mimeType)
+  : undefined;
+const audioMimeType = media.data.audioUrl
+  ? getAudioMimeType(media.data.audioUrl, media.data.mimeType)
+  : undefined;
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  image={media.data.ogImage || media.data.coverImage}
+  structuredData={[structuredData, breadcrumbSchema]}
+>
+  <div class="max-w-4xl mx-auto px-4 py-12">
+    <Breadcrumbs items={breadcrumbItems} />
+
+    <article
+      class="bg-gray-900 rounded-lg shadow-xl p-8"
+      itemscope
+      itemtype={`https://schema.org/${structuredData["@type"]}`}
+    >
+      <header class="mb-8">
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h1
+            class="text-4xl md:text-5xl font-bold text-white flex-grow"
+            itemprop="name"
+          >
+            {media.data.title}
+          </h1>
+          <span
+            class={`px-3 py-1 text-sm font-semibold rounded-full whitespace-nowrap ${getMediaTypeBadgeClasses(media.data.mediaType)}`}
+          >
+            {media.data.mediaType}
+          </span>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-4 text-gray-300 mb-4">
+          <div class="flex items-center gap-2">
+            <Icon name="mdi:calendar" size={20} aria-hidden="true" />
+            <FormattedDate date={media.data.datePublished} />
+          </div>
+
+          {
+            media.data.duration && (
+              <>
+                <span class="text-gray-600" aria-hidden="true">
+                  •
+                </span>
+                <div class="flex items-center gap-2">
+                  <Icon name="mdi:clock-outline" size={20} aria-hidden="true" />
+                  <span>{media.data.duration}</span>
+                </div>
+              </>
+            )
+          }
+
+          {
+            media.data.author && (
+              <>
+                <span class="text-gray-600" aria-hidden="true">
+                  •
+                </span>
+                <div class="flex items-center gap-2">
+                  <Icon name="mdi:account" size={20} aria-hidden="true" />
+                  <span itemprop="author">{media.data.author}</span>
+                </div>
+              </>
+            )
+          }
+        </div>
+
+        <div class="mb-6">
+          <LicenseBadge license={media.data.license} size={24} />
+        </div>
+
+        {
+          media.data.topics && media.data.topics.length > 0 && (
+            <div class="flex flex-wrap gap-2 mb-6">
+              {media.data.topics.map((topic) => (
+                <span class="bg-gray-800 text-blue-300 px-3 py-1 rounded-full text-sm">
+                  {topic}
+                </span>
+              ))}
+            </div>
+          )
+        }
+      </header>
+
+      <!-- Embedded Media -->
+      {
+        media.data.youtubeId && (
+          <div class="mb-8">
+            <div class="aspect-video rounded-lg overflow-hidden">
+              <YouTube id={media.data.youtubeId} />
+            </div>
+          </div>
+        )
+      }
+
+      {
+        media.data.iaIdentifier && !media.data.youtubeId && (
+          <div class="mb-8">
+            <div class="aspect-video rounded-lg overflow-hidden bg-black">
+              <iframe
+                src={getInternetArchiveEmbedUrl(media.data.iaIdentifier)}
+                class="w-full h-full"
+                allowfullscreen
+                sandbox="allow-scripts allow-same-origin"
+                title={media.data.title}
+              />
+            </div>
+            <div class="mt-2 text-right">
+              <a
+                href={getInternetArchiveDetailsUrl(media.data.iaIdentifier)}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-sm text-blue-400 hover:text-blue-300 inline-flex items-center gap-1"
+              >
+                View on Internet Archive
+                <Icon name="mdi:open-in-new" size={16} aria-hidden="true" />
+              </a>
+            </div>
+          </div>
+        )
+      }
+
+      {
+        media.data.videoUrl &&
+          !media.data.youtubeId &&
+          !media.data.iaIdentifier && (
+            <div class="mb-8">
+              <div class="aspect-video rounded-lg overflow-hidden bg-black">
+                <video controls class="w-full h-full" preload="metadata">
+                  <source src={media.data.videoUrl} type={videoMimeType} />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+          )
+      }
+
+      {
+        media.data.audioUrl &&
+          !media.data.youtubeId &&
+          !media.data.iaIdentifier &&
+          !media.data.videoUrl && (
+            <div class="mb-8">
+              <div class="bg-gray-800 rounded-lg p-4">
+                <audio controls class="w-full" preload="metadata">
+                  <source src={media.data.audioUrl} type={audioMimeType} />
+                  Your browser does not support the audio tag.
+                </audio>
+              </div>
+            </div>
+          )
+      }
+
+      {
+        media.data.coverImage &&
+          !media.data.youtubeId &&
+          !media.data.iaIdentifier &&
+          !media.data.videoUrl &&
+          !media.data.audioUrl && (
+            <div class="mb-8">
+              <img
+                src={media.data.coverImage.src}
+                alt={`${media.data.title} image`}
+                class="w-full max-w-2xl mx-auto rounded-lg shadow-lg"
+                itemprop="thumbnailUrl"
+              />
+            </div>
+          )
+      }
+
+      <!-- Content -->
+      <div
+        class="prose prose-invert prose-lg max-w-none mb-8"
+        itemprop="description"
+      >
+        <Content />
+      </div>
+
+      <!-- Collaborators -->
+      {
+        media.data.collaborators && media.data.collaborators.length > 0 && (
+          <div class="mt-8 pt-8 border-t border-gray-800">
+            <h2 class="text-xl font-semibold text-white mb-4">Collaborators</h2>
+            <div class="flex flex-wrap gap-3">
+              {media.data.collaborators.map((collaborator) => (
+                <span class="bg-gray-800 text-gray-300 px-4 py-2 rounded-lg">
+                  {collaborator}
+                </span>
+              ))}
+            </div>
+          </div>
+        )
+      }
+
+      <!-- Metadata -->
+      <meta
+        itemprop="datePublished"
+        content={media.data.datePublished.toISOString()}
+      />
+      {
+        media.data.dateModified && (
+          <meta
+            itemprop="dateModified"
+            content={media.data.dateModified.toISOString()}
+          />
+        )
+      }
+      {
+        media.data.keywords && (
+          <meta itemprop="keywords" content={media.data.keywords.join(", ")} />
+        )
+      }
+    </article>
+  </div>
+</Layout>
