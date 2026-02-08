@@ -158,6 +158,7 @@ const media = defineCollection({
 			iaIdentifier: z.string().optional(), // Internet Archive identifier
 			videoUrl: z.string().url().optional(), // Direct video URL (self-hosted)
 			audioUrl: z.string().url().optional(), // Direct audio URL
+			mimeType: z.string().optional(), // MIME type for videoUrl/audioUrl (e.g., "video/mp4", "audio/mpeg")
 			
 			// Visual assets
 			coverImage: image().optional(), // Thumbnail/poster image
