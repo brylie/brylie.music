@@ -52,7 +52,7 @@ export function generateMediaSchema(
   media: CollectionEntry<"media">,
   mediaUrl: string,
   siteUrl?: string
-) {
+): Record<string, unknown> {
   // Determine the appropriate schema.org type
   const schemaType =
     media.data.mediaType === "video"
@@ -86,7 +86,7 @@ export function generateMediaSchema(
   }
 
   // Build base schema
-  const baseSchema: Record<string, any> = {
+  const baseSchema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": schemaType,
     name: media.data.title,
