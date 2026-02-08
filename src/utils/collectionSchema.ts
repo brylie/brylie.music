@@ -15,7 +15,25 @@ export function generateCollectionPageSchema(
   pageTitle: string,
   description: string,
   url: string,
-  breadcrumbSchema: object,
+  breadcrumbSchema: Record<string, unknown>,
+  items: CollectionEntry<"apps">[],
+  siteUrl: string,
+  collectionType: "apps",
+): Record<string, unknown>;
+export function generateCollectionPageSchema(
+  pageTitle: string,
+  description: string,
+  url: string,
+  breadcrumbSchema: Record<string, unknown>,
+  items: CollectionEntry<"media">[],
+  siteUrl: string,
+  collectionType: "media",
+): Record<string, unknown>;
+export function generateCollectionPageSchema(
+  pageTitle: string,
+  description: string,
+  url: string,
+  breadcrumbSchema: Record<string, unknown>,
   items: CollectionEntry<"apps">[] | CollectionEntry<"media">[],
   siteUrl: string,
   collectionType: SupportedCollection = "apps"
