@@ -1,104 +1,81 @@
 # Brylie.music
 
-Personal music website for Brylie Christopher featuring music releases, blog posts, and interactive musical applications.
+Personal music website featuring original music releases, blog posts about music and technology, and interactive musical applications.
 
 ## Features
 
-- ✅ Music releases with Creative Commons licensing
-- ✅ Blog posts about music and technology
-- ✅ Interactive musical apps built with web standards
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap and RSS feed support
-- ✅ Dark theme optimized design
-- ✅ Responsive mobile-first layout
+- 🎵 Music releases with Creative Commons licensing
+- ✍️ Blog posts exploring music theory and technology
+- 🎹 Interactive musical apps (BPM calculators, scale explorers, and more)
+- 🚀 100/100 Lighthouse performance score
+- 🌙 Dark theme optimized design
+- 📱 Responsive mobile-first layout
+- 🔍 SEO-friendly with structured metadata
 
-## 🚀 Project Structure
+## Content
 
-Inside of your Astro project, you'll see the following folders and files:
+### Music Releases
 
-```text
-├── public/              # Static assets (images, CNAME, etc.)
-├── src/
-│   ├── components/      # Reusable Astro and Svelte components
-│   │   └── apps/        # Interactive Svelte app components
-│   ├── content/         # Content collections (type-safe markdown)
-│   │   ├── blog/        # Blog posts
-│   │   ├── releases/    # Music releases
-│   │   └── apps/        # Musical apps metadata
-│   ├── layouts/         # Page layouts
-│   ├── pages/           # File-based routing
-│   │   ├── apps/        # Musical apps section
-│   │   ├── blog/        # Blog section
-│   │   └── releases/    # Releases section
-│   ├── styles/          # Global styles
-│   └── utils/           # Utility functions (with tests)
-├── astro.config.mjs     # Astro configuration
-├── tailwind.config.js   # Tailwind CSS configuration
-├── vitest.config.ts     # Vitest test configuration
-└── tsconfig.json        # TypeScript configuration
-```
+Original compositions and albums available under Creative Commons licensing. Each release includes streaming links, album artwork, and detailed track information.
 
-## Musical Apps
+### Blog
 
-This site features interactive musical applications built with web standards (Svelte + TypeScript). Apps range from simple utilities like BPM calculators to more sophisticated tools for learning and creative music production.
+Articles exploring the intersection of music and technology, including music theory concepts, production techniques, and creative coding approaches.
 
-**Current apps:**
+### Musical Apps
+
+Interactive web applications built for musicians and music learners:
+
 - **BPM Calculator**: Convert tempo to millisecond durations for musical subdivisions
+- **Scale Explorer** _(planned)_: Interactive reference for scales and modes
+- **PianoFitness** _(planned)_: Gamified piano learning tool
+- **Music-Reactive Animations** _(planned)_: Creative visualization toolkit
 
-**Planned apps:**
-- PianoFitness: Gamified piano learning tool
-- Music-Reactive Animations: Creative visualization toolkit
-- Scale Explorer: Interactive scale and mode reference
-
-For details on app architecture, testing, and how to add new apps, see [src/content/APPS_README.md](src/content/APPS_README.md).
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command           | Action                                       |
-| :---------------- | :------------------------------------------- |
-| `npm install`     | Installs dependencies                        |
-| `npm run dev`     | Starts local dev server at `localhost:4321`  |
-| `npm run build`   | Build your production site to `./dist/`      |
-| `npm run preview` | Preview your build locally, before deploying |
+For technical details on app architecture, see [src/content/APPS_README.md](src/content/APPS_README.md).
 
 ## Technology Stack
 
-- **Astro**: Static site generation with content collections
-- **Svelte 5**: Interactive UI components
-- **TypeScript**: Type-safe development
-- **Tailwind CSS**: Utility-first styling
-- **Vitest**: Fast unit testing
-- **MDX**: Enhanced markdown with components
+Built with modern web technologies:
+- **Astro** for static site generation
+- **Svelte 5** for interactive components
+- **TypeScript** for type safety
+- **Tailwind CSS** for styling
+- **Vitest** for testing
 
-## 👀 Want to learn more?
+## Development
 
-- [Astro Documentation](https://docs.astro.build)
-- [Svelte 5 Documentation](https://svelte.dev/docs)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Vitest](https://vitest.dev/)
+### Setup
+
+```bash
+npm install
+```
+
+### Commands
+
+| Command           | Action                                     |
+| :---------------- | :----------------------------------------- |
+| `npm run dev`     | Start local dev server at `localhost:4321` |
+| `npm run build`   | Build production site to `./dist/`         |
+| `npm run preview` | Preview build locally before deploying     |
+| `npm run test`    | Run unit tests with Vitest                 |
+| `npm run test:ui` | Run tests with interactive UI              |
+
+### Project Structure
+
+```text
+src/
+├── components/       # Reusable UI components
+│   └── apps/        # Interactive Svelte components
+├── content/         # Content collections (blog, releases, apps)
+├── layouts/         # Page templates
+├── pages/           # File-based routing
+├── styles/          # Global styles
+└── utils/           # Utility functions with tests
+```
+
+For detailed coding conventions and guidelines, see [AGENTS.md](AGENTS.md).
 
 ## License
 
-Content and code are licensed under different terms:
-- **Music & Content**: Creative Commons (CC-BY-4.0)
-- **Source Code**: See LICENSE file
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-
-## Credit
-
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+- **Content** (music, blog posts, images): [Creative Commons CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/)
+- **Source Code**: See [LICENSE](LICENSE) file
