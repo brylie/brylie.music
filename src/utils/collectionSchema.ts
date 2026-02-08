@@ -1,16 +1,24 @@
 import type { CollectionEntry } from "astro:content";
 import { generateAppSchema } from "./appSchema";
+import { generateMediaSchema } from "./mediaSchema";
 
 /**
- * Generates Schema.org CollectionPage structured data for a collection of apps
+ * Type for supported collection types
+ */
+type SupportedCollection = "apps" | "media";
+
+/**
+ * Generates Schema.org CollectionPage structured data for a collection
+ * Supports multiple collection types (apps, media)
  */
 export function generateCollectionPageSchema(
   pageTitle: string,
   description: string,
   url: string,
   breadcrumbSchema: object,
-  apps: CollectionEntry<"apps">[],
-  siteUrl: string
+  items: CollectionEntry<"apps">[] | CollectionEntry<"media">[],
+  siteUrl: string,
+  collectionType: SupportedCollection = "apps"
 ) {
   return {
     "@context": "https://schema.org",
@@ -21,17 +29,32 @@ export function generateCollectionPageSchema(
     breadcrumb: breadcrumbSchema,
     mainEntity: {
       "@type": "ItemList",
-      numberOfItems: apps.length,
-      itemListElement: apps.map((app, index) => {
-        // Remove redundant @context from nested schema
-        const { '@context': _, ...appSchema } = generateAppSchema(
-          app,
-          new URL(`/apps/${app.id}`, siteUrl).href
-        );
+      numberOfItems: items.length,
+      itemListElement: items.map((item, index) => {
+        let itemSchema: any;
+        
+        // Generate appropriate schema based on collection type
+        if (collectionType === "apps") {
+          const app = item as CollectionEntry<"apps">;
+          const { '@context': _, ...appSchema } = generateAppSchema(
+            app,
+            new URL(`/apps/${app.id}`, siteUrl).href
+          );
+          itemSchema = appSchema;
+        } else if (collectionType === "media") {
+          const media = item as CollectionEntry<"media">;
+          const { '@context': _, ...mediaSchema } = generateMediaSchema(
+            media,
+            new URL(`/media/${media.id}`, siteUrl).href,
+            siteUrl
+          );
+          itemSchema = mediaSchema;
+        }
+        
         return {
           "@type": "ListItem",
           position: index + 1,
-          item: appSchema,
+          item: itemSchema,
         };
       }),
     },

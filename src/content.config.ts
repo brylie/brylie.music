@@ -130,4 +130,54 @@ const apps = defineCollection({
 		}),
 });
 
-export const collections = { blog, releases, apps };
+const media = defineCollection({
+	// Load Markdown and MDX files in the `src/content/media/` directory.
+	loader: glob({ 
+		base: './src/content/media', 
+		pattern: '**/*.{md,mdx}'
+	}),
+	// Type-check frontmatter using schema.org aligned fields
+	schema: ({ image }) =>
+		z.object({
+			// Core metadata (schema.org aligned)
+			title: z.string(),
+			description: z.string(),
+			datePublished: z.coerce.date(),
+			dateModified: z.coerce.date().optional(),
+			author: z.string().optional(),
+			
+			// Media type classification
+			mediaType: z.enum(['video', 'audio', 'interactive']),
+			
+			// Media-specific metadata
+			duration: z.string().optional(), // Human-readable format "4:32"
+			resolution: z.string().optional(), // e.g., "1920x1080", "4K"
+			
+			// Platform identifiers (optional, at least one should be provided)
+			youtubeId: z.string().optional(), // YouTube video ID
+			iaIdentifier: z.string().optional(), // Internet Archive identifier
+			videoUrl: z.string().url().optional(), // Direct video URL (self-hosted)
+			audioUrl: z.string().url().optional(), // Direct audio URL
+			
+			// Visual assets
+			coverImage: image().optional(), // Thumbnail/poster image
+			ogImage: image().optional(), // Custom Open Graph image
+			
+			// Licensing (Creative Commons)
+			license: z.string().default('CC-BY-4.0'),
+			licenseUrl: z.string().url().optional(),
+			
+			// Categorization and discovery
+			topics: z.array(z.string()).optional(), // Tags/topics (e.g., ['music', 'modular', 'eurorack'])
+			keywords: z.array(z.string()).optional(), // SEO keywords
+			
+			// Collaboration
+			collaborators: z.array(z.string()).optional(),
+			
+			// SEO fields
+			canonicalURL: z.string().url().optional(),
+			robots: z.string().optional(),
+		}),
+});
+
+export const collections = { blog, releases, apps, media };
