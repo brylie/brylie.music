@@ -3,7 +3,10 @@ import FormattedDate from "./FormattedDate.astro";
 import LicenseBadge from "./LicenseBadge.astro";
 import type { CollectionEntry } from "astro:content";
 import { safeJsonLdString } from "../utils/seo";
-import { generateMediaSchema } from "../utils/mediaSchema";
+import {
+  generateMediaSchema,
+  getMediaThumbnailUrl,
+} from "../utils/mediaSchema";
 import { getMediaTypeBadgeClasses } from "../utils/uiHelpers";
 
 interface Props {
@@ -13,21 +16,11 @@ interface Props {
 const { media } = Astro.props;
 const { data } = media;
 
-// Generate thumbnail URL
-let thumbnailUrl: string | undefined;
-let thumbnailAlt = `${data.title} thumbnail`;
-
-if (data.coverImage) {
-  // Use provided cover image
-  thumbnailUrl = data.coverImage.src;
-} else if (data.youtubeId) {
-  // Generate YouTube thumbnail
-  thumbnailUrl = `https://img.youtube.com/vi/${data.youtubeId}/maxresdefault.jpg`;
-  thumbnailAlt = `${data.title} video thumbnail`;
-} else if (data.iaIdentifier) {
-  // Generate Internet Archive thumbnail - use download URL for better quality/sizing
-  thumbnailUrl = `https://archive.org/download/${data.iaIdentifier}/__ia_thumb.jpg`;
-}
+// Generate thumbnail URL using shared helper
+const thumbnailUrl = getMediaThumbnailUrl(media);
+const thumbnailAlt = data.youtubeId
+  ? `${data.title} video thumbnail`
+  : `${data.title} thumbnail`;
 
 // Generate schema.org JSON-LD
 const mediaUrl = new URL(

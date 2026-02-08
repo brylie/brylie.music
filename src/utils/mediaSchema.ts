@@ -46,6 +46,29 @@ export function convertDurationToISO8601(duration: string): string {
 }
 
 /**
+ * Derives the thumbnail URL for a media entry
+ * @param media - The media collection entry
+ * @param siteUrl - Optional site URL for resolving relative paths
+ * @returns The thumbnail URL or undefined if no thumbnail is available
+ */
+export function getMediaThumbnailUrl(
+  media: CollectionEntry<"media">,
+  siteUrl?: string
+): string | undefined {
+  if (media.data.coverImage) {
+    return siteUrl
+      ? new URL(media.data.coverImage.src, siteUrl).toString()
+      : media.data.coverImage.src;
+  } else if (media.data.youtubeId) {
+    // Use hqdefault.jpg as it's available for all YouTube videos
+    return `https://img.youtube.com/vi/${media.data.youtubeId}/hqdefault.jpg`;
+  } else if (media.data.iaIdentifier) {
+    return `https://archive.org/download/${media.data.iaIdentifier}/__ia_thumb.jpg`;
+  }
+  return undefined;
+}
+
+/**
  * Generates Schema.org structured data for media content
  * Returns VideoObject, AudioObject, or CreativeWork based on mediaType
  */
@@ -74,17 +97,8 @@ export function generateMediaSchema(
     contentUrl = media.data.audioUrl;
   }
 
-  // Build thumbnail URL
-  let thumbnailUrl: string | undefined;
-  if (media.data.coverImage) {
-    thumbnailUrl = siteUrl
-      ? new URL(media.data.coverImage.src, siteUrl).toString()
-      : media.data.coverImage.src;
-  } else if (media.data.youtubeId) {
-    thumbnailUrl = `https://img.youtube.com/vi/${media.data.youtubeId}/hqdefault.jpg`;
-  } else if (media.data.iaIdentifier) {
-    thumbnailUrl = `https://archive.org/download/${media.data.iaIdentifier}/__ia_thumb.jpg`;
-  }
+  // Build thumbnail URL using shared helper
+  const thumbnailUrl = getMediaThumbnailUrl(media, siteUrl);
 
   // Build base schema
   const baseSchema: Record<string, unknown> = {
