@@ -16,7 +16,7 @@ export interface Props {
   author?: string;
   datePublished?: Date;
   dateModified?: Date;
-  structuredData?: object;
+  structuredData?: object | object[];
 }
 
 const {
@@ -50,12 +50,20 @@ const {
       dateModified={dateModified}
     />
     {
-      structuredData && (
-        <script
-          type="application/ld+json"
-          set:html={safeJsonLdString(structuredData)}
-        />
-      )
+      structuredData &&
+        (Array.isArray(structuredData) ? (
+          structuredData.map((data) => (
+            <script
+              type="application/ld+json"
+              set:html={safeJsonLdString(data)}
+            />
+          ))
+        ) : (
+          <script
+            type="application/ld+json"
+            set:html={safeJsonLdString(structuredData)}
+          />
+        ))
     }
   </head>
   <body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col">

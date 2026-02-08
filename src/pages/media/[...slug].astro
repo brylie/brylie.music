@@ -68,7 +68,7 @@ const pageDescription = media.data.description;
   title={pageTitle}
   description={pageDescription}
   image={media.data.ogImage || media.data.coverImage}
-  structuredData={{ ...structuredData, breadcrumb: breadcrumbSchema }}
+  structuredData={[structuredData, breadcrumbSchema]}
 >
   <div class="max-w-4xl mx-auto px-4 py-12">
     <Breadcrumbs items={breadcrumbItems} />
