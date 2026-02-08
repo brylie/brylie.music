@@ -37,7 +37,7 @@ export function generateCollectionPageSchema(
   items: CollectionEntry<"apps">[] | CollectionEntry<"media">[],
   siteUrl: string,
   collectionType: SupportedCollection = "apps"
-) {
+): Record<string, unknown> {
   return {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
