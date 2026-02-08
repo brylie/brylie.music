@@ -31,7 +31,7 @@ export function generateCollectionPageSchema(
       "@type": "ItemList",
       numberOfItems: items.length,
       itemListElement: items.map((item, index) => {
-        let itemSchema: any;
+        let itemSchema: Record<string, unknown>;
         
         // Generate appropriate schema based on collection type
         if (collectionType === "apps") {
@@ -49,6 +49,9 @@ export function generateCollectionPageSchema(
             siteUrl
           );
           itemSchema = mediaSchema;
+        } else {
+          // Exhaustive check: should never be reached
+          throw new Error(`Unsupported collection type: ${collectionType satisfies never}`);
         }
         
         return {
