@@ -170,6 +170,14 @@ describe('shouldRenderFoam', () => {
     const result = shouldRenderFoam(10, -50, 0.5);
     expect(typeof result).toBe('boolean');
   });
+  
+  test('handles zero amplitude without division by zero', () => {
+    // Edge case: amplitude = 0 (e.g., during silence in audio-reactive mode)
+    // Should return false without producing NaN
+    const result = shouldRenderFoam(10, 0, 0.5);
+    expect(result).toBe(false);
+    expect(isNaN(result as any)).toBe(false);
+  });
 });
 
 describe('getWaveLayerColor', () => {

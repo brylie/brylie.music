@@ -213,6 +213,11 @@ export function shouldRenderFoam(
   amplitude: number,
   threshold: number
 ): boolean {
+  // Guard against zero or negative amplitude to prevent division by zero
+  if (amplitude <= 0) {
+    return false;
+  }
+  
   // Normalize wave height to 0-1 range
   const normalizedHeight = (waveHeight + amplitude) / (AMPLITUDE_RANGE_MULTIPLIER * amplitude);
   
