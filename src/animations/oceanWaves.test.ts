@@ -67,16 +67,16 @@ describe('calculateWavePoint', () => {
   });
   
   test('depth affects wave height due to perspective', () => {
-    // Use same x value but different z (depth) to isolate perspective effect
+    // Use constant noise to isolate perspective effect
+    const constantNoise = (): number => 0.75; // Returns constant value
+    
+    // Use same x and time but different z (depth) to isolate perspective effect
     const xPos = 5;
-    const nearWave = calculateWavePoint(xPos, 0, 0, DEFAULT_OCEAN_CONFIG, mockNoise);
-    const farWave = calculateWavePoint(xPos, 4, 0, DEFAULT_OCEAN_CONFIG, mockNoise);
+    const nearWave = calculateWavePoint(xPos, 0, 0, DEFAULT_OCEAN_CONFIG, constantNoise);
+    const farWave = calculateWavePoint(xPos, 1, 0, DEFAULT_OCEAN_CONFIG, constantNoise);
     
     // Farther waves should have smaller amplitude due to perspective
-    // The perspective factor should reduce the amplitude
-    const nearScale = 1 - (0 * DEFAULT_OCEAN_CONFIG.perspective);
-    const farScale = 1 - (4 * DEFAULT_OCEAN_CONFIG.perspective);
-    expect(farScale).toBeLessThan(nearScale);
+    expect(Math.abs(farWave)).toBeLessThan(Math.abs(nearWave));
   });
   
   test('time parameter affects output', () => {
