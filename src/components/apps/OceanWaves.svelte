@@ -186,19 +186,21 @@
       function createSkyGradient(p: p5, w: number, h: number) {
         skyGradientBuffer = p.createGraphics(w, h);
 
+        // Create colors once outside the loop
+        const c1 = skyGradientBuffer.color(
+          SKY_TOP_COLOR.r,
+          SKY_TOP_COLOR.g,
+          SKY_TOP_COLOR.b,
+        );
+        const c2 = skyGradientBuffer.color(
+          SKY_HORIZON_COLOR.r,
+          SKY_HORIZON_COLOR.g,
+          SKY_HORIZON_COLOR.b,
+        );
+
         // Draw gradient to buffer
         for (let y = 0; y < h; y++) {
           const inter = y / h;
-          const c1 = skyGradientBuffer.color(
-            SKY_TOP_COLOR.r,
-            SKY_TOP_COLOR.g,
-            SKY_TOP_COLOR.b,
-          );
-          const c2 = skyGradientBuffer.color(
-            SKY_HORIZON_COLOR.r,
-            SKY_HORIZON_COLOR.g,
-            SKY_HORIZON_COLOR.b,
-          );
           const c = skyGradientBuffer.lerpColor(c1, c2, inter);
           skyGradientBuffer.fill(c);
           skyGradientBuffer.noStroke();
@@ -453,7 +455,9 @@
       aria-label={isPlaying ? "Pause animation" : "Play animation"}
     >
       <span aria-hidden="true">{isPlaying ? "⏸︎" : "▶︎"}</span>
-      <span class="text-sm font-medium max-sm:sr-only">{isPlaying ? "Pause" : "Play"}</span>
+      <span class="text-sm font-medium max-sm:sr-only"
+        >{isPlaying ? "Pause" : "Play"}</span
+      >
     </button>
 
     {#if audioUrl}
@@ -464,7 +468,9 @@
         disabled={!audioLoaded}
       >
         <span aria-hidden="true">{audioIsPlaying ? "🔊" : "🔇"}</span>
-        <span class="text-sm font-medium max-sm:sr-only">{audioIsPlaying ? "Audio" : "Audio"}</span>
+        <span class="text-sm font-medium max-sm:sr-only"
+          >{audioIsPlaying ? "Audio" : "Audio"}</span
+        >
       </button>
     {/if}
   </div>
