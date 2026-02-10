@@ -108,8 +108,14 @@
       audioElement.pause();
       audioIsPlaying = false;
     } else {
-      await audioElement.play();
-      audioIsPlaying = true;
+      try {
+        await audioElement.play();
+        audioIsPlaying = true;
+      } catch (error) {
+        // Handle autoplay rejection (browser policy) or other playback errors
+        console.error("Audio playback failed:", error);
+        audioIsPlaying = false;
+      }
     }
   }
 
