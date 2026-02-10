@@ -27,11 +27,11 @@
   const SKY_TOP_COLOR = { r: 15, g: 20, b: 40 }; // Dark blue at top
   const SKY_HORIZON_COLOR = { r: 60, g: 100, b: 140 }; // Lighter blue at horizon
 
-  // Wave layer positioning
+  // Wave layer positioning (proportional to canvas size)
   const LAYER_DEPTH_START = -200; // Starting z position for farthest layer
   const LAYER_DEPTH_SPACING = 100; // Z-distance between layers
-  const LAYER_VERTICAL_OFFSET = 200; // Base vertical offset from center
-  const VERTICAL_LAYER_SPACING = 200; // Vertical spacing between wave layers
+  const VIEWER_ALTITUDE = 0.8; // Horizon altitude (0 = top of canvas, 1 = bottom, 0.8 = bottom 1/5th)
+  const WAVE_EXTENT = 0.15; // Vertical span of wave layers (proportion of height)
 
   // Wave rendering quality
   const WAVE_RESOLUTION = 120; // Number of points per wave (higher = smoother)
@@ -319,10 +319,11 @@
 
       // Calculate z position (depth)
       const zPos = LAYER_DEPTH_START + layer * LAYER_DEPTH_SPACING;
-      const yOffset =
-        h / 2 -
-        LAYER_VERTICAL_OFFSET +
-        (layer * VERTICAL_LAYER_SPACING) / layers;
+
+      // Position waves based on viewer altitude
+      // VIEWER_ALTITUDE controls horizon line position (0=top, 1=bottom)
+      // Farthest layer at horizon, nearest layer extends downward by WAVE_EXTENT
+      const yOffset = h * VIEWER_ALTITUDE + (layer * h * WAVE_EXTENT) / layers;
 
       // Get color for this layer
       const layerColor = getWaveLayerColor(layer, layers);
