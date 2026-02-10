@@ -24,7 +24,7 @@ keywords:
 
 import OceanWaves from '../../components/apps/OceanWaves.svelte';
 
-<OceanWaves client:load height={600} />
+<OceanWaves client:load height={600} audioUrl="https://ia600901.us.archive.org/19/items/brylie-christopher-spectra/BrylieChristopher-Spectra-OceanWaves.mp3" />
 
 ## About This Piece
 
@@ -46,13 +46,20 @@ White foam appears dynamically on wave crests that exceed a certain height thres
 ### Atmospheric Perspective
 Colors transition from darker blue-green in the foreground to lighter gray-blue in the background, mimicking how distant objects appear hazier in nature due to atmospheric scattering.
 
-## Future Enhancements
+### Audio Reactivity
 
-A planned enhancement will decompose the audio track into frequency bands, mapping them spatially across the wave surface. Low frequencies will influence waves in the foreground, while higher frequencies affect waves receding into the distance. This will create a truly audio-reactive visualization where the ocean literally moves to the music.
+The visualization uses the Web Audio API to perform real-time FFT (Fast Fourier Transform) analysis of the audio track. The frequency spectrum is divided into three bands that map spatially across the wave surface:
+
+- **Low Frequencies (20-250 Hz)**: Bass and sub-bass frequencies control the **foreground waves** (layers 0-1), creating powerful swells that mirror the deep rhythms
+- **Mid Frequencies (250-4000 Hz)**: Melodic content influences the **middle waves** (layers 2-3), responding to harmonic movement
+- **High Frequencies (4000-20000 Hz)**: Treble and high harmonics affect the **distant waves** (layers 4+), adding subtle shimmer to the horizon
+
+Each wave layer's amplitude is dynamically adjusted based on the energy in its corresponding frequency band, creating a truly responsive audiovisual experience where the ocean moves with the music.
 
 ## Controls
 
-- **Play/Pause Button**: Control the wave animation independently of audio playback
+- **Play/Pause Animation**: Control the wave animation independently of audio playback
+- **Audio Toggle**: Enable/disable audio playback with synchronized frequency analysis
 - The visualization will continue to animate even when audio is paused, allowing you to enjoy the visual meditation on its own
 
 ## Creative Process

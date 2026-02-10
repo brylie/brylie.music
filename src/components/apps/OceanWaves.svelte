@@ -13,10 +13,10 @@
   interface Props {
     width?: number;
     height?: number;
-    audioElement?: HTMLAudioElement;
+    audioUrl?: string;
   }
 
-  let { width = 800, height = 600, audioElement = undefined }: Props = $props();
+  let { width = 800, height = 600, audioUrl = undefined }: Props = $props();
 
   // ============================================================================
   // RENDERING CONSTANTS
@@ -66,6 +66,33 @@
   let p5Instance = $state<p5 | null>(null);
   let isPlaying = $state(true);
   let time = $state(0);
+  let audioIsPlaying = $state(false);
+  let audioLoaded = $state(false);
+
+  // Web Audio API variables
+  let audioContext: AudioContext | null = null;
+  let analyser: AnalyserNode | null = null;
+  let audioElement: HTMLAudioElement | null = null;
+  let audioSource: MediaElementAudioSourceNode | null = null;
+  let dataArray: Uint8Array | null = null;
+
+  // Frequency band energy levels (0-255)
+  let lowEnergy = $state(0);
+  let midEnergy = $state(0);
+  let highEnergy = $state(0);
+
+  // FFT frequency band ranges (in Hz)
+  const FFT_SIZE = 2048;
+  const SAMPLE_RATE = 44100;
+  const LOW_FREQ_MIN = 20;
+  const LOW_FREQ_MAX = 250; // Bass frequencies
+  const MID_FREQ_MIN = 250;
+  const MID_FREQ_MAX = 4000; // Mid frequencies
+  const HIGH_FREQ_MIN = 4000;
+  const HIGH_FREQ_MAX = 20000; // High frequencies
+
+  // Audio reactivity parameters
+  const AMPLITUDE_SCALE_FACTOR = 0.002; // How much energy affects amplitude
 
   // Wave configuration with reactive state
   let waveConfig = $state<OceanWaveConfig>({ ...DEFAULT_OCEAN_CONFIG });
@@ -75,8 +102,77 @@
     isPlaying = !isPlaying;
   }
 
+  // Audio controls
+  async function toggleAudio() {
+    if (!audioElement || !audioLoaded) return;
+
+    // Initialize AudioContext on first user interaction
+    if (!audioContext) {
+      audioContext = new AudioContext();
+      analyser = audioContext.createAnalyser();
+      analyser.fftSize = FFT_SIZE;
+      analyser.smoothingTimeConstant = 0.8;
+
+      // Create source from audio element
+      audioSource = audioContext.createMediaElementSource(audioElement);
+      audioSource.connect(analyser);
+      analyser.connect(audioContext.destination);
+
+      // Create data array for frequency analysis
+      dataArray = new Uint8Array(analyser.frequencyBinCount);
+    }
+
+    if (audioIsPlaying) {
+      audioElement.pause();
+      audioIsPlaying = false;
+    } else {
+      await audioElement.play();
+      audioIsPlaying = true;
+    }
+  }
+
+  // Calculate average energy in a frequency range
+  function getEnergyInRange(minFreq: number, maxFreq: number): number {
+    if (!analyser || !dataArray) return 0;
+
+    // Get frequency data
+    analyser.getByteFrequencyData(dataArray);
+
+    // Convert frequency to bin index
+    const binSize = SAMPLE_RATE / FFT_SIZE;
+    const minBin = Math.floor(minFreq / binSize);
+    const maxBin = Math.floor(maxFreq / binSize);
+
+    // Calculate average energy in range
+    let sum = 0;
+    let count = 0;
+    for (let i = minBin; i <= maxBin && i < dataArray.length; i++) {
+      sum += dataArray[i];
+      count++;
+    }
+
+    return count > 0 ? sum / count : 0;
+  }
+
   onMount(async () => {
     if (!canvasContainer) return;
+
+    // Create audio element if URL provided
+    if (audioUrl) {
+      audioElement = new Audio(audioUrl);
+      audioElement.loop = true;
+      audioElement.volume = 0.5;
+      audioElement.crossOrigin = "anonymous";
+
+      audioElement.addEventListener("canplaythrough", () => {
+        audioLoaded = true;
+        console.log("Audio loaded successfully");
+      });
+
+      audioElement.addEventListener("error", (e) => {
+        console.error("Error loading audio:", e);
+      });
+    }
 
     // Dynamically import P5.js only on client side
     const p5Module = await import("p5");
@@ -99,6 +195,14 @@
       p.draw = () => {
         // Clear with sky gradient
         drawSkyGradient(p, canvasWidth, canvasHeight);
+
+        // Analyze audio spectrum if audio is playing
+        if (audioIsPlaying && analyser) {
+          // Get energy levels for different frequency bands
+          lowEnergy = getEnergyInRange(LOW_FREQ_MIN, LOW_FREQ_MAX);
+          midEnergy = getEnergyInRange(MID_FREQ_MIN, MID_FREQ_MAX);
+          highEnergy = getEnergyInRange(HIGH_FREQ_MIN, HIGH_FREQ_MAX);
+        }
 
         // Increment time for animation
         if (isPlaying) {
@@ -127,6 +231,17 @@
       if (p5Instance) {
         p5Instance.remove();
         p5Instance = null;
+      }
+
+      // Cleanup audio
+      if (audioElement) {
+        audioElement.pause();
+        audioElement = null;
+      }
+
+      if (audioContext) {
+        audioContext.close();
+        audioContext = null;
       }
     };
   });
@@ -157,12 +272,36 @@
   }
 
   /**
-   * Draw all wave layers with perspective
+   * Draw all wave layers with perspective and audio reactivity
    */
   function drawWaveLayers(p: p5, w: number, h: number) {
     const { layers, amplitude } = waveConfig;
 
     for (let layer = 0; layer < layers; layer++) {
+      // Calculate audio-reactive amplitude for this layer
+      let layerAmplitude = amplitude;
+
+      if (audioIsPlaying && analyser) {
+        // Map layers to frequency bands:
+        // Layer 0-1 (foreground): Low frequencies (bass)
+        // Layer 2-3 (middle): Mid frequencies
+        // Layer 4+ (background): High frequencies
+        let energyBoost = 0;
+
+        if (layer <= 1) {
+          // Foreground layers react to bass
+          energyBoost = lowEnergy * AMPLITUDE_SCALE_FACTOR;
+        } else if (layer <= 3) {
+          // Middle layers react to mids
+          energyBoost = midEnergy * AMPLITUDE_SCALE_FACTOR;
+        } else {
+          // Background layers react to highs
+          energyBoost = highEnergy * AMPLITUDE_SCALE_FACTOR;
+        }
+
+        layerAmplitude = amplitude + energyBoost;
+      }
+
       // Calculate z position (depth)
       const zPos = LAYER_DEPTH_START + layer * LAYER_DEPTH_SPACING;
       const yOffset =
@@ -182,16 +321,19 @@
       p.noStroke();
       p.beginShape();
 
+      // Create config with audio-reactive amplitude for this layer
+      const layerConfig = { ...waveConfig, amplitude: layerAmplitude };
+
       // Draw top wave curve
       for (let i = 0; i <= WAVE_RESOLUTION; i++) {
         const x = (i / WAVE_RESOLUTION) * w - w / 2;
 
-        // Calculate wave height at this point
+        // Calculate wave height at this point with audio-reactive amplitude
         const y = calculateWavePoint(
           i * WAVE_POINT_MULTIPLIER,
           layer,
           time,
-          waveConfig,
+          layerConfig,
           (x, y, z) => p.noise(x, y, z),
         );
 
@@ -201,14 +343,14 @@
       // Close the shape by connecting to baseline in reverse order
       for (let i = WAVE_RESOLUTION; i >= 0; i--) {
         const x = (i / WAVE_RESOLUTION) * w - w / 2;
-        p.vertex(x, amplitude * WAVE_BOTTOM_MULTIPLIER, 0);
+        p.vertex(x, layerAmplitude * WAVE_BOTTOM_MULTIPLIER, 0);
       }
 
       p.endShape(p.CLOSE);
       p.pop();
 
-      // Draw foam on wave crests
-      drawFoam(p, w, layer, yOffset - h / 2, zPos);
+      // Draw foam on wave crests with audio-reactive amplitude
+      drawFoam(p, w, layer, yOffset - h / 2, zPos, layerConfig);
     }
   }
 
@@ -221,8 +363,9 @@
     layer: number,
     yOffset: number,
     zPos: number,
+    layerConfig: OceanWaveConfig = waveConfig,
   ) {
-    const { amplitude, foamThreshold } = waveConfig;
+    const { amplitude, foamThreshold } = layerConfig;
 
     p.push();
     p.translate(0, yOffset, zPos);
@@ -234,7 +377,7 @@
         i * WAVE_POINT_MULTIPLIER,
         layer,
         time,
-        waveConfig,
+        layerConfig,
         (x, y, z) => p.noise(x, y, z),
       );
 
@@ -324,6 +467,18 @@
       {isPlaying ? "⏸︎" : "▶︎"}
       <span class="control-text">{isPlaying ? "Pause" : "Play"}</span>
     </button>
+
+    {#if audioUrl}
+      <button
+        onclick={toggleAudio}
+        class="control-button"
+        aria-label={audioIsPlaying ? "Pause audio" : "Play audio"}
+        disabled={!audioLoaded}
+      >
+        {audioIsPlaying ? "🔊" : "🔇"}
+        <span class="control-text">{audioIsPlaying ? "Audio" : "Audio"}</span>
+      </button>
+    {/if}
   </div>
 </div>
 
@@ -375,6 +530,16 @@
 
   .control-button:active {
     transform: translateY(0);
+  }
+
+  .control-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .control-button:disabled:hover {
+    background: rgba(0, 0, 0, 0.6);
+    transform: none;
   }
 
   .control-text {
