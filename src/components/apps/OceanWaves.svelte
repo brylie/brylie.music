@@ -30,8 +30,8 @@
   // Wave layer positioning
   const LAYER_DEPTH_START = -200; // Starting z position for farthest layer
   const LAYER_DEPTH_SPACING = 100; // Z-distance between layers
-  const LAYER_VERTICAL_OFFSET = 100; // Base vertical offset from center
-  const VERTICAL_LAYER_SPACING = 80; // Vertical spacing between wave layers
+  const LAYER_VERTICAL_OFFSET = 200; // Base vertical offset from center
+  const VERTICAL_LAYER_SPACING = 200; // Vertical spacing between wave layers
 
   // Wave rendering quality
   const WAVE_RESOLUTION = 120; // Number of points per wave (higher = smoother)

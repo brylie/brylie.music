@@ -13,12 +13,12 @@ import {
 describe('DEFAULT_OCEAN_CONFIG', () => {
   test('has expected structure and values', () => {
     expect(DEFAULT_OCEAN_CONFIG).toEqual({
-      layers: 5,
+      layers: 10,
       noiseScale: 0.003,
-      amplitude: 50,
+      amplitude: 80,
       waveSpeed: 0.008,
       foamThreshold: 0.7,
-      perspective: 0.15,
+      perspective: 0.08,
     });
   });
   
