@@ -393,8 +393,19 @@
       if (shouldRenderFoam(waveHeight, amplitude, foamThreshold)) {
         // Calculate foam intensity based on how far above threshold
         const normalizedHeight = (waveHeight + amplitude) / (2 * amplitude);
-        const foamIntensity =
-          (normalizedHeight - foamThreshold) / (1 - foamThreshold);
+
+        // Guard against division by zero when foamThreshold >= 1
+        let foamIntensity: number;
+        if (foamThreshold >= 1) {
+          foamIntensity = 1;
+        } else {
+          foamIntensity =
+            (normalizedHeight - foamThreshold) /
+            Math.max(1 - foamThreshold, Number.EPSILON);
+        }
+
+        // Clamp to [0, 1] range to prevent NaN/Infinity propagation
+        foamIntensity = Math.max(0, Math.min(1, foamIntensity));
 
         // Generate foam particles using utility function
         const particles = generateFoamParticles(
