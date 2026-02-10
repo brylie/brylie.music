@@ -162,8 +162,14 @@ const media = defineCollection({
 			// Platform identifiers (optional, at least one should be provided)
 			youtubeId: z.string().optional(), // YouTube video ID
 			iaIdentifier: z.string().optional(), // Internet Archive identifier
-		videoUrl: z.string().optional(), // Direct video URL (self-hosted or absolute URL)
-		audioUrl: z.string().optional(), // Direct audio URL (self-hosted or absolute URL)
+			videoUrl: z.string().optional().refine((val) => {
+				if (!val) return true; // Optional field
+				return /^(https?:\/\/|\/|\.\/)/.test(val);
+			}, { message: "Must be an absolute URL (http/https) or relative path (/...)" }), // Direct video URL
+			audioUrl: z.string().optional().refine((val) => {
+				if (!val) return true; // Optional field
+				return /^(https?:\/\/|\/|\.\/)/.test(val);
+			}, { message: "Must be an absolute URL (http/https) or relative path (/...)" }), // Direct audio URL
 			coverImage: image().optional(), // Thumbnail/poster image
 			ogImage: image().optional(), // Custom Open Graph image
 			
