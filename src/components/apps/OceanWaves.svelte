@@ -64,7 +64,7 @@
 
   // FFT frequency band ranges (in Hz)
   const FFT_SIZE = 2048;
-  const SAMPLE_RATE = 44100;
+  let sampleRate = 44100; // Default, will be updated from AudioContext
   const LOW_FREQ_MIN = 20;
   const LOW_FREQ_MAX = 250; // Bass frequencies
   const MID_FREQ_MIN = 250;
@@ -90,6 +90,7 @@
     // Initialize AudioContext on first user interaction
     if (!audioContext) {
       audioContext = new AudioContext();
+      sampleRate = audioContext.sampleRate; // Use actual sample rate (44100 or 48000)
       analyser = audioContext.createAnalyser();
       analyser.fftSize = FFT_SIZE;
       analyser.smoothingTimeConstant = 0.8;
@@ -114,10 +115,10 @@
 
   // Calculate average energy in a frequency range from already-populated dataArray
   function computeEnergyInRange(minFreq: number, maxFreq: number): number {
-    if (!dataArray) return 0;
+    if (!dataArray || !audioContext) return 0;
 
-    // Convert frequency to bin index
-    const binSize = SAMPLE_RATE / FFT_SIZE;
+    // Convert frequency to bin index using actual sample rate
+    const binSize = sampleRate / FFT_SIZE;
     const minBin = Math.floor(minFreq / binSize);
     const maxBin = Math.floor(maxFreq / binSize);
 
