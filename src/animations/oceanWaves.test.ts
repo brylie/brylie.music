@@ -80,13 +80,16 @@ describe('calculateWavePoint', () => {
   });
   
   test('time parameter affects output', () => {
-    const time1 = calculateWavePoint(1, 0, 0, DEFAULT_OCEAN_CONFIG, mockNoise);
-    const time2 = calculateWavePoint(1, 0, 100, DEFAULT_OCEAN_CONFIG, mockNoise);
+    // Time-dependent noise function that uses z parameter
+    const timeDependentNoise = (x: number, _y: number, z: number): number => {
+      return (Math.sin(x * 10 + z * 0.1) + 1) / 2; // z affects the output
+    };
+    
+    const time1 = calculateWavePoint(1, 0, 0, DEFAULT_OCEAN_CONFIG, timeDependentNoise);
+    const time2 = calculateWavePoint(1, 0, 100, DEFAULT_OCEAN_CONFIG, timeDependentNoise);
     
     // Different times should produce different wave heights (animation)
-    // Note: May occasionally be equal due to noise periodicity
-    expect(time1).toBeDefined();
-    expect(time2).toBeDefined();
+    expect(time1).not.toBe(time2);
   });
   
   test('handles zero perspective (no depth scaling)', () => {
