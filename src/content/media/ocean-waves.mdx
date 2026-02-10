@@ -1,0 +1,71 @@
+---
+title: Ocean Waves
+description: Generative ocean visualization with multi-layered waves created using Perlin noise, featuring dynamic foam effects and atmospheric perspective.
+datePublished: 2026-02-10
+author: Brylie Christopher Oxley
+mediaType: interactive
+audioUrl: https://ia600901.us.archive.org/19/items/brylie-christopher-spectra/BrylieChristopher-Spectra-OceanWaves.mp3
+license: CC-BY-4.0
+duration: "6:06"
+topics:
+  - generative art
+  - audio visualization
+  - ambient soundscape
+  - procedural generation
+keywords:
+  - ocean waves
+  - p5js
+  - generative art
+  - perlin noise
+  - audio reactive
+  - ambient music
+  - procedural visualization
+---
+
+import OceanWaves from '../../components/apps/OceanWaves.svelte';
+
+<OceanWaves client:load height={600} audioUrl={props.audioUrl} />
+
+## About This Piece
+
+"Ocean Waves" combines generative visual art with ambient soundscape to create an immersive oceanic experience. The visualization uses Perlin noise to generate organic, flowing wave patterns that recede into the distance, creating a sense of depth and natural motion.
+
+## Technical Details
+
+The visualization is built with P5.js and employs several techniques to achieve realistic ocean rendering:
+
+### Multi-Layer Wave System
+Five distinct wave layers are rendered from back to front, each with its own perspective scaling. Distant waves appear smaller and lighter in color, simulating atmospheric haze and depth perception.
+
+### Perlin Noise Generation
+Rather than using simple sine waves, the animation uses Perlin noise to create organic, natural-looking wave patterns. The noise function generates smooth, continuous variations that evolve over time, producing waves that feel alive and unpredictable—just like real ocean swells.
+
+### Foam Rendering
+White foam appears dynamically on wave crests that exceed a certain height threshold. The foam's opacity varies based on wave intensity, creating subtle variations that enhance realism.
+
+### Atmospheric Perspective
+Colors transition from darker blue-green in the foreground to lighter gray-blue in the background, mimicking how distant objects appear hazier in nature due to atmospheric scattering.
+
+### Audio Reactivity
+
+The visualization uses the Web Audio API to perform real-time FFT (Fast Fourier Transform) analysis of the audio track. The frequency spectrum is divided into three bands that map spatially across the wave surface:
+
+- **Low Frequencies (20-250 Hz)**: Bass and sub-bass frequencies control the **foreground waves** (layers 0-1), creating powerful swells that mirror the deep rhythms
+- **Mid Frequencies (250-4000 Hz)**: Melodic content influences the **middle waves** (layers 2-3), responding to harmonic movement
+- **High Frequencies (4000-20000 Hz)**: Treble and high harmonics affect the **distant waves** (layers 4+), adding subtle shimmer to the horizon
+
+Each wave layer's amplitude is dynamically adjusted based on the energy in its corresponding frequency band, creating a truly responsive audiovisual experience where the ocean moves with the music.
+
+## Controls
+
+- **Play/Pause Animation**: Control the wave animation independently of audio playback
+- **Audio Toggle**: Enable/disable audio playback with synchronized frequency analysis
+- The visualization will continue to animate even when audio is paused, allowing you to enjoy the visual meditation on its own
+
+## Creative Process
+
+This piece explores the intersection of algorithmic art and natural phenomena. By using mathematical functions to approximate nature's complexity, we create something that feels organic yet is entirely procedural. The result is a never-repeating animation that mirrors the endless variation found in real ocean waves.
+
+## License
+
+This work is licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/). You are free to share and adapt this work, even commercially, as long as you provide attribution.
