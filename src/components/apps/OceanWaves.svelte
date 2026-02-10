@@ -184,6 +184,11 @@
 
       // Create sky gradient as off-screen buffer (called once and on resize)
       function createSkyGradient(p: p5, w: number, h: number) {
+        // Clean up existing buffer to prevent memory leaks
+        if (skyGradientBuffer) {
+          skyGradientBuffer.remove();
+          skyGradientBuffer = null;
+        }
         skyGradientBuffer = p.createGraphics(w, h);
 
         // Create colors once outside the loop

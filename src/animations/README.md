@@ -408,7 +408,7 @@ describe('OceanWaves', () => {
 
 ## File Naming Conventions
 
-```
+```text
 oceanWaves.ts         # Business logic utilities
 oceanWaves.test.ts    # Unit tests for utilities
 OceanWaves.svelte     # Svelte component (PascalCase)

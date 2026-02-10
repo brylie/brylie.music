@@ -281,9 +281,9 @@ describe('getFoamColor', () => {
 
 describe('generateFoamParticles', () => {
   // Mock Perlin noise function with predictable values
-  const mockNoise = (x: number, y: number, z?: number): number => {
+  const mockNoise = (x: number, y: number, z: number): number => {
     // Simple deterministic function for testing
-    return (Math.sin(x * 10 + (y || 0) * 5 + (z || 0)) + 1) / 2; // Returns 0-1
+    return (Math.sin(x * 10 + y * 5 + z) + 1) / 2; // Returns 0-1
   };
   
   test('returns array of foam particles', () => {

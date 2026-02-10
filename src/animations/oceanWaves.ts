@@ -313,7 +313,8 @@ export function generateFoamParticles(
     const offsetY =
       (noiseFunc(
         x * FOAM_NOISE_X_SCALE + particle * FOAM_NOISE_Y_OFFSET,
-        time * FOAM_NOISE_TIME_SCALE
+        time * FOAM_NOISE_TIME_SCALE,
+        layer * FOAM_NOISE_LAYER_OFFSET + particle
       ) - 0.5) * FOAM_VERTICAL_SPREAD;
     
     // Vary particle size (small particles)
@@ -321,7 +322,8 @@ export function generateFoamParticles(
       FOAM_MIN_SIZE +
       noiseFunc(
         particle * FOAM_NOISE_SIZE_OFFSET,
-        time * FOAM_NOISE_SIZE_TIME_SCALE
+        time * FOAM_NOISE_SIZE_TIME_SCALE,
+        layer * FOAM_NOISE_LAYER_OFFSET
       ) * FOAM_MAX_SIZE_VARIATION;
     
     // Create dissipation effect - particles further from center fade more
