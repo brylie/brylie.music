@@ -155,7 +155,7 @@ describe('shouldRenderFoam', () => {
   
   test('handles negative amplitudes correctly', () => {
     // Edge case: if amplitude is negative (shouldn't happen but test robustness)
-    const result = shouldRenderFoam(10, 50, 0.5);
+    const result = shouldRenderFoam(10, -50, 0.5);
     expect(typeof result).toBe('boolean');
   });
 });
