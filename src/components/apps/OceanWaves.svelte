@@ -160,6 +160,7 @@
     const sketch = (p: p5) => {
       let canvasWidth: number;
       let canvasHeight: number;
+      let skyGradientBuffer: any; // p5.Graphics buffer for sky gradient
 
       p.setup = () => {
         // Use container dimensions if available
@@ -168,11 +169,38 @@
 
         p.createCanvas(canvasWidth, canvasHeight, p.WEBGL);
         p.noStroke();
+
+        // Create sky gradient buffer once
+        createSkyGradient(p, canvasWidth, canvasHeight);
       };
 
+      // Create sky gradient as off-screen buffer (called once and on resize)
+      function createSkyGradient(p: p5, w: number, h: number) {
+        skyGradientBuffer = p.createGraphics(w, h);
+
+        // Draw gradient to buffer
+        for (let y = 0; y < h; y++) {
+          const inter = y / h;
+          const c1 = skyGradientBuffer.color(
+            SKY_TOP_COLOR.r,
+            SKY_TOP_COLOR.g,
+            SKY_TOP_COLOR.b,
+          );
+          const c2 = skyGradientBuffer.color(
+            SKY_HORIZON_COLOR.r,
+            SKY_HORIZON_COLOR.g,
+            SKY_HORIZON_COLOR.b,
+          );
+          const c = skyGradientBuffer.lerpColor(c1, c2, inter);
+          skyGradientBuffer.fill(c);
+          skyGradientBuffer.noStroke();
+          skyGradientBuffer.rect(0, y, w, 1);
+        }
+      }
+
       p.draw = () => {
-        // Clear with sky gradient
-        drawSkyGradient(p, canvasWidth, canvasHeight);
+        // Clear with sky gradient (blit pre-rendered buffer)
+        drawSkyGradient(p, skyGradientBuffer, canvasWidth, canvasHeight);
 
         // Analyze audio spectrum if audio is playing
         if (audioIsPlaying && analyser && dataArray) {
@@ -200,6 +228,9 @@
           canvasWidth = canvasContainer.clientWidth;
           canvasHeight = canvasContainer.clientHeight;
           p.resizeCanvas(canvasWidth, canvasHeight);
+
+          // Recreate sky gradient for new dimensions
+          createSkyGradient(p, canvasWidth, canvasHeight);
         }
       };
     };
@@ -228,27 +259,15 @@
   });
 
   /**
-   * Draw sky gradient background
+   * Draw sky gradient background (blit pre-rendered buffer)
    */
-  function drawSkyGradient(p: p5, w: number, h: number) {
-    // Draw gradient from dark blue (top) to lighter blue (horizon)
+  function drawSkyGradient(p: p5, buffer: any, w: number, h: number) {
+    if (!buffer) return;
+
+    // Blit pre-rendered gradient buffer
     p.push();
     p.translate(-w / 2, -h / 2);
-
-    for (let y = 0; y < h; y++) {
-      const inter = y / h;
-      const c1 = p.color(SKY_TOP_COLOR.r, SKY_TOP_COLOR.g, SKY_TOP_COLOR.b);
-      const c2 = p.color(
-        SKY_HORIZON_COLOR.r,
-        SKY_HORIZON_COLOR.g,
-        SKY_HORIZON_COLOR.b,
-      );
-      const c = p.lerpColor(c1, c2, inter);
-      p.fill(c);
-      p.noStroke();
-      p.rect(0, y, w, 1);
-    }
-
+    p.image(buffer, 0, 0);
     p.pop();
   }
 
@@ -398,110 +417,40 @@
   }
 </script>
 
-<div class="ocean-waves-container">
+<div
+  class="relative w-full rounded-lg overflow-hidden"
+  style="background: linear-gradient(180deg, rgb(15, 20, 40) 0%, rgb(20, 40, 70) 100%);"
+>
   <div
     bind:this={canvasContainer}
-    class="canvas-wrapper"
+    class="block"
     style="width: 100%; height: {height}px;"
   ></div>
 
-  <div class="controls">
+  <div class="absolute bottom-4 right-4 flex gap-2">
     <button
       onclick={toggleAnimation}
-      class="control-button"
+      class="flex items-center gap-2 px-4 py-2 bg-black/60 border border-white/20 rounded-md text-white text-base cursor-pointer transition-all duration-200 backdrop-blur hover:bg-black/80 hover:border-white/40 hover:-translate-y-px active:translate-y-0 sm:px-2 sm:text-xl"
       aria-label={isPlaying ? "Pause animation" : "Play animation"}
     >
       {isPlaying ? "⏸︎" : "▶︎"}
-      <span class="control-text">{isPlaying ? "Pause" : "Play"}</span>
+      <span class="text-sm font-medium max-sm:hidden"
+        >{isPlaying ? "Pause" : "Play"}</span
+      >
     </button>
 
     {#if audioUrl}
       <button
         onclick={toggleAudio}
-        class="control-button"
+        class="flex items-center gap-2 px-4 py-2 bg-black/60 border border-white/20 rounded-md text-white text-base cursor-pointer transition-all duration-200 backdrop-blur hover:bg-black/80 hover:border-white/40 hover:-translate-y-px active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-black/60 disabled:hover:translate-y-0 sm:px-2 sm:text-xl"
         aria-label={audioIsPlaying ? "Pause audio" : "Play audio"}
         disabled={!audioLoaded}
       >
         {audioIsPlaying ? "🔊" : "🔇"}
-        <span class="control-text">{audioIsPlaying ? "Audio" : "Audio"}</span>
+        <span class="text-sm font-medium max-sm:hidden"
+          >{audioIsPlaying ? "Audio" : "Audio"}</span
+        >
       </button>
     {/if}
   </div>
 </div>
-
-<style>
-  .ocean-waves-container {
-    position: relative;
-    width: 100%;
-    background: linear-gradient(
-      180deg,
-      rgb(15, 20, 40) 0%,
-      rgb(20, 40, 70) 100%
-    );
-    border-radius: 0.5rem;
-    overflow: hidden;
-  }
-
-  .canvas-wrapper {
-    display: block;
-  }
-
-  .controls {
-    position: absolute;
-    bottom: 1rem;
-    right: 1rem;
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .control-button {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 0.375rem;
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    backdrop-filter: blur(4px);
-  }
-
-  .control-button:hover {
-    background: rgba(0, 0, 0, 0.8);
-    border-color: rgba(255, 255, 255, 0.4);
-    transform: translateY(-1px);
-  }
-
-  .control-button:active {
-    transform: translateY(0);
-  }
-
-  .control-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .control-button:disabled:hover {
-    background: rgba(0, 0, 0, 0.6);
-    transform: none;
-  }
-
-  .control-text {
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
-
-  @media (max-width: 640px) {
-    .control-text {
-      display: none;
-    }
-
-    .control-button {
-      padding: 0.5rem;
-      font-size: 1.25rem;
-    }
-  }
-</style>
