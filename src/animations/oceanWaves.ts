@@ -255,8 +255,11 @@ export function getWaveLayerColor(
  * @returns RGB color object with alpha channel
  */
 export function getFoamColor(intensity: number): { r: number; g: number; b: number; a: number } {
+  // Clamp intensity to [0, 1] range for defensive correctness
+  const clampedIntensity = Math.max(0, Math.min(1, intensity));
+  
   // White foam with varying opacity
-  const alpha = FOAM_BASE_ALPHA + (intensity * FOAM_INTENSITY_ALPHA_MULTIPLIER);
+  const alpha = FOAM_BASE_ALPHA + (clampedIntensity * FOAM_INTENSITY_ALPHA_MULTIPLIER);
   
   return {
     r: FOAM_BASE_COLOR.r,
@@ -282,7 +285,7 @@ export function generateFoamParticles(
   layer: number,
   time: number,
   foamIntensity: number,
-  noiseFunc: (x: number, y: number, z?: number) => number
+  noiseFunc: (x: number, y: number, z: number) => number
 ): FoamParticle[] {
   const particles: FoamParticle[] = [];
   
