@@ -144,10 +144,11 @@
 
     // Create audio element if URL provided
     if (audioUrl) {
-      audioElement = new Audio(audioUrl);
+      audioElement = new Audio();
+      audioElement.crossOrigin = "anonymous"; // Set CORS before src to prevent preflight issues
+      audioElement.src = audioUrl; // Set source after CORS mode
       audioElement.loop = true;
       audioElement.volume = 0.5;
-      audioElement.crossOrigin = "anonymous";
 
       audioElement.addEventListener("canplaythrough", () => {
         audioLoaded = true;
