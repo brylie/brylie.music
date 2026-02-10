@@ -159,7 +159,7 @@ export const DEFAULT_OCEAN_CONFIG: OceanWaveConfig = {
   amplitude: 50,
   waveSpeed: 0.008,
   foamThreshold: 0.7,
-  perspective: 0.6,
+  perspective: 0.15,
 };
 
 /**
