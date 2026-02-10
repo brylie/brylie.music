@@ -30,8 +30,8 @@
   // Wave layer positioning (proportional to canvas size)
   const LAYER_DEPTH_START = -200; // Starting z position for farthest layer
   const LAYER_DEPTH_SPACING = 100; // Z-distance between layers
-  const VIEWER_ALTITUDE = 0.8; // Horizon altitude (0 = top of canvas, 1 = bottom, 0.8 = bottom 1/5th)
-  const WAVE_EXTENT = 0.15; // Vertical span of wave layers (proportion of height)
+  const VIEWER_ALTITUDE = 0.55; // Horizon altitude (0 = top of canvas, 1 = bottom, 0.55 = middle)
+  const WAVE_EXTENT = 0.4; // Vertical span of wave layers (proportion of height)
 
   // Wave rendering quality
   const WAVE_RESOLUTION = 120; // Number of points per wave (higher = smoother)

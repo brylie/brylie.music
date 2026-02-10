@@ -154,12 +154,12 @@ export interface FoamParticle {
  * Balanced for visual appeal with moderate wave motion
  */
 export const DEFAULT_OCEAN_CONFIG: OceanWaveConfig = {
-  layers: 10,
+  layers: 12,
   noiseScale: 0.003,
   amplitude: 80,
   waveSpeed: 0.008,
   foamThreshold: 0.7,
-  perspective: 0.08,
+  perspective: 0.06,
 };
 
 /**
