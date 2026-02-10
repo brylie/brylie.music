@@ -540,11 +540,64 @@ p5Instance = new p5(sketch, containerElement);
 ```
 
 **Why:**
+
 - Multiple P5.js sketches can coexist on one page
 - No global `setup()`/`draw()` conflicts
 - Easier to test and reason about
 
-### 2. WEBGL Renderer for 3D Effects
+### 2. Coordinate System: Y-Axis Inversion (2D Mode)
+
+In P5.js 2D mode, `(0, 0)` is the **top-left** corner of the canvas. The Y axis increases **downward**. This is the opposite of standard mathematical convention where Y increases upward, and it causes subtle bugs when reasoning about "height."
+
+```text
+Screen space (P5.js 2D):       Mathematical convention:
+
+(0,0) ───────► +X              +Y ▲
+  │                                │
+  │                                │
+  ▼ +Y                      (0,0) ───────► +X
+```
+
+**The trap:** A wave crest (visually the highest point on screen) has a **lower Y value** than a trough (visually the lowest point). If your code checks `yPosition > threshold` expecting to find crests, it actually finds troughs.
+
+```typescript
+// ❌ BUG: This finds troughs, not crests!
+// A crest at y=100 is visually ABOVE a trough at y=300,
+// but 300 > 100, so the trough passes the threshold check.
+function isCrest(yPosition: number, threshold: number): boolean {
+  return yPosition > threshold;
+}
+
+// ✅ OPTION A: Invert the comparison for screen-space values
+function isCrest(yPosition: number, threshold: number): boolean {
+  return yPosition < threshold; // Lower Y = higher on screen = crest
+}
+
+// ✅ OPTION B (preferred): Work in logical space, convert at render time
+// In logical space, positive = up (like math convention)
+function calculateWaveHeight(x: number, time: number, config: Config): number {
+  // Returns positive values for crests, negative for troughs
+  const noiseVal = noiseFunc(x * config.noiseScale, time * config.speed);
+  return (noiseVal - 0.5) * 2 * config.amplitude; // Range: -amplitude to +amplitude
+}
+
+// Only flip to screen space when drawing
+function logicalToScreenY(logicalY: number, baseline: number): number {
+  return baseline - logicalY; // Subtract because screen Y is inverted
+}
+```
+
+**Option B is preferred** because it keeps all calculation logic in intuitive mathematical space (positive = up, crests are positive, troughs are negative). The inversion happens once at the rendering boundary, not scattered through calculation functions. This also makes unit tests more intuitive: you can assert that crests produce positive values without thinking about screen coordinates.
+
+**Checklist for new animations:**
+
+- [ ] Calculation functions work in logical space (positive = up)
+- [ ] Screen-space conversion happens at render time, not in utility functions
+- [ ] Threshold comparisons make sense in the coordinate space being used
+- [ ] Test names and assertions use "crest" and "trough" to make intent clear
+- [ ] JSDoc on functions states which coordinate space the return value is in
+
+### 3. WEBGL Renderer for 3D Effects
 
 Use WEBGL mode for depth-stacked layers:
 
@@ -566,7 +619,7 @@ for (let layer = 0; layer < layers; layer++) {
 - Requires manual camera positioning
 - `p.translate()` affects all subsequent draws (use `p.push()`/`p.pop()`)
 
-### 3. Performance Optimization with Off-Screen Buffers
+### 4. Performance Optimization with Off-Screen Buffers
 
 Cache static/repeated content in `p5.Graphics` buffers:
 
@@ -596,7 +649,7 @@ p.draw = () => {
 - Recreate only on canvas resize (handle in `onResize`)
 - Same pattern for any static background or texture
 
-### 4. Perlin Noise for Organic Motion
+### 5. Perlin Noise for Organic Motion
 
 Use 3D Perlin noise with time as third dimension:
 
@@ -627,7 +680,7 @@ export function calculateWavePoint(
 - Reduce `z` influence for smoother layer transitions
 - Center noise output around 0 for symmetric waves
 
-### 5. Variable Naming to Avoid Shadowing
+### 6. Variable Naming to Avoid Shadowing
 
 When using arrow functions inside loops, avoid shadowing outer variables:
 
