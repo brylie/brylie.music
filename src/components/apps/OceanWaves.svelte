@@ -342,7 +342,7 @@
           layer,
           time,
           layerConfig,
-          (x, y, z) => p.noise(x, y, z),
+          (nx, ny, nz) => p.noise(nx, ny, nz),
         );
 
         p.vertex(x, y, 0);
@@ -386,7 +386,7 @@
         layer,
         time,
         layerConfig,
-        (x, y, z) => p.noise(x, y, z),
+        (nx, ny, nz) => p.noise(nx, ny, nz),
       );
 
       // Check if foam should render at this point
@@ -413,7 +413,7 @@
           layer,
           time,
           foamIntensity,
-          (x, y, z) => p.noise(x, y, z),
+          (nx, ny, nz) => p.noise(nx, ny, nz),
         );
 
         // Render each foam particle
@@ -452,10 +452,8 @@
       class="flex items-center gap-2 px-4 py-2 bg-black/60 border border-white/20 rounded-md text-white text-base cursor-pointer transition-all duration-200 backdrop-blur hover:bg-black/80 hover:border-white/40 hover:-translate-y-px active:translate-y-0 sm:px-2 sm:text-xl"
       aria-label={isPlaying ? "Pause animation" : "Play animation"}
     >
-      {isPlaying ? "⏸︎" : "▶︎"}
-      <span class="text-sm font-medium max-sm:hidden"
-        >{isPlaying ? "Pause" : "Play"}</span
-      >
+      <span aria-hidden="true">{isPlaying ? "⏸︎" : "▶︎"}</span>
+      <span class="text-sm font-medium max-sm:sr-only">{isPlaying ? "Pause" : "Play"}</span>
     </button>
 
     {#if audioUrl}
@@ -465,10 +463,8 @@
         aria-label={audioIsPlaying ? "Pause audio" : "Play audio"}
         disabled={!audioLoaded}
       >
-        {audioIsPlaying ? "🔊" : "🔇"}
-        <span class="text-sm font-medium max-sm:hidden"
-          >{audioIsPlaying ? "Audio" : "Audio"}</span
-        >
+        <span aria-hidden="true">{audioIsPlaying ? "🔊" : "🔇"}</span>
+        <span class="text-sm font-medium max-sm:sr-only">{audioIsPlaying ? "Audio" : "Audio"}</span>
       </button>
     {/if}
   </div>
