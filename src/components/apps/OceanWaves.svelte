@@ -112,12 +112,9 @@
     }
   }
 
-  // Calculate average energy in a frequency range
-  function getEnergyInRange(minFreq: number, maxFreq: number): number {
-    if (!analyser || !dataArray) return 0;
-
-    // Get frequency data
-    analyser.getByteFrequencyData(dataArray);
+  // Calculate average energy in a frequency range from already-populated dataArray
+  function computeEnergyInRange(minFreq: number, maxFreq: number): number {
+    if (!dataArray) return 0;
 
     // Convert frequency to bin index
     const binSize = SAMPLE_RATE / FFT_SIZE;
@@ -178,11 +175,14 @@
         drawSkyGradient(p, canvasWidth, canvasHeight);
 
         // Analyze audio spectrum if audio is playing
-        if (audioIsPlaying && analyser) {
-          // Get energy levels for different frequency bands
-          lowEnergy = getEnergyInRange(LOW_FREQ_MIN, LOW_FREQ_MAX);
-          midEnergy = getEnergyInRange(MID_FREQ_MIN, MID_FREQ_MAX);
-          highEnergy = getEnergyInRange(HIGH_FREQ_MIN, HIGH_FREQ_MAX);
+        if (audioIsPlaying && analyser && dataArray) {
+          // Read frequency data once per frame
+          analyser.getByteFrequencyData(dataArray);
+
+          // Calculate energy levels for different frequency bands
+          lowEnergy = computeEnergyInRange(LOW_FREQ_MIN, LOW_FREQ_MAX);
+          midEnergy = computeEnergyInRange(MID_FREQ_MIN, MID_FREQ_MAX);
+          highEnergy = computeEnergyInRange(HIGH_FREQ_MIN, HIGH_FREQ_MAX);
         }
 
         // Increment time for animation
