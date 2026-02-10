@@ -28,6 +28,7 @@
     "astro-icon": "^1.1.5",
     "markdown-it": "^14.1.0",
     "p5": "^2.2.0",
+    "p5.sound": "^0.2.0",
     "sanitize-html": "^2.17.0",
     "sharp": "^0.34.2",
     "svelte": "^5.50.0",
