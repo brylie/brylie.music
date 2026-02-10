@@ -6,8 +6,9 @@
     calculateWavePoint,
     shouldRenderFoam,
     getWaveLayerColor,
-    getFoamColor,
+    generateFoamParticles,
     type OceanWaveConfig,
+    type FoamParticle,
   } from "../../animations/oceanWaves";
 
   interface Props {
@@ -39,26 +40,6 @@
 
   // Animation timing
   const TIME_INCREMENT_MULTIPLIER = 100; // Scales waveSpeed to time increment
-
-  // Foam particle configuration
-  const FOAM_MIN_PARTICLES = 3; // Minimum particles per foam point
-  const FOAM_MAX_PARTICLES_MULTIPLIER = 5; // Additional particles based on intensity
-  const FOAM_HORIZONTAL_SPREAD = 12; // Maximum horizontal scatter (pixels)
-  const FOAM_VERTICAL_SPREAD = 3; // Maximum vertical scatter (pixels)
-  const FOAM_MIN_SIZE = 1.5; // Minimum particle size (pixels)
-  const FOAM_MAX_SIZE_VARIATION = 2; // Additional size variation (pixels)
-  const FOAM_DISSIPATION_FACTOR = 0.6; // How much particles fade at edges (0-1)
-  const FOAM_BASE_ALPHA = 0.5; // Base alpha multiplier for foam particles
-  const FOAM_INTENSITY_ALPHA = 0.5; // Additional alpha based on intensity
-
-  // Noise parameters for foam particle distribution
-  const FOAM_NOISE_X_SCALE = 0.1; // Horizontal noise frequency
-  const FOAM_NOISE_PARTICLE_OFFSET = 0.5; // Noise offset per particle
-  const FOAM_NOISE_TIME_SCALE = 0.01; // Time-based noise scaling
-  const FOAM_NOISE_LAYER_OFFSET = 0.3; // Layer-based noise offset
-  const FOAM_NOISE_Y_OFFSET = 0.7; // Vertical noise offset factor
-  const FOAM_NOISE_SIZE_OFFSET = 0.8; // Size calculation noise offset
-  const FOAM_NOISE_SIZE_TIME_SCALE = 0.005; // Time scale for size variation
 
   // ============================================================================
 
@@ -388,60 +369,26 @@
         const foamIntensity =
           (normalizedHeight - foamThreshold) / (1 - foamThreshold);
 
-        const foamColor = getFoamColor(foamIntensity);
-
-        // Draw multiple small foam particles instead of one large blob
-        const particleCount = Math.floor(
-          FOAM_MIN_PARTICLES + foamIntensity * FOAM_MAX_PARTICLES_MULTIPLIER,
+        // Generate foam particles using utility function
+        const particles = generateFoamParticles(
+          x,
+          layer,
+          time,
+          foamIntensity,
+          (x, y, z) => p.noise(x, y, z),
         );
 
-        for (let particle = 0; particle < particleCount; particle++) {
-          // Use noise for natural particle distribution
-          const noiseVal = p.noise(
-            x * FOAM_NOISE_X_SCALE + particle * FOAM_NOISE_PARTICLE_OFFSET,
-            time * FOAM_NOISE_TIME_SCALE + particle,
-            layer + particle * FOAM_NOISE_LAYER_OFFSET,
-          );
-
-          // Scatter particles around the wave crest (horizontal)
-          const offsetX = (noiseVal - 0.5) * FOAM_HORIZONTAL_SPREAD;
-          // Keep particles very close to the wave edge (minimal vertical offset)
-          const offsetY =
-            (p.noise(
-              x * FOAM_NOISE_X_SCALE + particle * FOAM_NOISE_Y_OFFSET,
-              time * FOAM_NOISE_TIME_SCALE,
-            ) -
-              0.5) *
-            FOAM_VERTICAL_SPREAD;
-
-          // Vary particle size (small particles)
-          const particleSize =
-            FOAM_MIN_SIZE +
-            p.noise(
-              particle * FOAM_NOISE_SIZE_OFFSET,
-              time * FOAM_NOISE_SIZE_TIME_SCALE,
-            ) *
-              FOAM_MAX_SIZE_VARIATION;
-
-          // Create dissipation effect - particles further from center fade more
-          const distanceFromCenter = Math.abs(offsetX) / FOAM_HORIZONTAL_SPREAD;
-          const dissipation = 1 - distanceFromCenter * FOAM_DISSIPATION_FACTOR;
-
-          // Apply dissipation to opacity
-          const particleAlpha =
-            foamColor.a *
-            dissipation *
-            (FOAM_BASE_ALPHA + foamIntensity * FOAM_INTENSITY_ALPHA);
-
-          p.fill(foamColor.r, foamColor.g, foamColor.b, particleAlpha);
+        // Render each foam particle
+        for (const particle of particles) {
+          p.fill(particle.r, particle.g, particle.b, particle.alpha);
           p.noStroke();
 
           // Draw small particle
           p.ellipse(
-            x + offsetX,
-            waveHeight + offsetY,
-            particleSize,
-            particleSize,
+            x + particle.offsetX,
+            waveHeight + particle.offsetY,
+            particle.size,
+            particle.size,
           );
         }
       }

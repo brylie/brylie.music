@@ -5,7 +5,9 @@ import {
   shouldRenderFoam,
   getWaveLayerColor,
   getFoamColor,
+  generateFoamParticles,
   type OceanWaveConfig,
+  type FoamParticle,
 } from './oceanWaves';
 
 describe('DEFAULT_OCEAN_CONFIG', () => {
@@ -251,5 +253,134 @@ describe('getFoamColor', () => {
     const color = getFoamColor(0);
     
     expect(color.a).toBeGreaterThan(0); // Should still have some opacity
+  });
+});
+
+describe('generateFoamParticles', () => {
+  // Mock Perlin noise function with predictable values
+  const mockNoise = (x: number, y: number, z?: number): number => {
+    // Simple deterministic function for testing
+    return (Math.sin(x * 10 + (y || 0) * 5 + (z || 0)) + 1) / 2; // Returns 0-1
+  };
+  
+  test('returns array of foam particles', () => {
+    const particles = generateFoamParticles(100, 0, 0, 0.5, mockNoise);
+    
+    expect(Array.isArray(particles)).toBe(true);
+    expect(particles.length).toBeGreaterThan(0);
+  });
+  
+  test('each particle has required properties', () => {
+    const particles = generateFoamParticles(100, 0, 0, 0.5, mockNoise);
+    
+    particles.forEach(particle => {
+      expect(particle).toHaveProperty('offsetX');
+      expect(particle).toHaveProperty('offsetY');
+      expect(particle).toHaveProperty('size');
+      expect(particle).toHaveProperty('r');
+      expect(particle).toHaveProperty('g');
+      expect(particle).toHaveProperty('b');
+      expect(particle).toHaveProperty('alpha');
+    });
+  });
+  
+  test('particle count increases with intensity', () => {
+    const lowIntensity = generateFoamParticles(100, 0, 0, 0.2, mockNoise);
+    const highIntensity = generateFoamParticles(100, 0, 0, 0.9, mockNoise);
+    
+    expect(highIntensity.length).toBeGreaterThan(lowIntensity.length);
+  });
+  
+  test('minimum particle count is enforced', () => {
+    // Even with zero intensity, should have at least minimum particles
+    const particles = generateFoamParticles(100, 0, 0, 0, mockNoise);
+    
+    expect(particles.length).toBeGreaterThanOrEqual(3); // FOAM_MIN_PARTICLES
+  });
+  
+  test('particle properties are within valid ranges', () => {
+    const particles = generateFoamParticles(100, 0, 0, 0.5, mockNoise);
+    
+    particles.forEach(particle => {
+      // Size should be positive
+      expect(particle.size).toBeGreaterThan(0);
+      
+      // Color values should be in RGB range
+      expect(particle.r).toBeGreaterThanOrEqual(0);
+      expect(particle.r).toBeLessThanOrEqual(255);
+      expect(particle.g).toBeGreaterThanOrEqual(0);
+      expect(particle.g).toBeLessThanOrEqual(255);
+      expect(particle.b).toBeGreaterThanOrEqual(0);
+      expect(particle.b).toBeLessThanOrEqual(255);
+      
+      // Alpha should be valid
+      expect(particle.alpha).toBeGreaterThanOrEqual(0);
+      expect(particle.alpha).toBeLessThanOrEqual(255);
+    });
+  });
+  
+  test('particles have white color (foam)', () => {
+    const particles = generateFoamParticles(100, 0, 0, 0.5, mockNoise);
+    
+    particles.forEach(particle => {
+      expect(particle.r).toBe(255);
+      expect(particle.g).toBe(255);
+      expect(particle.b).toBe(255);
+    });
+  });
+  
+  test('particles have varying positions (horizontal spread)', () => {
+    const particles = generateFoamParticles(100, 0, 0, 0.8, mockNoise);
+    
+    // Get unique offsetX values
+    const uniqueOffsets = new Set(particles.map(p => p.offsetX));
+    
+    // Should have variation in horizontal positions
+    expect(uniqueOffsets.size).toBeGreaterThan(1);
+  });
+  
+  test('particles have varying sizes', () => {
+    const particles = generateFoamParticles(100, 0, 0, 0.8, mockNoise);
+    
+    // Get unique size values
+    const uniqueSizes = new Set(particles.map(p => p.size));
+    
+    // Should have variation in sizes
+    expect(uniqueSizes.size).toBeGreaterThan(1);
+  });
+  
+  test('different positions produce different particle distributions', () => {
+    const particles1 = generateFoamParticles(100, 0, 0, 0.5, mockNoise);
+    const particles2 = generateFoamParticles(200, 0, 0, 0.5, mockNoise);
+    
+    // Particles at different x positions should have different offsets
+    expect(particles1[0].offsetX).not.toBe(particles2[0].offsetX);
+  });
+  
+  test('time parameter affects particle generation', () => {
+    const particles1 = generateFoamParticles(100, 0, 0, 0.5, mockNoise);
+    const particles2 = generateFoamParticles(100, 0, 100, 0.5, mockNoise);
+    
+    // Different time values should produce different particles
+    expect(particles1[0].offsetX).not.toBe(particles2[0].offsetX);
+  });
+  
+  test('layer parameter affects particle generation', () => {
+    const particles1 = generateFoamParticles(100, 0, 0, 0.5, mockNoise);
+    const particles2 = generateFoamParticles(100, 2, 0, 0.5, mockNoise);
+    
+    // Different layers should produce different particles
+    expect(particles1[0].offsetX).not.toBe(particles2[0].offsetX);
+  });
+  
+  test('alpha varies with intensity (brighter foam for stronger waves)', () => {
+    const lowIntensity = generateFoamParticles(100, 0, 0, 0.2, mockNoise);
+    const highIntensity = generateFoamParticles(100, 0, 0, 0.9, mockNoise);
+    
+    // High intensity foam should generally have higher alpha values
+    const avgAlphaLow = lowIntensity.reduce((sum, p) => sum + p.alpha, 0) / lowIntensity.length;
+    const avgAlphaHigh = highIntensity.reduce((sum, p) => sum + p.alpha, 0) / highIntensity.length;
+    
+    expect(avgAlphaHigh).toBeGreaterThan(avgAlphaLow);
   });
 });
