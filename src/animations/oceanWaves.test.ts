@@ -104,6 +104,18 @@ describe('calculateWavePoint', () => {
     // Without perspective, waves at different depths should have similar amplitude
     expect(Math.abs(Math.abs(near) - Math.abs(far))).toBeLessThan(1);
   });
+  
+  test('clamps depthScale to prevent negative scaling for large z values', () => {
+    // With perspective=0.6, z=4 would give depthScale=-1.4 without clamping
+    // This test ensures distant waves don't invert/amplify
+    const constantNoise = (): number => 0.75;
+    
+    const nearWave = calculateWavePoint(1, 0, 0, DEFAULT_OCEAN_CONFIG, constantNoise);
+    const farWave = calculateWavePoint(1, 4, 0, DEFAULT_OCEAN_CONFIG, constantNoise);
+    
+    // Distant wave should be smaller (or zero if fully clamped), not inverted/larger
+    expect(Math.abs(farWave)).toBeLessThanOrEqual(Math.abs(nearWave));
+  });
 });
 
 describe('shouldRenderFoam', () => {

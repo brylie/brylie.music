@@ -182,7 +182,8 @@ export function calculateWavePoint(
   const { noiseScale, amplitude, waveSpeed, perspective } = config;
   
   // Apply depth-based amplitude scaling (distant waves are smaller)
-  const depthScale = 1 - (z * perspective);
+  // Clamp to non-negative to prevent inversion for large z values
+  const depthScale = Math.max(0, 1 - (z * perspective));
   const scaledAmplitude = amplitude * depthScale;
   
   // Calculate noise-based wave height
