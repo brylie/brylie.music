@@ -2,30 +2,30 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { HarmonicsEngine, INTERVAL_NAMES } from './harmonics';
 
 // Mock AudioContext and related nodes
-const mockOscillator = {
+const createMockOscillator = () => ({
     type: 'sine',
     frequency: { value: 0, setValueAtTime: vi.fn() },
     connect: vi.fn(),
     start: vi.fn(),
     stop: vi.fn(),
     disconnect: vi.fn()
-};
+});
 
-const mockGain = {
+const createMockGain = () => ({
     gain: { value: 0, setValueAtTime: vi.fn() },
     connect: vi.fn(),
     disconnect: vi.fn()
-};
+});
 
-const mockAnalyser = {
+const createMockAnalyser = () => ({
     fftSize: 2048,
     connect: vi.fn()
-};
+});
 
 const mockAudioContext = {
-    createOscillator: vi.fn(() => ({ ...mockOscillator })),
-    createGain: vi.fn(() => ({ ...mockGain })),
-    createAnalyser: vi.fn(() => ({ ...mockAnalyser })),
+    createOscillator: vi.fn(() => createMockOscillator()),
+    createGain: vi.fn(() => createMockGain()),
+    createAnalyser: vi.fn(() => createMockAnalyser()),
     destination: {},
     currentTime: 0,
     state: 'suspended',
@@ -38,9 +38,9 @@ describe('HarmonicsEngine', () => {
     beforeEach(() => {
         // Mock global AudioContext
         const AudioContextMock = vi.fn();
-        AudioContextMock.prototype.createAnalyser = vi.fn(() => ({ ...mockAnalyser }));
-        AudioContextMock.prototype.createGain = vi.fn(() => ({ ...mockGain }));
-        AudioContextMock.prototype.createOscillator = vi.fn(() => ({ ...mockOscillator }));
+        AudioContextMock.prototype.createAnalyser = vi.fn(() => createMockAnalyser());
+        AudioContextMock.prototype.createGain = vi.fn(() => createMockGain());
+        AudioContextMock.prototype.createOscillator = vi.fn(() => createMockOscillator());
         AudioContextMock.prototype.resume = mockAudioContext.resume;
         Object.defineProperty(AudioContextMock.prototype, 'destination', { get: () => ({}) });
         Object.defineProperty(AudioContextMock.prototype, 'currentTime', { get: () => 0 });
