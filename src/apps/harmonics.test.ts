@@ -101,4 +101,17 @@ describe('HarmonicsEngine', () => {
         expect(INTERVAL_NAMES[0]).toBe('Fundamental');
         expect(INTERVAL_NAMES[1]).toBe('Octave');
     });
+
+    it('returns a defensive copy of state', () => {
+        const state1 = engine.getState();
+        state1.harmonics[0].active = !state1.harmonics[0].active;
+        state1.fundamentalFreq = 999;
+
+        const state2 = engine.getState();
+        expect(state2.harmonics[0].active).not.toBe(state1.harmonics[0].active);
+        expect(state2.fundamentalFreq).not.toBe(state1.fundamentalFreq);
+        // Original default values
+        expect(state2.fundamentalFreq).toBe(220);
+        expect(state2.harmonics[0].active).toBe(true);
+    });
 });

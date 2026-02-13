@@ -49,7 +49,10 @@ export class HarmonicsEngine {
     }
 
     public getState(): HarmonicsState {
-        return this.state;
+        return {
+            ...this.state,
+            harmonics: this.state.harmonics.map(h => ({ ...h }))
+        };
     }
 
     public async init(): Promise<void> {
