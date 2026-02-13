@@ -53,6 +53,7 @@ describe('HarmonicsEngine', () => {
 
     afterEach(() => {
         vi.clearAllMocks();
+        vi.unstubAllGlobals();
     });
 
     it('initializes with default state', () => {
