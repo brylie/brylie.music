@@ -18,8 +18,8 @@
     let animationId: number | null = null;
     let ctx: CanvasRenderingContext2D | null = null;
 
-    function togglePlay() {
-        isPlaying = engine.togglePlay();
+    async function togglePlay() {
+        isPlaying = await engine.togglePlay();
         if (isPlaying) {
             drawWaveform();
         } else {

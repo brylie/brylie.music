@@ -63,7 +63,7 @@ export class HarmonicsEngine {
         return this.analyser;
     }
 
-    public play(): void {
+    public async play(): Promise<void> {
         if (!this.audioCtx) {
             // In a real app, we might need to wait for init, but for now we assume init 
             // is called or we call it synchronously (AudioContext ctor is sync).
@@ -76,7 +76,7 @@ export class HarmonicsEngine {
         }
 
         if (this.audioCtx?.state === 'suspended') {
-            this.audioCtx.resume();
+            await this.audioCtx.resume();
         }
 
         this.state.isPlaying = true;
@@ -106,11 +106,11 @@ export class HarmonicsEngine {
         this.nodes.clear();
     }
 
-    public togglePlay(): boolean {
+    public async togglePlay(): Promise<boolean> {
         if (this.state.isPlaying) {
             this.stop();
         } else {
-            this.play();
+            await this.play();
         }
         return this.state.isPlaying;
     }

@@ -29,7 +29,7 @@ const mockAudioContext = {
     destination: {},
     currentTime: 0,
     state: 'suspended',
-    resume: vi.fn()
+    resume: vi.fn().mockResolvedValue(undefined)
 };
 
 describe('HarmonicsEngine', () => {
@@ -66,12 +66,12 @@ describe('HarmonicsEngine', () => {
         expect(state.isPlaying).toBe(false);
     });
 
-    it('toggles playback', () => {
-        engine.togglePlay();
+    it('toggles playback', async () => {
+        await engine.togglePlay();
         expect(engine.getState().isPlaying).toBe(true);
         expect(mockAudioContext.resume).toHaveBeenCalled();
 
-        engine.togglePlay();
+        await engine.togglePlay();
         expect(engine.getState().isPlaying).toBe(false);
     });
 
