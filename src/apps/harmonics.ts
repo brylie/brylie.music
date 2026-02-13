@@ -55,7 +55,8 @@ export class HarmonicsEngine {
     public async init(): Promise<void> {
         if (this.audioCtx) return;
 
-        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+        const AudioContextClass = window.AudioContext
+            || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
         this.audioCtx = new AudioContextClass();
 
         this.analyser = this.audioCtx!.createAnalyser();
@@ -93,7 +94,8 @@ export class HarmonicsEngine {
 
     private lazyInit(): void {
         if (this.audioCtx) return;
-        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+        const AudioContextClass = window.AudioContext
+            || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
         this.audioCtx = new AudioContextClass();
         this.analyser = this.audioCtx!.createAnalyser();
         this.analyser.fftSize = 2048;
