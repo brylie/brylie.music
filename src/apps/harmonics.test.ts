@@ -2,8 +2,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { HarmonicsEngine, INTERVAL_NAMES } from './harmonics';
 
 // Mock AudioContext and related nodes
-const activeOscillators = new Set();
-
 const mockOscillator = {
     type: 'sine',
     frequency: { value: 0, setValueAtTime: vi.fn() },
