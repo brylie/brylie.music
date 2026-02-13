@@ -56,20 +56,7 @@ export class HarmonicsEngine {
     }
 
     public async init(): Promise<void> {
-        if (this.audioCtx) return;
-
-        const AudioContextClass = window.AudioContext
-            || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-        this.audioCtx = new AudioContextClass();
-
-        this.analyser = this.audioCtx!.createAnalyser();
-        this.analyser.fftSize = 2048;
-
-        this.masterGain = this.audioCtx!.createGain();
-        this.masterGain.gain.value = this.state.masterVolume;
-
-        this.masterGain.connect(this.analyser);
-        this.analyser.connect(this.audioCtx!.destination);
+        this.ensureAudioContext();
     }
 
     public getAnalyser(): AnalyserNode | null {
@@ -83,8 +70,9 @@ export class HarmonicsEngine {
             // However, separating init allows handling async resume if needed.
             // We'll call the synchronous part of init if needed.
             // But let's rely on explicit init or lazy init.
-            this.lazyInit();
-            // Note: in tests lazyInit calls new AudioContext which is mocked.
+            // But let's rely on explicit init or lazy init.
+            this.ensureAudioContext();
+            // Note: in tests ensureAudioContext calls new AudioContext which is mocked.
         }
 
         if (this.audioCtx?.state === 'suspended') {
@@ -95,7 +83,7 @@ export class HarmonicsEngine {
         this.syncOscillators();
     }
 
-    private lazyInit(): void {
+    private ensureAudioContext(): void {
         if (this.audioCtx) return;
         const AudioContextClass = window.AudioContext
             || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
