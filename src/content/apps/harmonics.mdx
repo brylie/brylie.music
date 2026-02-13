@@ -1,0 +1,40 @@
+---
+title: "Interactive Harmonic Series"
+description: "Explore the building blocks of musical sound. Visualize and manipulate the first 16 harmonics of the overtone series."
+component: "Harmonics"
+category: "learning"
+keywords:
+  - "harmonics"
+  - "overtone series"
+  - "timbre"
+  - "synthesis"
+  - "physics of sound"
+  - "oscillator"
+  - "waveform"
+---
+
+import Harmonics from '../../apps/Harmonics.svelte';
+
+<Harmonics client:load />
+
+## About the Harmonic Series
+
+The harmonic series is the foundation of musical tone and timbre. When any object vibrates (like a guitar string or air in a flute), it doesn't just vibrate at one frequency. It vibrates at many frequencies simultaneously.
+
+These frequencies are integers multiples of the **fundamental frequency**:
+
+- **1st Harmonic (Fundamental):** The pitch you hear (e.g., 220 Hz)
+- **2nd Harmonic:** 2x freq (440 Hz) - One octave up
+- **3rd Harmonic:** 3x freq (660 Hz) - Perfect 5th above that
+- **4th Harmonic:** 4x freq (880 Hz) - Two octaves up
+
+### How to Use
+
+1.  **Play:** Click the Play button to start the sound engine.
+2.  **Toggle Harmonics:** Click the numbered buttons (1-16) to turn specific harmonics on or off.
+3.  **Adjust Levels:** Use the sliders to change the volume of the fundamental or individual harmonics.
+4.  **Visualize:** Watch how the waveform shape changes as you add more complex harmonics.
+
+### Why It Matters
+
+The relative volume of these harmonics is what gives each instrument its unique "color" or **timbre**. A clarinet has strong odd harmonics, while a violin has a rich set of all harmonics. By adjusting these levels, you are performing **additive synthesis**—building complex sounds from simple sine waves.
