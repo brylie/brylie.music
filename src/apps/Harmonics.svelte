@@ -165,7 +165,6 @@
     onMount(() => {
         resizeCanvas();
         window.addEventListener("resize", resizeCanvas);
-        drawWaveform();
     });
 
     onDestroy(() => {
