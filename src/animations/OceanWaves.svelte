@@ -9,7 +9,7 @@
     generateFoamParticles,
     type OceanWaveConfig,
     type FoamParticle,
-  } from "../../animations/oceanWaves";
+  } from "./oceanWaves";
 
   interface Props {
     width?: number;
