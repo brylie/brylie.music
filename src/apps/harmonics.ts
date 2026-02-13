@@ -91,7 +91,7 @@ export class HarmonicsEngine {
         this.syncOscillators();
     }
 
-    private lazyInit() {
+    private lazyInit(): void {
         if (this.audioCtx) return;
         const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
         this.audioCtx = new AudioContextClass();
@@ -122,7 +122,7 @@ export class HarmonicsEngine {
         return this.state.isPlaying;
     }
 
-    public setFundamental(freq: number) {
+    public setFundamental(freq: number): void {
         this.state.fundamentalFreq = freq;
         if (this.state.isPlaying && this.audioCtx) {
             const now = this.audioCtx.currentTime;
@@ -133,18 +133,18 @@ export class HarmonicsEngine {
     }
 
     // Alias for setFundamental to match tests if needed, or update tests
-    public setFrequency(freq: number) {
+    public setFrequency(freq: number): void {
         this.setFundamental(freq);
     }
 
-    public setMasterVolume(vol: number) {
+    public setMasterVolume(vol: number): void {
         this.state.masterVolume = vol;
         if (this.masterGain && this.audioCtx) {
             this.masterGain.gain.setValueAtTime(vol, this.audioCtx.currentTime);
         }
     }
 
-    public toggleHarmonic(index: number) {
+    public toggleHarmonic(index: number): void {
         if (index < 0 || index >= this.state.harmonics.length) return;
 
         this.state.harmonics[index].active = !this.state.harmonics[index].active;
@@ -153,7 +153,7 @@ export class HarmonicsEngine {
         }
     }
 
-    public setHarmonicVolume(index: number, vol: number) {
+    public setHarmonicVolume(index: number, vol: number): void {
         if (index < 0 || index >= this.state.harmonics.length) return;
 
         this.state.harmonics[index].volume = vol;
@@ -166,7 +166,7 @@ export class HarmonicsEngine {
         }
     }
 
-    private syncOscillators() {
+    private syncOscillators(): void {
         if (!this.audioCtx || !this.masterGain) return;
         const now = this.audioCtx.currentTime;
 
