@@ -85,7 +85,7 @@ const { prop1, prop2 } = Astro.props;
 
 ### TypeScript
 
-- Use explicit types for function parameters and return values
+- Use explicit types for function parameters and return values (including `: void`)
 - Prefer `interface` over `type` for object shapes
 - Use `const` by default, `let` when mutation is needed
 - Avoid `any`; use `unknown` if type is truly unknown
@@ -225,7 +225,7 @@ test(utils): add edge cases for bpm calculations
 - ❌ Don't use `onMount` for simple effects (use `$effect` instead)
 - ✅ Embrace runes: `$state`, `$derived`, `$effect`, `$props`
 
-### TypeScript
+### TypeScript Common Errors
 
 - ❌ Don't use `any` type
 - ❌ Don't ignore TypeScript errors (fix them properly)
