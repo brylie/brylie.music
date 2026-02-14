@@ -26,7 +26,7 @@ This document provides essential context for AI coding agents (Claude, Gemini, G
 
 - **Svelte 5**: Interactive components with runes (modern reactive patterns)
   - Use `$state`, `$derived`, `$effect` runes
-  - Components in `src/components/` and `src/components/apps/`
+  - Components in `src/components/` and `src/apps/`
 - **Tailwind CSS 4.x**: Utility-first CSS framework
   - Modern Vite integration (`@tailwindcss/vite`)
   - Typography plugin for markdown styling
@@ -102,7 +102,6 @@ const { prop1, prop2 } = Astro.props;
 ```text
 src/
 ├── components/           # Reusable Astro/Svelte components
-│   ├── apps/            # Interactive musical apps (Svelte)
 │   └── *.astro          # Layout components
 ├── content/             # Content collections (type-safe)
 │   ├── blog/           # Blog posts (MDX)
