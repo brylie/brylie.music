@@ -190,12 +190,12 @@
             </p>
         </header>
 
-        <div class="info-card rounded-2xl p-4 md:p-6 mb-6">
+        <div class="bg-gradient-to-br from-[#0c1018] to-[#121820] border border-[#1e2836] rounded-2xl p-4 md:p-6 mb-6">
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-3">
                     <div
                         class="w-3 h-3 rounded-full transition-colors duration-300"
-                        class:pulse-indicator={isPlaying}
+                        class:animate-pulse={isPlaying}
                         style:background-color={isPlaying
                             ? "#00e8b8"
                             : "#6b7a8c"}
@@ -203,13 +203,13 @@
                     <span class="font-mono text-sm text-[#6b7a8c]"
                         >WAVEFORM</span
                     >
-                </div>
-                <div class="font-mono text-sm text-[#6b7a8c]">
-                    <span>{activeCount}</span> harmonics active
-                </div>
-            </div>
-            <canvas
-                bind:this={canvas}
+                    <div
+                        class="w-3 h-3 rounded-full transition-colors duration-300"
+                        class:animate-pulse={isPlaying}
+                        style:background-color={isPlaying
+                            ? "#00e8b8"
+                            : "#1e2836"}
+                    ></div>
                 class="w-full rounded-xl"
                 style="background: #06080c; height: {CANVAS_HEIGHT}px;"
             >
@@ -238,7 +238,7 @@
                         value={fundamentalFreq}
                         oninput={handleFreqChange}
                         class="volume-slider"
-                        aria-label="Fundamental frequency"
+                            <div class="bg-gradient-to-br from-[#0c1018] to-[#121820] border border-[#1e2836] rounded-2xl p-4 md:p-6">
                     />
                 </div>
 
@@ -372,10 +372,10 @@
 </div>
 
 <style>
-    .info-card {
-        background: linear-gradient(135deg, #0c1018 0%, #121820 100%);
-        border: 1px solid #1e2836;
-    }
+    /*
+     * Custom slider pseudo-element styles remain below.
+     * .info-card and .pulse-indicator now use Tailwind utilities.
+     */
 
     .harmonic-btn.active {
         background: linear-gradient(
@@ -445,17 +445,5 @@
         transform: scale(0.98);
     }
 
-    .pulse-indicator {
-        animation: pulse 1.5s ease-in-out infinite;
-    }
 
-    @keyframes pulse {
-        0%,
-        100% {
-            opacity: 1;
-        }
-        50% {
-            opacity: 0.5;
-        }
-    }
 </style>
