@@ -22,13 +22,15 @@ const createMockAnalyser = () => ({
     connect: vi.fn()
 });
 
+
+// Single source of truth for AudioContext mock
 const mockAudioContext = {
     createOscillator: vi.fn(() => createMockOscillator()),
     createGain: vi.fn(() => createMockGain()),
     createAnalyser: vi.fn(() => createMockAnalyser()),
-    destination: {},
-    currentTime: 0,
-    state: 'suspended',
+    get destination() { return {}; },
+    get currentTime() { return 0; },
+    get state() { return 'suspended'; },
     resume: vi.fn().mockResolvedValue(undefined)
 };
 
@@ -36,16 +38,10 @@ describe('HarmonicsEngine', () => {
     let engine: HarmonicsEngine;
 
     beforeEach(() => {
-        // Mock global AudioContext
-        const AudioContextMock = vi.fn();
-        AudioContextMock.prototype.createAnalyser = vi.fn(() => createMockAnalyser());
-        AudioContextMock.prototype.createGain = vi.fn(() => createMockGain());
-        AudioContextMock.prototype.createOscillator = vi.fn(() => createMockOscillator());
-        AudioContextMock.prototype.resume = mockAudioContext.resume;
-        Object.defineProperty(AudioContextMock.prototype, 'destination', { get: () => ({}) });
-        Object.defineProperty(AudioContextMock.prototype, 'currentTime', { get: () => 0 });
-        Object.defineProperty(AudioContextMock.prototype, 'state', { get: () => 'suspended' });
-
+        // Provide a constructor that returns mockAudioContext
+        function AudioContextMock(this: any) {
+            return mockAudioContext;
+        }
         vi.stubGlobal('AudioContext', AudioContextMock);
         vi.stubGlobal('webkitAudioContext', AudioContextMock);
         engine = new HarmonicsEngine();
