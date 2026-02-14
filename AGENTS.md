@@ -5,6 +5,7 @@ This document provides essential context for AI coding agents (Claude, Gemini, G
 ## Project Overview
 
 **brylie.music** is a personal music website built with modern web technologies, featuring:
+
 - Music releases with Creative Commons licensing
 - Blog posts about music and technology
 - Interactive musical applications (Svelte-based)
@@ -14,6 +15,7 @@ This document provides essential context for AI coding agents (Claude, Gemini, G
 ## Technology Stack
 
 ### Core Framework
+
 - **Astro 5.x**: Static site generator with content collections
   - File-based routing in `src/pages/`
   - Type-safe content collections in `src/content/`
@@ -21,15 +23,17 @@ This document provides essential context for AI coding agents (Claude, Gemini, G
   - Server-side rendering capabilities
 
 ### UI & Styling
+
 - **Svelte 5**: Interactive components with runes (modern reactive patterns)
   - Use `$state`, `$derived`, `$effect` runes
-  - Components in `src/components/` and `src/components/apps/`
+  - Components in `src/components/` and `src/apps/`
 - **Tailwind CSS 4.x**: Utility-first CSS framework
   - Modern Vite integration (`@tailwindcss/vite`)
   - Typography plugin for markdown styling
   - Custom configuration in `tailwind.config.js`
 
 ### Development
+
 - **TypeScript 5.x**: Type-safe development
   - Strict mode enabled
   - Configuration in `tsconfig.json`
@@ -41,6 +45,7 @@ This document provides essential context for AI coding agents (Claude, Gemini, G
 ## Coding Conventions
 
 ### Astro Components
+
 ```astro
 ---
 // TypeScript in frontmatter for SSR logic
@@ -60,6 +65,7 @@ const { prop1, prop2 } = Astro.props;
 ```
 
 ### Svelte 5 Components
+
 ```svelte
 <script lang="ts">
   // Use runes for reactive state
@@ -78,22 +84,24 @@ const { prop1, prop2 } = Astro.props;
 ```
 
 ### TypeScript
-- Use explicit types for function parameters and return values
+
+- Use explicit types for function parameters and return values (including `: void`)
 - Prefer `interface` over `type` for object shapes
 - Use `const` by default, `let` when mutation is needed
 - Avoid `any`; use `unknown` if type is truly unknown
 
 ### Styling with Tailwind
+
 - Prefer Tailwind utilities over custom CSS
 - Use semantic class names when combining multiple utilities
 - Dark theme optimized: use `dark:` variants sparingly
 - Component-specific styles: use Astro's scoped `<style>` tags if needed
 
 ### File Organization
+
 ```text
 src/
 ├── components/           # Reusable Astro/Svelte components
-│   ├── apps/            # Interactive musical apps (Svelte)
 │   └── *.astro          # Layout components
 ├── content/             # Content collections (type-safe)
 │   ├── blog/           # Blog posts (MDX)
@@ -105,12 +113,13 @@ src/
 │   ├── blog/          # Blog routes
 │   └── releases/      # Release routes
 ├── styles/            # Global CSS
-└── utils/             # Utility functions (with tests)
+└── apps/              # Interactive musical apps (Svelte + Logic + Tests)
 ```
 
 ## Content Collections
 
 ### Schema Definitions
+
 Content collections use Zod schemas in `src/content.config.ts`:
 
 ```typescript
@@ -131,12 +140,14 @@ const blog = defineCollection({
 ### Testing Strategy
 
 #### Unit Tests (Vitest)
+
 - Test utility functions in isolation
 - Place tests adjacent to implementation: `bpm.ts` → `bpm.test.ts`
 - Use descriptive test names: `test('converts BPM to whole note duration', ...)`
 - Run with `npm run test` or `npm run test:ui`
 
 #### Example Test Structure
+
 ```typescript
 import { describe, test, expect } from 'vitest';
 import { functionName } from './module';
@@ -154,16 +165,18 @@ describe('functionName', () => {
 
 ## Musical Apps Guidelines
 
-Interactive musical applications are built with Svelte and documented in `src/content/APPS_README.md`.
+Interactive musical applications are built with Svelte and documented in `src/apps/README.md`.
 
 ### App Structure
-- Component: `src/components/apps/AppName.svelte` (interactive UI)
+
+- Component: `src/apps/AppName.svelte` (interactive UI)
+- Logic: `src/apps/appName.ts` (business logic)
+- Tests: `src/apps/appName.test.ts` (unit tests)
 - Metadata: `src/content/apps/app-name.mdx` (description, documentation)
-- Utils: `src/utils/appName.ts` (business logic, with tests)
-- Route: `src/pages/apps/[...slug].astro` (dynamic routing)
 
 ### App Best Practices
-1. **Separation of Concerns**: Business logic in utils, UI in Svelte components
+
+1. **Separation of Concerns**: Business logic in `.ts` files, UI in Svelte components, both co-located in `src/apps/`
 2. **Type Safety**: TypeScript for all logic functions
 3. **Testing**: Unit tests for all utility functions
 4. **Accessibility**: WCAG 2.1 AA compliance (semantic HTML, ARIA labels)
@@ -172,12 +185,15 @@ Interactive musical applications are built with Svelte and documented in `src/co
 ## Git Workflow
 
 ### Branch Strategy
+
 - `main`: Production-ready code
 - Feature branches: `feature/description` or `fix/description`
 - Create PR for review before merging
 
 ### Commit Messages
+
 Follow conventional commits:
+
 ```text
 feat(apps): add BPM calculator with millisecond subdivisions
 fix(blog): correct date formatting in post metadata
@@ -186,6 +202,7 @@ test(utils): add edge cases for bpm calculations
 ```
 
 ### Code Review Focus Areas
+
 1. **Type Safety**: Ensure TypeScript types are properly defined
 2. **Performance**: Check for unnecessary re-renders, large bundle sizes
 3. **Accessibility**: Verify semantic HTML and ARIA attributes
@@ -196,22 +213,26 @@ test(utils): add edge cases for bpm calculations
 ## Common Pitfalls to Avoid
 
 ### Astro
+
 - ❌ Don't use React hooks in Astro components (use Svelte or vanilla JS)
 - ❌ Don't import client components without proper directives
 - ✅ Use `client:load`, `client:visible`, etc. for interactive islands
 
 ### Svelte 5
+
 - ❌ Don't use legacy `$:` reactive statements (use `$derived` instead)
 - ❌ Don't use `onMount` for simple effects (use `$effect` instead)
 - ✅ Embrace runes: `$state`, `$derived`, `$effect`, `$props`
 
-### TypeScript
+### TypeScript Common Errors
+
 - ❌ Don't use `any` type
 - ❌ Don't ignore TypeScript errors (fix them properly)
 - ✅ Use explicit return types for functions
 - ✅ Leverage type inference when appropriate
 
 ### Tailwind
+
 - ❌ Don't create duplicate utility classes in custom CSS
 - ❌ Don't use overly complex class strings (consider component extraction)
 - ✅ Use Tailwind's built-in responsive and dark mode utilities
@@ -227,6 +248,7 @@ test(utils): add edge cases for bpm calculations
 ## SEO Requirements
 
 All pages should include:
+
 - Canonical URLs
 - OpenGraph metadata
 - Twitter card metadata
