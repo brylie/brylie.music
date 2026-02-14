@@ -65,14 +65,8 @@ export class HarmonicsEngine {
 
     public async play(): Promise<void> {
         if (!this.audioCtx) {
-            // In a real app, we might need to wait for init, but for now we assume init 
-            // is called or we call it synchronously (AudioContext ctor is sync).
-            // However, separating init allows handling async resume if needed.
-            // We'll call the synchronous part of init if needed.
-            // But let's rely on explicit init or lazy init.
-            // But let's rely on explicit init or lazy init.
+            // Ensure AudioContext is initialized
             this.ensureAudioContext();
-            // Note: in tests ensureAudioContext calls new AudioContext which is mocked.
         }
 
         if (this.audioCtx?.state === 'suspended') {
@@ -88,18 +82,18 @@ export class HarmonicsEngine {
         const AudioContextClass = window.AudioContext
             || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
         this.audioCtx = new AudioContextClass();
-        this.analyser = this.audioCtx!.createAnalyser();
+        this.analyser = this.audioCtx.createAnalyser();
         this.analyser.fftSize = 2048;
-        this.masterGain = this.audioCtx!.createGain();
+        this.masterGain = this.audioCtx.createGain();
         this.masterGain.gain.value = this.state.masterVolume;
         this.masterGain.connect(this.analyser);
-        this.analyser.connect(this.audioCtx!.destination);
+        this.analyser.connect(this.audioCtx.destination);
     }
 
     public stop(): void {
         this.state.isPlaying = false;
         this.nodes.forEach(node => {
-            try { node.osc.stop(); } catch (e) { }
+            try { node.osc.stop(); } catch (_) { /* already stopped */ }
             node.osc.disconnect();
             node.gain.disconnect();
         });
@@ -116,6 +110,7 @@ export class HarmonicsEngine {
     }
 
     public setFundamental(freq: number): void {
+        if (!Number.isFinite(freq) || freq <= 0) return;
         this.state.fundamentalFreq = freq;
         if (this.state.isPlaying && this.audioCtx) {
             const now = this.audioCtx.currentTime;
@@ -125,7 +120,6 @@ export class HarmonicsEngine {
         }
     }
 
-    // Alias for setFundamental to match tests if needed, or update tests
     public setFrequency(freq: number): void {
         this.setFundamental(freq);
     }
@@ -153,8 +147,7 @@ export class HarmonicsEngine {
         if (this.state.isPlaying && this.audioCtx) {
             const node = this.nodes.get(index);
             if (node) {
-                // Scales volume by 0.3 to prevent clipping as in original
-                node.gain.gain.setValueAtTime(vol * 0.3, this.audioCtx.currentTime);
+                node.gain.gain.setValueAtTime(vol * HARMONIC_GAIN_SCALE, this.audioCtx.currentTime);
             }
         }
     }
@@ -168,15 +161,15 @@ export class HarmonicsEngine {
 
             if (h.active && !hasNode) {
                 // Create
-                const osc = this.audioCtx!.createOscillator();
-                const gain = this.audioCtx!.createGain();
+                const osc = this.audioCtx.createOscillator();
+                const gain = this.audioCtx.createGain();
 
                 osc.type = 'sine';
                 osc.frequency.value = this.state.fundamentalFreq * (i + 1);
-                gain.gain.value = h.volume * 0.3;
+                gain.gain.value = h.volume * HARMONIC_GAIN_SCALE;
 
                 osc.connect(gain);
-                gain.connect(this.masterGain!);
+                gain.connect(this.masterGain);
                 osc.start(now);
 
                 this.nodes.set(i, { osc, gain });
@@ -184,7 +177,7 @@ export class HarmonicsEngine {
                 // Remove
                 const node = this.nodes.get(i);
                 if (node) {
-                    try { node.osc.stop(now); } catch (e) { }
+                    try { node.osc.stop(now); } catch (_) { /* already stopped */ }
                     node.osc.disconnect();
                     node.gain.disconnect();
                     this.nodes.delete(i);
@@ -192,4 +185,6 @@ export class HarmonicsEngine {
             }
         });
     }
+// Gain scaling factor for harmonics to prevent clipping
+const HARMONIC_GAIN_SCALE = 0.3;
 }
