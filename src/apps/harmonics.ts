@@ -185,6 +185,7 @@ export class HarmonicsEngine {
             }
         });
     }
+}
+
 // Gain scaling factor for harmonics to prevent clipping
 const HARMONIC_GAIN_SCALE = 0.3;
-}
