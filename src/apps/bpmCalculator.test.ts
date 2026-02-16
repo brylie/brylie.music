@@ -5,7 +5,7 @@ import {
 	calculateTriplet,
 	calculateAllSubdivisions,
 	SUBDIVISIONS,
-} from './bpm';
+} from './bpmCalculator';
 
 describe('calculateNoteLength', () => {
 	it('calculates quarter note at 120 BPM correctly', () => {

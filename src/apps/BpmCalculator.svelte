@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { calculateAllSubdivisions } from "../../utils/bpm";
+  import { calculateAllSubdivisions } from "./bpmCalculator";
 
   let bpm = $state(120);
   let subdivisions = $derived(calculateAllSubdivisions(bpm));
