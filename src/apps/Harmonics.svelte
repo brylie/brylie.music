@@ -10,8 +10,6 @@
   let isPlaying = $state(false);
   let fundamentalFreq = $state(220);
   let masterVolume = $state(50); // 0-100 for slider
-  let activeCount = $derived(harmonics.filter((h) => h.active).length);
-
   // Canvas refs
   let canvas: HTMLCanvasElement;
   let animationId: number | null = null;
@@ -224,37 +222,41 @@
         </h3>
 
         <div class="mb-5">
-          <label class="flex items-center justify-between mb-2">
-            <span class="text-sm">Fundamental</span>
-            <span class="font-mono text-sm text-[#00e8b8]"
-              >{fundamentalFreq} Hz</span
-            >
+          <label>
+            <span class="flex items-center justify-between mb-2">
+              <span class="text-sm">Fundamental</span>
+              <span class="font-mono text-sm text-[#00e8b8]"
+                >{fundamentalFreq} Hz</span
+              >
+            </span>
+            <input
+              type="range"
+              min="55"
+              max="440"
+              value={fundamentalFreq}
+              oninput={handleFreqChange}
+              class="volume-slider"
+            />
           </label>
-          <input
-            type="range"
-            min="55"
-            max="440"
-            value={fundamentalFreq}
-            oninput={handleFreqChange}
-            class="volume-slider"
-          />
         </div>
 
         <div class="mb-5">
-          <label class="flex items-center justify-between mb-2">
-            <span class="text-sm">Master Volume</span>
-            <span class="font-mono text-sm text-[#00e8b8]">{masterVolume}%</span
-            >
+          <label>
+            <span class="flex items-center justify-between mb-2">
+              <span class="text-sm">Master Volume</span>
+              <span class="font-mono text-sm text-[#00e8b8]"
+                >{masterVolume}%</span
+              >
+            </span>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={masterVolume}
+              oninput={handleMasterVolChange}
+              class="volume-slider"
+            />
           </label>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={masterVolume}
-            oninput={handleMasterVolChange}
-            class="volume-slider"
-            aria-label="Master volume"
-          />
         </div>
 
         <button
@@ -413,5 +415,4 @@
     border-radius: 50%;
     border: none;
   }
-
 </style>
