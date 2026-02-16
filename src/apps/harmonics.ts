@@ -147,6 +147,8 @@ export class HarmonicsEngine {
 
     public setHarmonicVolume(index: number, vol: number): void {
         if (index < 0 || index >= this.state.harmonics.length) return;
+        if (!Number.isFinite(vol)) return;
+        vol = Math.max(0, Math.min(1, vol));
 
         this.state.harmonics[index].volume = vol;
         if (this.state.isPlaying && this.audioCtx) {
