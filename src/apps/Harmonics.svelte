@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
   import { HarmonicsEngine, INTERVAL_NAMES } from "./harmonics";
 
   // Initialize engine
@@ -52,6 +51,7 @@
     const val = Number((e.target as HTMLInputElement).value);
     masterVolume = val;
     engine.setMasterVolume(val / 100);
+    // No drawWaveform() call: master volume doesn't affect the preview waveform shape
   }
 
   function handleHarmonicVolChange(index: number, e: Event) {
@@ -169,17 +169,14 @@
     drawWaveform();
   }
 
-  onMount(() => {
+  $effect(() => {
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
-  });
-
-  onDestroy(() => {
-    if (typeof window !== "undefined") {
+    return () => {
       window.removeEventListener("resize", resizeCanvas);
-    }
-    if (animationId) cancelAnimationFrame(animationId);
-    engine.stop();
+      if (animationId) cancelAnimationFrame(animationId);
+      engine.stop();
+    };
   });
 </script>
 
@@ -262,7 +259,7 @@
 
         <button
           onclick={togglePlay}
-          class="play-btn w-full py-4 rounded-xl font-mono font-bold text-sm tracking-wider flex items-center justify-center gap-2 transition-transform border border-[#1e2836] text-[#e8ecf4]"
+          class="w-full py-4 rounded-xl font-mono font-bold text-sm tracking-wider flex items-center justify-center gap-2 transition-transform border border-[#1e2836] text-[#e8ecf4] hover:scale-105 hover:shadow-[0_0_32px_rgba(0,232,184,0.15)] active:scale-[0.98]"
           style:background={isPlaying
             ? "linear-gradient(135deg, #ff7844 0%, #cc5020 100%)"
             : "#121820"}
@@ -417,12 +414,4 @@
     border: none;
   }
 
-  .play-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 32px rgba(0, 232, 184, 0.15);
-  }
-
-  .play-btn:active {
-    transform: scale(0.98);
-  }
 </style>
