@@ -128,6 +128,8 @@ export class HarmonicsEngine {
     }
 
     public setMasterVolume(vol: number): void {
+        if (!Number.isFinite(vol)) return;
+        vol = Math.max(0, Math.min(1, vol));
         this.state.masterVolume = vol;
         if (this.masterGain && this.audioCtx) {
             this.masterGain.gain.setValueAtTime(vol, this.audioCtx.currentTime);
