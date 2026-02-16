@@ -24,6 +24,9 @@ export interface HarmonicsState {
     isPlaying: boolean;
 }
 
+// Gain scaling factor for harmonics to prevent clipping
+const HARMONIC_GAIN_SCALE = 0.3;
+
 export class HarmonicsEngine {
     private audioCtx: AudioContext | null = null;
     private masterGain: GainNode | null = null;
@@ -154,22 +157,24 @@ export class HarmonicsEngine {
 
     private syncOscillators(): void {
         if (!this.audioCtx || !this.masterGain) return;
-        const now = this.audioCtx.currentTime;
+        const audioCtx = this.audioCtx;
+        const masterGain = this.masterGain;
+        const now = audioCtx.currentTime;
 
         this.state.harmonics.forEach((h, i) => {
             const hasNode = this.nodes.has(i);
 
             if (h.active && !hasNode) {
                 // Create
-                const osc = this.audioCtx.createOscillator();
-                const gain = this.audioCtx.createGain();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
 
                 osc.type = 'sine';
                 osc.frequency.value = this.state.fundamentalFreq * (i + 1);
                 gain.gain.value = h.volume * HARMONIC_GAIN_SCALE;
 
                 osc.connect(gain);
-                gain.connect(this.masterGain);
+                gain.connect(masterGain);
                 osc.start(now);
 
                 this.nodes.set(i, { osc, gain });
@@ -186,6 +191,3 @@ export class HarmonicsEngine {
         });
     }
 }
-
-// Gain scaling factor for harmonics to prevent clipping
-const HARMONIC_GAIN_SCALE = 0.3;
