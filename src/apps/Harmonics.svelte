@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { untrack } from "svelte";
   import { HarmonicsEngine, INTERVAL_NAMES } from "./harmonics";
 
   // Initialize engine
@@ -168,7 +169,7 @@
   }
 
   $effect(() => {
-    resizeCanvas();
+    untrack(() => resizeCanvas());
     window.addEventListener("resize", resizeCanvas);
     return () => {
       window.removeEventListener("resize", resizeCanvas);
