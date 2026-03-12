@@ -12,16 +12,16 @@
     "test:run": "vitest run"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.3.13",
-    "@astrojs/rss": "^4.0.14",
-    "@astrojs/sitemap": "^3.6.0",
-    "@astrojs/svelte": "^7.2.5",
+    "@astrojs/mdx": "^5.0.0",
+    "@astrojs/rss": "^4.0.17",
+    "@astrojs/sitemap": "^3.7.1",
+    "@astrojs/svelte": "^8.0.0",
     "@fontsource/atkinson-hyperlegible": "^5.2.7",
     "@iconify-json/material-symbols": "^1.2.34",
     "@iconify-json/mdi": "^1.2.3",
     "@iconify-json/simple-icons": "^1.2.66",
     "@tailwindcss/vite": "^4.1.13",
-    "astro": "^5.16.6",
+    "astro": "^6.0.3",
     "astro-abcjs": "^2.0.0",
     "astro-embed": "^0.12.0",
     "astro-icon": "^1.1.5",
@@ -32,6 +32,9 @@
     "svelte": "^5.50.0",
     "tailwindcss": "^4.1.13",
     "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": "^20.19.1 || >=22.12.0"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",
