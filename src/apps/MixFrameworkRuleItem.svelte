@@ -9,11 +9,11 @@
 
   let open = $state(false);
 
-  function toggle() {
+  function toggle(): void {
     open = !open;
   }
 
-  function handleKeydown(e: KeyboardEvent) {
+  function handleKeydown(e: KeyboardEvent): void {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       toggle();
