@@ -1,0 +1,386 @@
+<script lang="ts">
+  import MixFrameworkRuleItem from "./MixFrameworkRuleItem.svelte";
+  import {
+    TABS,
+    phase0,
+    phase1Elements,
+    phase2,
+    type TabId,
+    type SpectrumBand,
+  } from "./mixFramework";
+
+  let activeTab: TabId = $state("sequence");
+  let activeEl = $state(0);
+  let el = $derived(phase1Elements[activeEl]);
+
+  const sequencePhases = [
+    {
+      label: "Phase 0",
+      name: "Production-Integrated",
+      color: "#6FCF8A",
+      steps: [
+        "Gain staging at source (clip to 0 dBFS)",
+        "Load reference tracks, match LUFS",
+        "Set rough fader balance",
+        "Group stems logically",
+        "Mono check before finishing session",
+      ],
+    },
+    {
+      label: "Phase 1",
+      name: "Static Mix",
+      color: "#4A9ED4",
+      steps: [
+        "01 — Balance: faders, rough levels",
+        "02 — Frequency: assign regions, EQ, high-pass",
+        "03 — Panorama: pan placement, M/S width",
+        "04 — Dimension: reverb/delay placement",
+        "05 — Dynamics: compression, transient shaping",
+        "→ Mono check after each element",
+      ],
+    },
+    {
+      label: "Phase 2",
+      name: "Dynamic Mix",
+      color: "#CF6F6F",
+      steps: [
+        "06 — Interest: write volume automation first",
+        "Section-level balance automation",
+        "Reverb send rides and throws",
+        "Filter and tonal automation",
+        "Final mono check at mix peak",
+        "LUFS / true peak check (−14 LUFS / −1 dBTP)",
+        "Three-system playback check",
+      ],
+    },
+  ];
+
+  const monoChecks = [
+    {
+      when: "End of production session",
+      why: "Catch phase issues before they compound into the mix",
+    },
+    {
+      when: "After Balance + Frequency (Phase 1, step 2)",
+      why: "Low-end decisions must be mono-safe before proceeding",
+    },
+    {
+      when: "After Panorama (Phase 1, step 3)",
+      why: "Confirm stereo width is real, not phase artefact",
+    },
+    {
+      when: "After all Phase 1 decisions locked",
+      why: "Static mix must be solid in mono before automation begins",
+    },
+    {
+      when: "At the peak moment in Phase 2",
+      why: "Automation shifts M/S balance over time — check at the loudest, densest point",
+    },
+  ];
+</script>
+
+{#snippet tag(text: string, color: string)}
+  <span
+    class="text-xs font-mono tracking-wide px-2 py-0.5 rounded"
+    style:color={color}
+    style:background-color={`${color}18`}
+    style:border={`1px solid ${color}40`}
+  >
+    {text}
+  </span>
+{/snippet}
+
+{#snippet spectrumMap(bands: SpectrumBand[])}
+  <div class="mb-6">
+    <p class="text-xs font-mono uppercase tracking-widest text-gray-500 mb-2">
+      Frequency Regions — Assign Before EQ
+    </p>
+    <div class="flex gap-px h-7 mb-2">
+      {#each bands as band, i}
+        <div
+          class="flex items-center justify-center"
+          style:background={`${band.color}22`}
+          style:border={`1px solid ${band.color}44`}
+          style:flex={i < 2 ? 1 : i < 4 ? 1.5 : 2}
+        >
+          <span class="text-xs font-mono" style:color={band.color}>{band.name}</span>
+        </div>
+      {/each}
+    </div>
+    <div class="flex gap-px">
+      {#each bands as band, i}
+        <div class="pr-1" style:flex={i < 2 ? 1 : i < 4 ? 1.5 : 2}>
+          <div class="text-xs text-gray-400 leading-tight">{band.range}</div>
+          <div class="text-xs text-gray-500 leading-tight mt-0.5">{band.owner}</div>
+        </div>
+      {/each}
+    </div>
+  </div>
+{/snippet}
+
+<div>
+  <!-- Tab bar -->
+  <div class="border-b border-gray-800 flex mb-6">
+    {#each TABS as tab}
+      <button
+        onclick={() => (activeTab = tab.id as TabId)}
+        class="px-4 py-3 flex flex-col gap-0.5 -mb-px cursor-pointer bg-transparent border-t-0 border-x-0 transition-colors"
+        style:border-bottom={activeTab === tab.id
+          ? `2px solid ${tab.color ?? "white"}`
+          : "2px solid transparent"}
+      >
+        <span
+          class="text-sm font-mono tracking-wider transition-colors"
+          class:text-gray-200={activeTab === tab.id}
+          class:text-gray-500={activeTab !== tab.id}
+          style:color={activeTab === tab.id && tab.color ? tab.color : undefined}
+        >
+          {tab.label}
+        </span>
+        <span
+          class="text-xs tracking-wide transition-colors"
+          class:text-gray-400={activeTab === tab.id}
+          class:text-gray-600={activeTab !== tab.id}
+        >
+          {tab.sublabel}
+        </span>
+      </button>
+    {/each}
+  </div>
+
+  <!-- Content -->
+  <div>
+    <!-- SEQUENCE VIEW -->
+    {#if activeTab === "sequence"}
+      <div class="max-w-2xl">
+        <p class="text-xs font-mono uppercase tracking-widest text-gray-500 mb-6">
+          Macro → Micro — Highest impact decisions first
+        </p>
+        <div class="flex gap-px">
+          {#each sequencePhases as ph}
+            <div class="flex-1">
+              <div
+                class="px-3 py-2 border-b-0"
+                style:background={`${ph.color}18`}
+                style:border={`1px solid ${ph.color}33`}
+              >
+                <div class="text-xs font-mono tracking-wider" style:color={ph.color}>
+                  {ph.label}
+                </div>
+                <div class="text-sm text-gray-400 mt-0.5">{ph.name}</div>
+              </div>
+              <div class="p-3 border border-t-0 border-gray-800">
+                {#each ph.steps as step, si}
+                  <div
+                    class="flex gap-2 items-start"
+                    class:mb-2={si < ph.steps.length - 1}
+                  >
+                    <span class="text-xs mt-1 shrink-0" style:color={ph.color}>▸</span>
+                    <span
+                      class="text-sm leading-snug"
+                      class:text-gray-300={!step.startsWith("→")}
+                      class:text-gray-500={step.startsWith("→")}
+                      class:italic={step.startsWith("→")}
+                    >
+                      {step}
+                    </span>
+                  </div>
+                {/each}
+              </div>
+            </div>
+          {/each}
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-gray-800">
+          <p class="text-xs font-mono uppercase tracking-widest text-gray-500 mb-4">
+            Mono Check Schedule
+          </p>
+          {#each monoChecks as m, i}
+            <div
+              class="flex gap-4 items-start pl-3 border-l-2 border-gray-700"
+              class:mb-3={i < monoChecks.length - 1}
+            >
+              <span class="text-sm text-gray-300 min-w-48 leading-snug">{m.when}</span>
+              <span class="text-sm text-gray-400 italic leading-snug">{m.why}</span>
+            </div>
+          {/each}
+        </div>
+      </div>
+
+    <!-- PHASE 0 VIEW -->
+    {:else if activeTab === "phase0"}
+      <div>
+        <p
+          class="text-sm text-gray-400 italic leading-relaxed border-l-2 pl-3 mb-6 max-w-xl"
+          style:border-color={`${phase0.color}44`}
+        >
+          {phase0.tagline}
+        </p>
+        <div class="grid grid-cols-2 gap-4 max-w-3xl">
+          {#each phase0.sections as sec}
+            <div class="bg-gray-900 border border-gray-800 rounded-lg p-5">
+              <div class="flex items-center gap-2 mb-4">
+                <span style:color={phase0.color}>{sec.icon}</span>
+                <span
+                  class="text-xs font-mono uppercase tracking-wider"
+                  style:color={phase0.color}>{sec.title}</span
+                >
+              </div>
+              {#each sec.items as item}
+                <MixFrameworkRuleItem
+                  rule={item.rule}
+                  detail={item.detail}
+                  accentColor={phase0.color}
+                />
+              {/each}
+            </div>
+          {/each}
+        </div>
+      </div>
+
+    <!-- PHASE 1 VIEW -->
+    {:else if activeTab === "phase1"}
+      <div class="flex max-w-3xl">
+        <!-- Element nav sidebar -->
+        <div class="w-40 shrink-0 border-r border-gray-800">
+          <p class="text-xs font-mono uppercase tracking-widest text-gray-500 px-4 pb-3">
+            Elements
+          </p>
+          {#each phase1Elements as e, i}
+            <button
+              onclick={() => (activeEl = i)}
+              class="flex items-center gap-2.5 w-full px-4 py-2.5 border-y-0 border-r-0 cursor-pointer text-left transition-colors"
+              class:bg-gray-900={activeEl === i}
+              style:border-left={activeEl === i ? `2px solid ${e.color}` : "2px solid transparent"}
+              aria-label={`View ${e.name} element`}
+              aria-pressed={activeEl === i}
+            >
+              <span
+                class="text-xs font-mono w-4 shrink-0 transition-colors"
+                class:text-gray-600={activeEl !== i}
+                style:color={activeEl === i ? e.color : undefined}
+              >
+                {e.number}
+              </span>
+              <div>
+                <div
+                  class="text-sm transition-colors"
+                  class:text-gray-200={activeEl === i}
+                  class:text-gray-500={activeEl !== i}
+                >
+                  {e.name}
+                </div>
+                <div
+                  class="text-xs transition-colors"
+                  class:text-gray-400={activeEl === i}
+                  class:text-gray-600={activeEl !== i}
+                >
+                  {e.subtitle}
+                </div>
+              </div>
+            </button>
+          {/each}
+        </div>
+
+        <!-- Element detail pane -->
+        <div class="flex-1 pl-7">
+          <div class="flex items-baseline gap-4 mb-3">
+            <span class="text-6xl font-bold text-gray-800 tracking-tighter select-none">
+              {el.number}
+            </span>
+            <div>
+              <div
+                class="text-xl font-semibold tracking-widest"
+                style:color={el.color}
+              >
+                {el.name}
+              </div>
+              <div class="text-xs font-mono uppercase tracking-widest text-gray-500 mt-1">
+                {el.subtitle}
+              </div>
+            </div>
+          </div>
+
+          <p
+            class="text-sm text-gray-400 italic leading-relaxed border-l-2 pl-3 mb-5 max-w-lg"
+            style:border-color={`${el.color}33`}
+          >
+            {el.description}
+          </p>
+
+          {#if el.spectrum}
+            {@render spectrumMap(el.spectrum.bands)}
+          {/if}
+
+          <div class="mb-5">
+            <p class="text-xs font-mono uppercase tracking-widest text-gray-500 mb-3">
+              Rules
+            </p>
+            {#each el.rules as r}
+              <MixFrameworkRuleItem rule={r.rule} detail={r.detail} accentColor={el.color} />
+            {/each}
+          </div>
+
+          <div class="flex gap-4 items-start">
+            <div class="flex-1">
+              <p class="text-xs font-mono uppercase tracking-widest text-gray-500 mb-2">
+                Tools
+              </p>
+              <div class="flex flex-wrap gap-1.5">
+                {#each el.tools as t}
+                  {@render tag(t, el.color)}
+                {/each}
+              </div>
+            </div>
+            <div
+              class="flex-1 rounded-lg p-4"
+              style:background={`${el.color}08`}
+              style:border={`1px solid ${el.color}22`}
+            >
+              <p
+                class="text-xs font-mono uppercase tracking-wider mb-2"
+                style:color={el.color}
+              >
+                Key Insight
+              </p>
+              <p class="text-sm text-gray-400 italic leading-relaxed m-0">
+                {el.insight}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <!-- PHASE 2 VIEW -->
+    {:else if activeTab === "phase2"}
+      <div>
+        <p
+          class="text-sm text-gray-400 italic leading-relaxed border-l-2 pl-3 mb-6 max-w-xl"
+          style:border-color={`${phase2.color}44`}
+        >
+          {phase2.tagline}
+        </p>
+        <div class="grid grid-cols-2 gap-4 max-w-3xl">
+          {#each phase2.sections as sec}
+            <div class="bg-gray-900 border border-gray-800 rounded-lg p-5">
+              <div class="flex items-center gap-2 mb-4">
+                <span style:color={phase2.color}>{sec.icon}</span>
+                <span
+                  class="text-xs font-mono uppercase tracking-wider"
+                  style:color={phase2.color}>{sec.title}</span
+                >
+              </div>
+              {#each sec.items as item}
+                <MixFrameworkRuleItem
+                  rule={item.rule}
+                  detail={item.detail}
+                  accentColor={phase2.color}
+                />
+              {/each}
+            </div>
+          {/each}
+        </div>
+      </div>
+    {/if}
+  </div>
+</div>
