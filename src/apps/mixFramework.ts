@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2025 Brylie Christopher Oxley
+// Copyright (c) 2026 Brylie Christopher Oxley
 
 // ── TYPES ─────────────────────────────────────────────────────────────────────
 
