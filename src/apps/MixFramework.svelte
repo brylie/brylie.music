@@ -5,6 +5,8 @@
     phase0,
     phase1Elements,
     phase2,
+    sequencePhases,
+    monoChecks,
     type TabId,
     type SpectrumBand,
   } from "./mixFramework";
@@ -12,71 +14,6 @@
   let activeTab: TabId = $state("sequence");
   let activeEl = $state(0);
   let el = $derived(phase1Elements[activeEl]);
-
-  const sequencePhases = [
-    {
-      label: "Phase 0",
-      name: "Production-Integrated",
-      color: "#6FCF8A",
-      steps: [
-        "Gain staging at source (clip to 0 dBFS)",
-        "Load reference tracks, match LUFS",
-        "Set rough fader balance",
-        "Group stems logically",
-        "Mono check before finishing session",
-      ],
-    },
-    {
-      label: "Phase 1",
-      name: "Static Mix",
-      color: "#4A9ED4",
-      steps: [
-        "01 — Balance: faders, rough levels",
-        "02 — Frequency: assign regions, EQ, high-pass",
-        "03 — Panorama: pan placement, M/S width",
-        "04 — Dimension: reverb/delay placement",
-        "05 — Dynamics: compression, transient shaping",
-        "→ Mono check after each element",
-      ],
-    },
-    {
-      label: "Phase 2",
-      name: "Dynamic Mix",
-      color: "#CF6F6F",
-      steps: [
-        "06 — Interest: write volume automation first",
-        "Section-level balance automation",
-        "Reverb send rides and throws",
-        "Filter and tonal automation",
-        "Final mono check at mix peak",
-        "LUFS / true peak check (−14 LUFS / −1 dBTP)",
-        "Three-system playback check",
-      ],
-    },
-  ];
-
-  const monoChecks = [
-    {
-      when: "End of production session",
-      why: "Catch phase issues before they compound into the mix",
-    },
-    {
-      when: "After Balance + Frequency (Phase 1, step 2)",
-      why: "Low-end decisions must be mono-safe before proceeding",
-    },
-    {
-      when: "After Panorama (Phase 1, step 3)",
-      why: "Confirm stereo width is real, not phase artefact",
-    },
-    {
-      when: "After all Phase 1 decisions locked",
-      why: "Static mix must be solid in mono before automation begins",
-    },
-    {
-      when: "At the peak moment in Phase 2",
-      why: "Automation shifts M/S balance over time — check at the loudest, densest point",
-    },
-  ];
 </script>
 
 {#snippet tag(text: string, color: string)}

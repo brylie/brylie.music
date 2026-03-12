@@ -51,6 +51,18 @@ export interface TabDefinition {
 
 export type TabId = "sequence" | "phase0" | "phase1" | "phase2";
 
+export interface SequencePhase {
+  label: string;
+  name: string;
+  color: string;
+  steps: string[];
+}
+
+export interface MonoCheck {
+  when: string;
+  why: string;
+}
+
 // ── DATA ──────────────────────────────────────────────────────────────────────
 
 export const FONTS =
@@ -61,6 +73,71 @@ export const TABS: TabDefinition[] = [
   { id: "phase0", label: "PHASE 0", sublabel: "Production", color: "#6FCF8A" },
   { id: "phase1", label: "PHASE 1", sublabel: "Static Mix", color: "#4A9ED4" },
   { id: "phase2", label: "PHASE 2", sublabel: "Dynamic Mix", color: "#CF6F6F" },
+];
+
+export const sequencePhases: SequencePhase[] = [
+  {
+    label: "Phase 0",
+    name: "Production-Integrated",
+    color: "#6FCF8A",
+    steps: [
+      "Gain staging at source (clip to 0 dBFS)",
+      "Load reference tracks, match LUFS",
+      "Set rough fader balance",
+      "Group stems logically",
+      "Mono check before finishing session",
+    ],
+  },
+  {
+    label: "Phase 1",
+    name: "Static Mix",
+    color: "#4A9ED4",
+    steps: [
+      "01 — Balance: faders, rough levels",
+      "02 — Frequency: assign regions, EQ, high-pass",
+      "03 — Panorama: pan placement, M/S width",
+      "04 — Dimension: reverb/delay placement",
+      "05 — Dynamics: compression, transient shaping",
+      "→ Mono check after each element",
+    ],
+  },
+  {
+    label: "Phase 2",
+    name: "Dynamic Mix",
+    color: "#CF6F6F",
+    steps: [
+      "06 — Interest: write volume automation first",
+      "Section-level balance automation",
+      "Reverb send rides and throws",
+      "Filter and tonal automation",
+      "Final mono check at mix peak",
+      "LUFS / true peak check (−14 LUFS / −1 dBTP)",
+      "Three-system playback check",
+    ],
+  },
+];
+
+export const monoChecks: MonoCheck[] = [
+  {
+    when: "End of production session",
+    why: "Catch phase issues before they compound into the mix",
+  },
+  {
+    when: "After Balance + Frequency (Phase 1, step 2)",
+    why: "Low-end decisions must be mono-safe before proceeding",
+  },
+  {
+    when: "After Panorama (Phase 1, step 3)",
+    why: "Confirm stereo width is real, not phase artefact",
+  },
+  {
+    when: "After all Phase 1 decisions locked",
+    why: "Static mix must be solid in mono before automation begins",
+  },
+  {
+    when: "At the peak moment in Phase 2",
+    why: "Automation shifts M/S balance over time — check at the loudest, densest point",
+  },
 ];
 
 export const phase0: PhaseData = {
