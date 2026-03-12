@@ -106,7 +106,7 @@ export const sequencePhases: SequencePhase[] = [
     name: "Dynamic Mix",
     color: "#CF6F6F",
     steps: [
-      "06 — Interest: write volume automation first",
+      "Interest: write volume automation first",
       "Section-level balance automation",
       "Reverb send rides and throws",
       "Filter and tonal automation",
