@@ -157,6 +157,11 @@ export const phase0: PhaseData = {
             "Record hot enough to avoid noise floor; trim before any processing so plugins receive signal in their intended range.",
         },
         {
+          rule: "Floating-point headroom is large, but internal clipping is still possible",
+          detail:
+            "Modern DAWs use 32 or 64-bit floating point internally, providing wide headroom between plugins. However, clipping can still occur inside the session: analog-modeled plugins emulate real hardware saturation circuits and will distort when driven too hard, and some plugins operate on fixed-point or integer math internally. The DAC output and the final exported file are the most critical clipping points, but maintaining sensible levels throughout the chain protects plugin behavior and ensures intentional — not accidental — saturation.",
+        },
+        {
           rule: "Channel peaks at −18 dBFS average",
           detail:
             "This maps 0 dBFS digital to nominal 0 VU analogue. Gives headroom for transients and downstream processing.",
@@ -191,6 +196,11 @@ export const phase0: PhaseData = {
           rule: "Pick 2–3 references in your genre",
           detail:
             "One for tonal balance, one for dynamic feel, one for spatial width. Ambient references differ significantly from pop.",
+        },
+        {
+          rule: "Use tonal target curves to identify structural deficits",
+          detail:
+            "Genre-based tonal curves reveal systematic problems — a low-mid excess in ambient is common (too much warmth, not enough clarity); a high-end excess in electronic is common (harsh without air). Use these as diagnostic tools, not targets to hit exactly.",
         },
       ],
     },
@@ -264,6 +274,11 @@ export const phase1Elements: Phase1Element[] = [
         rule: "Kick and bass together anchor everything",
         detail:
           "The relationship between kick and bass defines the energy of the whole mix. Get this pair right before moving on.",
+      },
+      {
+        rule: "Clip peaks, don't limit them, when preserving transient snap",
+        detail:
+          "A hard clipper truncates the waveform instantly — the ear perceives the added harmonics as edge or clarity. A limiter uses attack and release, which can soften punch. Use clipping on individual tracks and subgroups; reserve limiting for the master bus.",
       },
       {
         rule: "Use VCA/group faders for section moves",
@@ -407,6 +422,11 @@ export const phase1Elements: Phase1Element[] = [
         detail:
           "Piano high register left, pad shimmer right. Acoustic guitar left, electric right. This creates space without emptiness.",
       },
+      {
+        rule: "Use spectral panning on pads and drones for enveloping width",
+        detail:
+          "Pan the high-frequency harmonics of a sound wider than its fundamental. The low body stays centred and mono-compatible; the upper shimmer fills the field. This mimics how the head physically filters sound arriving from the side, creating immersive width without phase instability.",
+      },
     ],
     insight:
       "Check your mix in mono every 20 minutes. If the low end collapses, your stereo width is a lie.",
@@ -467,6 +487,11 @@ export const phase1Elements: Phase1Element[] = [
     ],
     rules: [
       {
+        rule: "Shave peaks at track and subgroup level before they reach the master bus",
+        detail:
+          "Apply a hard clipper to individual channels and subgroups to remove 1–3 dB of extreme peaks. This prevents transient spikes from summing into an overloaded master bus, so the final limiter only needs 1–2 dB of work. The result is a denser, louder-feeling mix with a more transparent limiter.",
+      },
+      {
         rule: "Compress for feel, not just to reduce peaks",
         detail:
           "The best compression is felt as energy and glue, not heard as pumping or squashing. Set ratio low, threshold generous.",
@@ -475,6 +500,11 @@ export const phase1Elements: Phase1Element[] = [
         rule: "Attack time controls transient punch",
         detail:
           "Slow attack lets the transient through before gain reduction kicks in. This is how you keep snap on drums and piano attacks.",
+      },
+      {
+        rule: "Sync compressor release time to a musical tempo subdivision",
+        detail:
+          "Set the release time to the millisecond equivalent of a quarter, eighth, or sixteenth note at your project tempo. This creates a subtle rhythmic pumping that locks the gain reduction to the groove rather than fighting it. The result is felt as tightness and cohesion rather than heard as compression. Some bus processors (e.g. Softube Bus Processor) offer a Tempo Sync mode that calculates this automatically.",
       },
       {
         rule: "Parallel compression preserves dynamics",
@@ -611,6 +641,11 @@ export const phase2: PhaseData = {
           rule: "LUFS integrated target: −14 LUFS for streaming",
           detail:
             "Streaming platforms normalise to approximately −14 LUFS. Mixing louder than this wastes dynamic range — normalisation will pull it back anyway.",
+        },
+        {
+          rule: "For ambient music, −18 to −16 LUFS integrated is a valid target",
+          detail:
+            "Streaming normalisation will turn a −8 LUFS master down, but it will not restore the dynamic range that was compressed away to reach it. Ambient music relies on the contrast between soft and loud passages. Mastering quieter preserves that breath — it is not under-mastering.",
         },
         {
           rule: "True peak ceiling: −1 dBTP",
