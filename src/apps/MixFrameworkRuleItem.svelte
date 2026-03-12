@@ -12,24 +12,18 @@
   function toggle(): void {
     open = !open;
   }
-
-  function handleKeydown(e: KeyboardEvent): void {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      toggle();
-    }
-  }
 </script>
 
 <div
-  onclick={toggle}
-  onkeydown={handleKeydown}
-  role="button"
-  tabindex="0"
-  class="pl-3 mb-4 cursor-pointer transition-colors"
+  class="pl-3 mb-4 transition-colors"
   style:border-left={`2px solid ${open ? accentColor : "#374151"}`}
 >
-  <div class="flex items-start gap-2">
+  <button
+    type="button"
+    onclick={toggle}
+    aria-expanded={open}
+    class="flex items-start gap-2 w-full text-left cursor-pointer bg-transparent border-0 p-0"
+  >
     <span
       class="text-xs mt-1 shrink-0 transition-colors"
       class:text-gray-500={!open}
@@ -44,7 +38,7 @@
     >
       {rule}
     </span>
-  </div>
+  </button>
   {#if open}
     <p class="text-sm text-gray-400 italic leading-relaxed mt-2 ml-4">
       {detail}
