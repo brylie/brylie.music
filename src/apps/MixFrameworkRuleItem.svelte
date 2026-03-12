@@ -32,15 +32,15 @@
       {open ? "▾" : "▸"}
     </span>
     <span
-      class="text-sm leading-relaxed transition-colors"
-      class:text-gray-200={open}
-      class:text-gray-400={!open}
+      class="text-base leading-relaxed transition-colors"
+      class:text-gray-100={open}
+      class:text-gray-300={!open}
     >
       {rule}
     </span>
   </button>
   {#if open}
-    <p class="text-sm text-gray-400 italic leading-relaxed mt-2 ml-4">
+    <p class="text-base text-gray-300 italic leading-relaxed mt-2 ml-4">
       {detail}
     </p>
   {/if}
