@@ -65,9 +65,6 @@ export interface MonoCheck {
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
 
-export const FONTS =
-  "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,600;1,300&family=Spectral:ital,wght@0,300;0,400;1,300&display=swap";
-
 export const TABS: TabDefinition[] = [
   { id: "sequence", label: "SEQUENCE", sublabel: "Full workflow" },
   { id: "phase0", label: "PHASE 0", sublabel: "Production", color: "#6FCF8A" },
