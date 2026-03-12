@@ -19,7 +19,7 @@
 {#snippet tag(text: string, color: string)}
   <span
     class="text-xs font-mono tracking-wide px-2 py-0.5 rounded"
-    style:color={color}
+    style:color
     style:background-color={`${color}18`}
     style:border={`1px solid ${color}40`}
   >
@@ -40,7 +40,9 @@
           style:border={`1px solid ${band.color}44`}
           style:flex={i < 2 ? 1 : i < 4 ? 1.5 : 2}
         >
-          <span class="text-xs font-mono" style:color={band.color}>{band.name}</span>
+          <span class="text-xs font-mono" style:color={band.color}
+            >{band.name}</span
+          >
         </div>
       {/each}
     </div>
@@ -48,7 +50,9 @@
       {#each bands as band, i}
         <div class="pr-1" style:flex={i < 2 ? 1 : i < 4 ? 1.5 : 2}>
           <div class="text-xs text-gray-400 leading-tight">{band.range}</div>
-          <div class="text-xs text-gray-500 leading-tight mt-0.5">{band.owner}</div>
+          <div class="text-xs text-gray-500 leading-tight mt-0.5">
+            {band.owner}
+          </div>
         </div>
       {/each}
     </div>
@@ -57,9 +61,14 @@
 
 <div>
   <!-- Tab bar -->
-  <div class="border-b border-gray-800 flex mb-6">
+  <div class="border-b border-gray-800 flex mb-6" role="tablist">
     {#each TABS as tab}
       <button
+        id={`tab-${tab.id}`}
+        role="tab"
+        aria-selected={activeTab === tab.id}
+        aria-controls={`panel-${tab.id}`}
+        tabindex={activeTab === tab.id ? 0 : -1}
         onclick={() => (activeTab = tab.id as TabId)}
         class="px-4 py-3 flex flex-col gap-0.5 -mb-px cursor-pointer bg-transparent border-t-0 border-x-0 transition-colors"
         style:border-bottom={activeTab === tab.id
@@ -70,7 +79,9 @@
           class="text-sm font-mono tracking-wider transition-colors"
           class:text-gray-200={activeTab === tab.id}
           class:text-gray-500={activeTab !== tab.id}
-          style:color={activeTab === tab.id && tab.color ? tab.color : undefined}
+          style:color={activeTab === tab.id && tab.color
+            ? tab.color
+            : undefined}
         >
           {tab.label}
         </span>
@@ -89,8 +100,15 @@
   <div>
     <!-- SEQUENCE VIEW -->
     {#if activeTab === "sequence"}
-      <div class="max-w-2xl">
-        <p class="text-xs font-mono uppercase tracking-widest text-gray-500 mb-6">
+      <div
+        id="panel-sequence"
+        role="tabpanel"
+        aria-labelledby="tab-sequence"
+        class="max-w-2xl"
+      >
+        <p
+          class="text-xs font-mono uppercase tracking-widest text-gray-500 mb-6"
+        >
           Macro → Micro — Highest impact decisions first
         </p>
         <div class="flex gap-px">
@@ -101,7 +119,10 @@
                 style:background={`${ph.color}18`}
                 style:border={`1px solid ${ph.color}33`}
               >
-                <div class="text-xs font-mono tracking-wider" style:color={ph.color}>
+                <div
+                  class="text-xs font-mono tracking-wider"
+                  style:color={ph.color}
+                >
                   {ph.label}
                 </div>
                 <div class="text-sm text-gray-400 mt-0.5">{ph.name}</div>
@@ -112,7 +133,9 @@
                     class="flex gap-2 items-start"
                     class:mb-2={si < ph.steps.length - 1}
                   >
-                    <span class="text-xs mt-1 shrink-0" style:color={ph.color}>▸</span>
+                    <span class="text-xs mt-1 shrink-0" style:color={ph.color}
+                      >▸</span
+                    >
                     <span
                       class="text-sm leading-snug"
                       class:text-gray-300={!step.startsWith("→")}
@@ -129,7 +152,9 @@
         </div>
 
         <div class="mt-8 pt-6 border-t border-gray-800">
-          <p class="text-xs font-mono uppercase tracking-widest text-gray-500 mb-4">
+          <p
+            class="text-xs font-mono uppercase tracking-widest text-gray-500 mb-4"
+          >
             Mono Check Schedule
           </p>
           {#each monoChecks as m, i}
@@ -137,16 +162,20 @@
               class="flex gap-4 items-start pl-3 border-l-2 border-gray-700"
               class:mb-3={i < monoChecks.length - 1}
             >
-              <span class="text-sm text-gray-300 min-w-48 leading-snug">{m.when}</span>
-              <span class="text-sm text-gray-400 italic leading-snug">{m.why}</span>
+              <span class="text-sm text-gray-300 min-w-48 leading-snug"
+                >{m.when}</span
+              >
+              <span class="text-sm text-gray-400 italic leading-snug"
+                >{m.why}</span
+              >
             </div>
           {/each}
         </div>
       </div>
 
-    <!-- PHASE 0 VIEW -->
+      <!-- PHASE 0 VIEW -->
     {:else if activeTab === "phase0"}
-      <div>
+      <div id="panel-phase0" role="tabpanel" aria-labelledby="tab-phase0">
         <p
           class="text-sm text-gray-400 italic leading-relaxed border-l-2 pl-3 mb-6 max-w-xl"
           style:border-color={`${phase0.color}44`}
@@ -175,12 +204,19 @@
         </div>
       </div>
 
-    <!-- PHASE 1 VIEW -->
+      <!-- PHASE 1 VIEW -->
     {:else if activeTab === "phase1"}
-      <div class="flex max-w-3xl">
+      <div
+        id="panel-phase1"
+        role="tabpanel"
+        aria-labelledby="tab-phase1"
+        class="flex max-w-3xl"
+      >
         <!-- Element nav sidebar -->
         <div class="w-40 shrink-0 border-r border-gray-800">
-          <p class="text-xs font-mono uppercase tracking-widest text-gray-500 px-4 pb-3">
+          <p
+            class="text-xs font-mono uppercase tracking-widest text-gray-500 px-4 pb-3"
+          >
             Elements
           </p>
           {#each phase1Elements as e, i}
@@ -188,7 +224,9 @@
               onclick={() => (activeEl = i)}
               class="flex items-center gap-2.5 w-full px-4 py-2.5 border-y-0 border-r-0 cursor-pointer text-left transition-colors"
               class:bg-gray-900={activeEl === i}
-              style:border-left={activeEl === i ? `2px solid ${e.color}` : "2px solid transparent"}
+              style:border-left={activeEl === i
+                ? `2px solid ${e.color}`
+                : "2px solid transparent"}
               aria-label={`View ${e.name} element`}
               aria-pressed={activeEl === i}
             >
@@ -222,7 +260,9 @@
         <!-- Element detail pane -->
         <div class="flex-1 pl-7">
           <div class="flex items-baseline gap-4 mb-3">
-            <span class="text-6xl font-bold text-gray-800 tracking-tighter select-none">
+            <span
+              class="text-6xl font-bold text-gray-800 tracking-tighter select-none"
+            >
               {el.number}
             </span>
             <div>
@@ -232,7 +272,9 @@
               >
                 {el.name}
               </div>
-              <div class="text-xs font-mono uppercase tracking-widest text-gray-500 mt-1">
+              <div
+                class="text-xs font-mono uppercase tracking-widest text-gray-500 mt-1"
+              >
                 {el.subtitle}
               </div>
             </div>
@@ -250,17 +292,25 @@
           {/if}
 
           <div class="mb-5">
-            <p class="text-xs font-mono uppercase tracking-widest text-gray-500 mb-3">
+            <p
+              class="text-xs font-mono uppercase tracking-widest text-gray-500 mb-3"
+            >
               Rules
             </p>
             {#each el.rules as r}
-              <MixFrameworkRuleItem rule={r.rule} detail={r.detail} accentColor={el.color} />
+              <MixFrameworkRuleItem
+                rule={r.rule}
+                detail={r.detail}
+                accentColor={el.color}
+              />
             {/each}
           </div>
 
           <div class="flex gap-4 items-start">
             <div class="flex-1">
-              <p class="text-xs font-mono uppercase tracking-widest text-gray-500 mb-2">
+              <p
+                class="text-xs font-mono uppercase tracking-widest text-gray-500 mb-2"
+              >
                 Tools
               </p>
               <div class="flex flex-wrap gap-1.5">
@@ -288,9 +338,9 @@
         </div>
       </div>
 
-    <!-- PHASE 2 VIEW -->
+      <!-- PHASE 2 VIEW -->
     {:else if activeTab === "phase2"}
-      <div>
+      <div id="panel-phase2" role="tabpanel" aria-labelledby="tab-phase2">
         <p
           class="text-sm text-gray-400 italic leading-relaxed border-l-2 pl-3 mb-6 max-w-xl"
           style:border-color={`${phase2.color}44`}
