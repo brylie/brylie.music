@@ -42,14 +42,14 @@ export interface Phase1Element {
   insight: string;
 }
 
+export type TabId = "sequence" | "phase0" | "phase1" | "phase2";
+
 export interface TabDefinition {
-  id: string;
+  id: TabId;
   label: string;
   sublabel: string;
   color?: string;
 }
-
-export type TabId = "sequence" | "phase0" | "phase1" | "phase2";
 
 export interface SequencePhase {
   label: string;
