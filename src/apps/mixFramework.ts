@@ -157,9 +157,9 @@ export const phase0: PhaseData = {
             "Record hot enough to avoid noise floor; trim before any processing so plugins receive signal in their intended range.",
         },
         {
-          rule: "Clipping only occurs at two real points: the DAC and the exported file",
+          rule: "Floating-point headroom is large, but internal clipping is still possible",
           detail:
-            "Modern DAWs use 32 or 64-bit floating point internally, which provides effectively infinite headroom inside the session. The meters turning red is a warning, not a cliff. The actual clipping risks are at the audio interface output and the final exported WAV or MP3. Headroom discipline is about protecting those two points, not the internal mix.",
+            "Modern DAWs use 32 or 64-bit floating point internally, providing wide headroom between plugins. However, clipping can still occur inside the session: analog-modeled plugins emulate real hardware saturation circuits and will distort when driven too hard, and some plugins operate on fixed-point or integer math internally. The DAC output and the final exported file are the most critical clipping points, but maintaining sensible levels throughout the chain protects plugin behavior and ensures intentional — not accidental — saturation.",
         },
         {
           rule: "Channel peaks at −18 dBFS average",
