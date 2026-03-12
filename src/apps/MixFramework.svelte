@@ -59,9 +59,12 @@
   </div>
 {/snippet}
 
-<div>
+<div class="w-full">
   <!-- Tab bar -->
-  <div class="border-b border-gray-800 flex mb-6" role="tablist">
+  <div
+    class="border-b border-gray-800 flex overflow-x-auto overflow-y-hidden mb-6"
+    role="tablist"
+  >
     {#each TABS as tab}
       <button
         id={`tab-${tab.id}`}
@@ -70,13 +73,13 @@
         aria-controls={`panel-${tab.id}`}
         tabindex={activeTab === tab.id ? 0 : -1}
         onclick={() => (activeTab = tab.id as TabId)}
-        class="px-4 py-3 flex flex-col gap-0.5 -mb-px cursor-pointer bg-transparent border-t-0 border-x-0 transition-colors"
+        class="px-4 py-3 flex flex-col gap-0.5 -mb-px cursor-pointer bg-transparent border-t-0 border-x-0 transition-colors shrink-0"
         style:border-bottom={activeTab === tab.id
           ? `2px solid ${tab.color ?? "white"}`
           : "2px solid transparent"}
       >
         <span
-          class="text-sm font-mono tracking-wider transition-colors"
+          class="text-sm font-mono tracking-wider transition-colors whitespace-nowrap"
           class:text-gray-200={activeTab === tab.id}
           class:text-gray-500={activeTab !== tab.id}
           style:color={activeTab === tab.id && tab.color
@@ -104,14 +107,14 @@
         id="panel-sequence"
         role="tabpanel"
         aria-labelledby="tab-sequence"
-        class="max-w-2xl"
+        class="w-full"
       >
         <p
           class="text-xs font-mono uppercase tracking-widest text-gray-500 mb-6"
         >
           Macro → Micro — Highest impact decisions first
         </p>
-        <div class="flex gap-px">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-px">
           {#each sequencePhases as ph}
             <div class="flex-1">
               <div
@@ -133,11 +136,11 @@
                     class="flex gap-2 items-start"
                     class:mb-2={si < ph.steps.length - 1}
                   >
-                    <span class="text-xs mt-1 shrink-0" style:color={ph.color}
+                    <span class="text-sm mt-1 shrink-0" style:color={ph.color}
                       >▸</span
                     >
                     <span
-                      class="text-sm leading-snug"
+                      class="text-base leading-snug"
                       class:text-gray-300={!step.startsWith("→")}
                       class:text-gray-500={step.startsWith("→")}
                       class:italic={step.startsWith("→")}
@@ -159,10 +162,10 @@
           </p>
           {#each monoChecks as m, i}
             <div
-              class="flex gap-4 items-start pl-3 border-l-2 border-gray-700"
-              class:mb-3={i < monoChecks.length - 1}
+              class="flex flex-col sm:flex-row gap-2 sm:gap-6 items-start pl-3 border-l-2 border-gray-700"
+              class:mb-4={i < monoChecks.length - 1}
             >
-              <span class="text-sm text-gray-300 min-w-48 leading-snug"
+              <span class="text-sm text-gray-300 sm:w-64 shrink-0 leading-snug"
                 >{m.when}</span
               >
               <span class="text-sm text-gray-400 italic leading-snug"
@@ -175,14 +178,19 @@
 
       <!-- PHASE 0 VIEW -->
     {:else if activeTab === "phase0"}
-      <div id="panel-phase0" role="tabpanel" aria-labelledby="tab-phase0">
+      <div
+        id="panel-phase0"
+        role="tabpanel"
+        aria-labelledby="tab-phase0"
+        class="w-full"
+      >
         <p
-          class="text-sm text-gray-400 italic leading-relaxed border-l-2 pl-3 mb-6 max-w-xl"
+          class="text-base text-gray-400 italic leading-relaxed border-l-2 pl-3 mb-6"
           style:border-color={`${phase0.color}44`}
         >
           {phase0.tagline}
         </p>
-        <div class="grid grid-cols-2 gap-4 max-w-3xl">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
           {#each phase0.sections as sec}
             <div class="bg-gray-900 border border-gray-800 rounded-lg p-5">
               <div class="flex items-center gap-2 mb-4">
@@ -210,10 +218,12 @@
         id="panel-phase1"
         role="tabpanel"
         aria-labelledby="tab-phase1"
-        class="flex max-w-3xl"
+        class="flex flex-col sm:flex-row w-full gap-6"
       >
         <!-- Element nav sidebar -->
-        <div class="w-40 shrink-0 border-r border-gray-800">
+        <div
+          class="sm:w-48 shrink-0 border-b sm:border-b-0 sm:border-r border-gray-800 pb-2 sm:pb-0"
+        >
           <p
             class="text-xs font-mono uppercase tracking-widest text-gray-500 px-4 pb-3"
           >
@@ -227,7 +237,6 @@
               style:border-left={activeEl === i
                 ? `2px solid ${e.color}`
                 : "2px solid transparent"}
-              aria-label={`View ${e.name} element`}
               aria-pressed={activeEl === i}
             >
               <span
@@ -258,7 +267,7 @@
         </div>
 
         <!-- Element detail pane -->
-        <div class="flex-1 pl-7">
+        <div class="flex-1 min-w-0">
           <div class="flex items-baseline gap-4 mb-3">
             <span
               class="text-6xl font-bold text-gray-800 tracking-tighter select-none"
@@ -281,7 +290,7 @@
           </div>
 
           <p
-            class="text-sm text-gray-400 italic leading-relaxed border-l-2 pl-3 mb-5 max-w-lg"
+            class="text-base text-gray-400 italic leading-relaxed border-l-2 pl-3 mb-5"
             style:border-color={`${el.color}33`}
           >
             {el.description}
@@ -306,7 +315,7 @@
             {/each}
           </div>
 
-          <div class="flex gap-4 items-start">
+          <div class="flex flex-col sm:flex-row gap-4 items-start">
             <div class="flex-1">
               <p
                 class="text-xs font-mono uppercase tracking-widest text-gray-500 mb-2"
@@ -340,14 +349,19 @@
 
       <!-- PHASE 2 VIEW -->
     {:else if activeTab === "phase2"}
-      <div id="panel-phase2" role="tabpanel" aria-labelledby="tab-phase2">
+      <div
+        id="panel-phase2"
+        role="tabpanel"
+        aria-labelledby="tab-phase2"
+        class="w-full"
+      >
         <p
-          class="text-sm text-gray-400 italic leading-relaxed border-l-2 pl-3 mb-6 max-w-xl"
+          class="text-base text-gray-400 italic leading-relaxed border-l-2 pl-3 mb-6"
           style:border-color={`${phase2.color}44`}
         >
           {phase2.tagline}
         </p>
-        <div class="grid grid-cols-2 gap-4 max-w-3xl">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
           {#each phase2.sections as sec}
             <div class="bg-gray-900 border border-gray-800 rounded-lg p-5">
               <div class="flex items-center gap-2 mb-4">
