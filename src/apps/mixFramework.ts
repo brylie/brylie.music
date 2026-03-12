@@ -266,11 +266,6 @@ export const phase1Elements: Phase1Element[] = [
           "Low volumes expose balance problems. Loud volumes make everything sound better than it is.",
       },
       {
-        rule: "Use spectral panning on pads and drones for enveloping width",
-        detail:
-          "Pan the high-frequency harmonics of a sound wider than its fundamental. The low body stays centred and mono-compatible; the upper shimmer fills the field. This mimics how the head physically filters sound arriving from the side, creating immersive width without phase instability.",
-      },
-      {
         rule: "Leave 6 dB headroom on the master bus",
         detail:
           "Leaves room for mix bus processing and mastering. Don't ride the limiter during mixing.",
@@ -426,6 +421,11 @@ export const phase1Elements: Phase1Element[] = [
         rule: "Pan complementary elements opposite each other",
         detail:
           "Piano high register left, pad shimmer right. Acoustic guitar left, electric right. This creates space without emptiness.",
+      },
+      {
+        rule: "Use spectral panning on pads and drones for enveloping width",
+        detail:
+          "Pan the high-frequency harmonics of a sound wider than its fundamental. The low body stays centred and mono-compatible; the upper shimmer fills the field. This mimics how the head physically filters sound arriving from the side, creating immersive width without phase instability.",
       },
     ],
     insight:
