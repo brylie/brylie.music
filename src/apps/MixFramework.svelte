@@ -114,9 +114,9 @@
         >
           Macro → Micro — Highest impact decisions first
         </p>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-px">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-px items-stretch">
           {#each sequencePhases as ph}
-            <div class="flex-1">
+            <div class="flex flex-col">
               <div
                 class="px-3 py-2 border-b-0"
                 style:background={`${ph.color}18`}
@@ -130,7 +130,7 @@
                 </div>
                 <div class="text-sm text-gray-400 mt-0.5">{ph.name}</div>
               </div>
-              <div class="p-3 border border-t-0 border-gray-800">
+              <div class="p-3 border border-t-0 border-gray-800 flex-1">
                 {#each ph.steps as step, si}
                   <div
                     class="flex gap-2 items-start"
