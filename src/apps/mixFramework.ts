@@ -375,7 +375,12 @@ export const phase1Elements: Phase1Element[] = [
     description:
       "The left-right placement of elements across the stereo field. Creates separation, width, and focus.",
     spectrum: null,
-    tools: ["Pan knobs", "M/S processing", "Haas effect", "Stereo width plugin"],
+    tools: [
+      "Pan knobs",
+      "M/S processing",
+      "Haas effect",
+      "Stereo width plugin",
+    ],
     rules: [
       {
         rule: "Kick, bass, lead, snare — keep centred",
@@ -490,50 +495,6 @@ export const phase1Elements: Phase1Element[] = [
     insight:
       "The loudest moment in a mix should feel inevitable — earned by what came before it. Dynamics create that sense of arrival. Don't compress it away.",
   },
-  {
-    number: "06",
-    name: "Interest",
-    subtitle: "Automation & Movement",
-    color: "#CF6F6F",
-    description:
-      "How the mix evolves over time. Static mixes fatigue the ear. Movement keeps attention without demanding it.",
-    spectrum: null,
-    tools: [
-      "Volume automation",
-      "Send automation",
-      "Filter automation",
-      "Macro controls",
-    ],
-    rules: [
-      {
-        rule: "Automate volume before anything else",
-        detail:
-          "Level automation is the most natural-feeling movement. A fader ride on the vocal feels human in a way that compressor pumping does not.",
-      },
-      {
-        rule: "Subtle automation is felt, not heard",
-        detail:
-          "If a listener can identify your automation moves, they're probably too dramatic. It should feel like the song breathing.",
-      },
-      {
-        rule: "Build-ups via reverb send + filter sweeps",
-        detail:
-          "Increasing reverb send while low-passing the dry signal creates a retreat into space — useful for transitions and emotional peaks.",
-      },
-      {
-        rule: "Breakdowns should feel like release",
-        detail:
-          "Strip out elements and let the reverb tail carry the energy out. The breakdown earns the return.",
-      },
-      {
-        rule: "Automate after all static decisions are locked",
-        detail:
-          "Don't automate a bad balance. Get Phase 1 right first, then animate it.",
-      },
-    ],
-    insight:
-      "The best automation makes you forget automation is happening. It feels like the composition itself is breathing.",
-  },
 ];
 
 export const phase2: PhaseData = {
@@ -543,6 +504,37 @@ export const phase2: PhaseData = {
   tagline:
     "Re-examine every Phase 1 decision over time. Static choices become dynamic gestures.",
   sections: [
+    {
+      title: "Interest — Automation & Movement",
+      icon: "◎",
+      items: [
+        {
+          rule: "Automate volume before anything else",
+          detail:
+            "Level automation is the most natural-feeling movement. A fader ride on the vocal feels human in a way that compressor pumping does not.",
+        },
+        {
+          rule: "Subtle automation is felt, not heard",
+          detail:
+            "If a listener can identify your automation moves, they're probably too dramatic. It should feel like the song breathing.",
+        },
+        {
+          rule: "Build-ups via reverb send + filter sweeps",
+          detail:
+            "Increasing reverb send while low-passing the dry signal creates a retreat into space — useful for transitions and emotional peaks.",
+        },
+        {
+          rule: "Breakdowns should feel like release",
+          detail:
+            "Strip out elements and let the reverb tail carry the energy out. The breakdown earns the return.",
+        },
+        {
+          rule: "Automate after all static decisions are locked",
+          detail:
+            "Don't automate a bad balance. Get Phase 1 right first, then animate it.",
+        },
+      ],
+    },
     {
       title: "Section-Level Balance",
       icon: "◈",
