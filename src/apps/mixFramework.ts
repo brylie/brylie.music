@@ -81,7 +81,7 @@ export const sequencePhases: SequencePhase[] = [
       "Gain staging at source (clip to 0 dBFS)",
       "Load reference tracks, match LUFS",
       "Set rough fader balance",
-      "Group stems logically",
+      "Group tracks logically",
       "Mono check before finishing session",
     ],
   },
@@ -206,9 +206,9 @@ export const phase0: PhaseData = {
             "What you mute during production often comes back later. Decision-deferred is better than decision-lost.",
         },
         {
-          rule: "Group stems logically before mixing",
+          rule: "Group tracks logically before mixing",
           detail:
-            "Drums, bass, keys, pads, leads, FX. Stems make phase 1 decisions faster and more coherent.",
+            "Drums, bass, keys, pads, leads, FX. Grouping tracks makes phase 1 decisions faster and more coherent.",
         },
       ],
     },
@@ -555,7 +555,7 @@ export const phase2: PhaseData = {
             "Intro: sparse. Build: accumulating. Peak: full. Release: sudden subtraction. Outro: dissolve. Commit to these contrasts.",
         },
         {
-          rule: "Volume automation on stems, not individual tracks",
+          rule: "Volume automation on groups, not individual tracks",
           detail:
             "Push the whole drums group up going into the peak rather than riding individual elements. Maintain internal balance.",
         },
