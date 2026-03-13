@@ -33,7 +33,7 @@ export interface SpectrumData {
   bands: SpectrumBand[];
 }
 
-export interface Phase1Element {
+export interface StructureElement {
   number: string;
   name: string;
   subtitle: string;
@@ -70,9 +70,24 @@ export interface MonoCheck {
 
 export const TABS: TabDefinition[] = [
   { id: "overview", label: "OVERVIEW", sublabel: "How to use this" },
-  { id: "foundation", label: "FOUNDATION", sublabel: "Throughout production", color: "#6FCF8A" },
-  { id: "structure", label: "STRUCTURE", sublabel: "Six elements", color: "#4A9ED4" },
-  { id: "movement", label: "MOVEMENT", sublabel: "Time & automation", color: "#CF6F6F" },
+  {
+    id: "foundation",
+    label: "FOUNDATION",
+    sublabel: "Throughout production",
+    color: "#6FCF8A",
+  },
+  {
+    id: "structure",
+    label: "STRUCTURE",
+    sublabel: "Six elements",
+    color: "#4A9ED4",
+  },
+  {
+    id: "movement",
+    label: "MOVEMENT",
+    sublabel: "Time & automation",
+    color: "#CF6F6F",
+  },
 ];
 
 export const frameworkLayers: FrameworkLayer[] = [
@@ -221,7 +236,7 @@ export const foundation: PhaseData = {
         {
           rule: "Group tracks logically before mixing",
           detail:
-            "Drums, bass, keys, pads, leads, FX. Grouping tracks makes phase 1 decisions faster and more coherent.",
+            "Drums, bass, keys, pads, leads, FX. Grouping tracks makes Structure decisions faster and more coherent.",
         },
       ],
     },
@@ -244,7 +259,7 @@ export const foundation: PhaseData = {
   ],
 };
 
-export const structureElements: Phase1Element[] = [
+export const structureElements: StructureElement[] = [
   {
     number: "01",
     name: "Balance",
