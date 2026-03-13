@@ -25,7 +25,7 @@ export function makeSignal(n: number): Float32Array {
   ];
   for (let i = 0; i < n; i++) {
     let v = 0;
-    components.forEach(({ f, a }) => (v += Math.sin(i * f * Math.PI * 2) * a));
+    components.forEach(({ f, a }) => { v += Math.sin(i * f * Math.PI * 2) * a; });
     s[i] = v / 2.2;
   }
   // Quiet section in the middle
