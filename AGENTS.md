@@ -261,7 +261,6 @@ Implemented via `BaseHead.astro` component.
 
 - **Content** (blog posts, releases, images): Creative Commons CC-BY-4.0
 - **Source Code**: See LICENSE file
-- Always include appropriate license headers in new files
 
 ## Resources
 
