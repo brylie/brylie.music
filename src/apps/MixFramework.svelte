@@ -330,9 +330,9 @@
           <p
             class="text-xs font-mono uppercase tracking-widest text-gray-500 mb-3"
           >
-            Rules
+            Guidelines
           </p>
-          {#each el.rules as r}
+          {#each el.guidelines as r}
             <MixFrameworkRuleItem
               rule={r.rule}
               detail={r.detail}

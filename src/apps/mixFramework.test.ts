@@ -61,13 +61,13 @@ describe("structureElements", (): void => {
   it("each element has at least one tool and at least one rule", (): void => {
     for (const el of structureElements) {
       expect(el.tools.length).toBeGreaterThan(0);
-      expect(el.rules.length).toBeGreaterThan(0);
+      expect(el.guidelines.length).toBeGreaterThan(0);
     }
   });
 
   it("every rule has non-empty rule and detail strings", (): void => {
     for (const el of structureElements) {
-      for (const r of el.rules) {
+      for (const r of el.guidelines) {
         expect(r.rule.length).toBeGreaterThan(0);
         expect(r.detail.length).toBeGreaterThan(0);
       }

@@ -3,7 +3,7 @@
 
 // ── TYPES ─────────────────────────────────────────────────────────────────────
 
-export interface RuleItemData {
+export interface GuidelineItemData {
   rule: string;
   detail: string;
 }
@@ -11,7 +11,7 @@ export interface RuleItemData {
 export interface PhaseSection {
   title: string;
   icon: string;
-  items: RuleItemData[];
+  items: GuidelineItemData[];
 }
 
 export interface PhaseData {
@@ -41,7 +41,7 @@ export interface StructureElement {
   description: string;
   spectrum: SpectrumData | null;
   tools: string[];
-  rules: RuleItemData[];
+  guidelines: GuidelineItemData[];
   insight: string;
 }
 
@@ -269,7 +269,7 @@ export const structureElements: StructureElement[] = [
       "The relative loudness of every element. The highest-impact decision in any mix — return to this whenever a new sound enters the arrangement.",
     spectrum: null,
     tools: ["Faders", "VCA groups", "Gain utility"],
-    rules: [
+    guidelines: [
       {
         rule: "Set rough balance before touching EQ or compression",
         detail:
@@ -357,7 +357,7 @@ export const structureElements: StructureElement[] = [
       ],
     },
     tools: ["Parametric EQ", "High-pass / Low-pass", "Dynamic EQ", "M/S EQ"],
-    rules: [
+    guidelines: [
       {
         rule: "Cut first, boost second",
         detail:
@@ -411,7 +411,7 @@ export const structureElements: StructureElement[] = [
       "Haas effect",
       "Stereo width plugin",
     ],
-    rules: [
+    guidelines: [
       {
         rule: "Kick, bass, lead, snare — keep centred",
         detail:
@@ -455,7 +455,7 @@ export const structureElements: StructureElement[] = [
       "The front-to-back depth of the mix. Creates the sense of real acoustic space and emotional distance.",
     spectrum: null,
     tools: ["Reverb", "Delay", "Pre-delay", "Reverb send bus"],
-    rules: [
+    guidelines: [
       {
         rule: "Dry = close, wet = distant",
         detail:
@@ -500,7 +500,7 @@ export const structureElements: StructureElement[] = [
       "Limiter",
       "Clipper",
     ],
-    rules: [
+    guidelines: [
       {
         rule: "Shave peaks at track and subgroup level before they reach the master bus",
         detail:
