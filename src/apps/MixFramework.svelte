@@ -6,13 +6,13 @@
     phase0,
     phase1Elements,
     phase2,
-    sequencePhases,
+    frameworkLayers,
     monoChecks,
     type TabId,
     type SpectrumBand,
   } from "./mixFramework";
 
-  let activeTab: TabId = $state("sequence");
+  let activeTab: TabId = $state("overview");
   let activeEl = $state(0);
   let el = $derived(phase1Elements[activeEl]);
 
@@ -129,19 +129,19 @@
 
   <!-- Content -->
   <div>
-    <!-- SEQUENCE VIEW -->
+    <!-- OVERVIEW -->
     <div
-      id="panel-sequence"
+      id="panel-overview"
       role="tabpanel"
-      aria-labelledby="tab-sequence"
+      aria-labelledby="tab-overview"
       class="w-full"
-      hidden={activeTab !== "sequence"}
+      hidden={activeTab !== "overview"}
     >
       <p class="text-xs font-mono uppercase tracking-widest text-gray-500 mb-6">
         Macro → Micro — Highest impact decisions first
       </p>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-px items-stretch">
-        {#each sequencePhases as ph}
+        {#each frameworkLayers as ph}
           <div class="flex flex-col">
             <div
               class="px-3 py-2 border-b-0"
@@ -202,13 +202,13 @@
       </div>
     </div>
 
-    <!-- PHASE 0 VIEW -->
+    <!-- FOUNDATION VIEW -->
     <div
-      id="panel-phase0"
+      id="panel-foundation"
       role="tabpanel"
-      aria-labelledby="tab-phase0"
+      aria-labelledby="tab-foundation"
       class="w-full"
-      hidden={activeTab !== "phase0"}
+      hidden={activeTab !== "foundation"}
     >
       <p
         class="text-base text-gray-400 italic leading-relaxed border-l-2 pl-3 mb-6"
@@ -238,13 +238,13 @@
       </div>
     </div>
 
-    <!-- PHASE 1 VIEW -->
+    <!-- STRUCTURE VIEW -->
     <div
-      id="panel-phase1"
+      id="panel-structure"
       role="tabpanel"
-      aria-labelledby="tab-phase1"
+      aria-labelledby="tab-structure"
       class="flex flex-col sm:flex-row w-full gap-6"
-      hidden={activeTab !== "phase1"}
+      hidden={activeTab !== "structure"}
     >
       <!-- Element nav sidebar -->
       <div
@@ -373,13 +373,13 @@
       </div>
     </div>
 
-    <!-- PHASE 2 VIEW -->
+    <!-- MOVEMENT VIEW -->
     <div
-      id="panel-phase2"
+      id="panel-movement"
       role="tabpanel"
-      aria-labelledby="tab-phase2"
+      aria-labelledby="tab-movement"
       class="w-full"
-      hidden={activeTab !== "phase2"}
+      hidden={activeTab !== "movement"}
     >
       <p
         class="text-base text-gray-400 italic leading-relaxed border-l-2 pl-3 mb-6"
