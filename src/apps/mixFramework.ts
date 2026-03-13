@@ -127,7 +127,7 @@ export const monoChecks: MonoCheck[] = [
     why: "Low-end decisions must be mono-safe before proceeding",
   },
   {
-    when: "After Panorama (Phase 1, step 3)",
+    when: "After Panorama (Structure, element 3)",
     why: "Confirm stereo width is real, not phase artefact",
   },
   {
@@ -135,7 +135,7 @@ export const monoChecks: MonoCheck[] = [
     why: "Static mix must be solid in mono before automation begins",
   },
   {
-    when: "At the peak moment in Phase 2",
+    when: "At the peak moment in Movement",
     why: "Automation shifts M/S balance over time — check at the loudest, densest point",
   },
 ];
