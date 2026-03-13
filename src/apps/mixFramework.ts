@@ -79,7 +79,7 @@ export const TABS: TabDefinition[] = [
   {
     id: "structure",
     label: "STRUCTURE",
-    sublabel: "Six elements",
+    sublabel: "Core elements",
     color: "#4A9ED4",
   },
   {
@@ -105,7 +105,7 @@ export const frameworkLayers: FrameworkLayer[] = [
   },
   {
     label: "Structure",
-    name: "Six Elements — Ordered by Impact",
+    name: "Core Elements — Ordered by Impact",
     color: "#4A9ED4",
     steps: [
       "01 — Balance: highest impact; establish before anything else",
