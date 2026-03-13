@@ -3,18 +3,18 @@
   import MixFrameworkRuleItem from "./MixFrameworkRuleItem.svelte";
   import {
     TABS,
-    phase0,
-    phase1Elements,
-    phase2,
-    sequencePhases,
+    foundation,
+    structureElements,
+    movement,
+    frameworkLayers,
     monoChecks,
     type TabId,
     type SpectrumBand,
   } from "./mixFramework";
 
-  let activeTab: TabId = $state("sequence");
+  let activeTab: TabId = $state("overview");
   let activeEl = $state(0);
-  let el = $derived(phase1Elements[activeEl]);
+  let el = $derived(structureElements[activeEl]);
 
   async function handleTabKeydown(e: KeyboardEvent): Promise<void> {
     const ids = TABS.map((t) => t.id) as TabId[];
@@ -129,19 +129,19 @@
 
   <!-- Content -->
   <div>
-    <!-- SEQUENCE VIEW -->
+    <!-- OVERVIEW -->
     <div
-      id="panel-sequence"
+      id="panel-overview"
       role="tabpanel"
-      aria-labelledby="tab-sequence"
+      aria-labelledby="tab-overview"
       class="w-full"
-      hidden={activeTab !== "sequence"}
+      hidden={activeTab !== "overview"}
     >
       <p class="text-xs font-mono uppercase tracking-widest text-gray-500 mb-6">
         Macro → Micro — Highest impact decisions first
       </p>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-px items-stretch">
-        {#each sequencePhases as ph}
+        {#each frameworkLayers as ph}
           <div class="flex flex-col">
             <div
               class="px-3 py-2 border-b-0"
@@ -202,35 +202,35 @@
       </div>
     </div>
 
-    <!-- PHASE 0 VIEW -->
+    <!-- FOUNDATION VIEW -->
     <div
-      id="panel-phase0"
+      id="panel-foundation"
       role="tabpanel"
-      aria-labelledby="tab-phase0"
+      aria-labelledby="tab-foundation"
       class="w-full"
-      hidden={activeTab !== "phase0"}
+      hidden={activeTab !== "foundation"}
     >
       <p
         class="text-base text-gray-400 italic leading-relaxed border-l-2 pl-3 mb-6"
-        style:border-color={`${phase0.color}44`}
+        style:border-color={`${foundation.color}44`}
       >
-        {phase0.tagline}
+        {foundation.tagline}
       </p>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
-        {#each phase0.sections as sec}
+        {#each foundation.sections as sec}
           <div class="bg-gray-900 border border-gray-800 rounded-lg p-5">
             <div class="flex items-center gap-2 mb-4">
-              <span style:color={phase0.color}>{sec.icon}</span>
+              <span style:color={foundation.color}>{sec.icon}</span>
               <span
                 class="text-xs font-mono uppercase tracking-wider"
-                style:color={phase0.color}>{sec.title}</span
+                style:color={foundation.color}>{sec.title}</span
               >
             </div>
             {#each sec.items as item}
               <MixFrameworkRuleItem
                 rule={item.rule}
                 detail={item.detail}
-                accentColor={phase0.color}
+                accentColor={foundation.color}
               />
             {/each}
           </div>
@@ -238,13 +238,13 @@
       </div>
     </div>
 
-    <!-- PHASE 1 VIEW -->
+    <!-- STRUCTURE VIEW -->
     <div
-      id="panel-phase1"
+      id="panel-structure"
       role="tabpanel"
-      aria-labelledby="tab-phase1"
+      aria-labelledby="tab-structure"
       class="flex flex-col sm:flex-row w-full gap-6"
-      hidden={activeTab !== "phase1"}
+      hidden={activeTab !== "structure"}
     >
       <!-- Element nav sidebar -->
       <div
@@ -255,7 +255,7 @@
         >
           Elements
         </p>
-        {#each phase1Elements as e, i}
+        {#each structureElements as e, i}
           <button
             onclick={() => (activeEl = i)}
             class="flex items-center gap-2.5 w-full px-4 py-2.5 border-y-0 border-r-0 cursor-pointer text-left transition-colors"
@@ -373,35 +373,35 @@
       </div>
     </div>
 
-    <!-- PHASE 2 VIEW -->
+    <!-- MOVEMENT VIEW -->
     <div
-      id="panel-phase2"
+      id="panel-movement"
       role="tabpanel"
-      aria-labelledby="tab-phase2"
+      aria-labelledby="tab-movement"
       class="w-full"
-      hidden={activeTab !== "phase2"}
+      hidden={activeTab !== "movement"}
     >
       <p
         class="text-base text-gray-400 italic leading-relaxed border-l-2 pl-3 mb-6"
-        style:border-color={`${phase2.color}44`}
+        style:border-color={`${movement.color}44`}
       >
-        {phase2.tagline}
+        {movement.tagline}
       </p>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
-        {#each phase2.sections as sec}
+        {#each movement.sections as sec}
           <div class="bg-gray-900 border border-gray-800 rounded-lg p-5">
             <div class="flex items-center gap-2 mb-4">
-              <span style:color={phase2.color}>{sec.icon}</span>
+              <span style:color={movement.color}>{sec.icon}</span>
               <span
                 class="text-xs font-mono uppercase tracking-wider"
-                style:color={phase2.color}>{sec.title}</span
+                style:color={movement.color}>{sec.title}</span
               >
             </div>
             {#each sec.items as item}
               <MixFrameworkRuleItem
                 rule={item.rule}
                 detail={item.detail}
-                accentColor={phase2.color}
+                accentColor={movement.color}
               />
             {/each}
           </div>

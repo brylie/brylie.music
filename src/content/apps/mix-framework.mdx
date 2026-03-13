@@ -1,7 +1,8 @@
 ---
-title: "Mixing Reference Framework"
-description: "A structured three-phase mixing framework covering gain staging, the six core static mix elements, and dynamic automation."
+title: "Mix Awareness Framework"
+description: "A holistic framework for thinking about mix decisions throughout the production process — from first sound to final export."
 component: "MixFramework"
+license: "CC-BY-4.0"
 category: "learning"
 keywords:
   - "mixing"
@@ -13,20 +14,22 @@ keywords:
   - "automation"
   - "reverb"
   - "dynamics"
-  - "mastering"
   - "audio engineering"
+  - "mix framework"
 ---
 
 import MixFramework from '../../apps/MixFramework.svelte';
 
 ## About This Framework
 
-Mixing is a series of decisions made in a specific order. Getting that order wrong means fixing the same problems repeatedly. This framework organises those decisions into three phases — Production-Integrated, Static Mix, and Dynamic Mix — moving from the broadest strokes to the finest details.
+Mixing is not a stage that happens after production — it is a way of listening that runs throughout. This framework organises mix thinking into three layers, each representing a different scope of concern rather than a step in a sequence.
 
-**Phase 0** happens during composition and recording. Gain staging, reference track selection, and mono-checking are not mix tasks; they are production habits that eliminate entire categories of mix problems before they start.
+**Foundation** covers habits that apply from the first sound to the final export: gain staging, reference tracks, rough balance, and mono checking. These are not prerequisites to mixing; they are the ongoing discipline that keeps mix decisions clean and reversible.
 
-**Phase 1** establishes the static mix: six elements applied in order of impact, from Balance (volume relationships) through Frequency (spectral space), Panorama (stereo width), Dimension (depth), Dynamics (compression), and Interest (early automation). Each element builds on the one before it.
+**Structure** includes elements ordered by impact. The ordering reflects consequence, not chronology. For example, Balance has the most downstream effect on every other decision; Interest is the most subtle. Return to any element whenever a new sound enters the arrangement or an existing one changes significantly.
 
-**Phase 2** then revisits every Phase 1 decision over time — turning static choices into dynamic gestures that follow the emotional arc of the piece.
+**Movement** covers how structural decisions become dynamic gestures over time — automation, section-level shaping, reverb rides, and tonal sweeps that follow the emotional arc of the piece.
+
+None of these layers are strictly sequential. A mix is a living thing; decisions made early get revisited constantly. The framework is a thinking tool, not a checklist.
 
 <MixFramework client:load />

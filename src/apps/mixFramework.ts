@@ -33,7 +33,7 @@ export interface SpectrumData {
   bands: SpectrumBand[];
 }
 
-export interface Phase1Element {
+export interface StructureElement {
   number: string;
   name: string;
   subtitle: string;
@@ -45,7 +45,7 @@ export interface Phase1Element {
   insight: string;
 }
 
-export type TabId = "sequence" | "phase0" | "phase1" | "phase2";
+export type TabId = "overview" | "foundation" | "structure" | "movement";
 
 export interface TabDefinition {
   id: TabId;
@@ -54,7 +54,7 @@ export interface TabDefinition {
   color?: string;
 }
 
-export interface SequencePhase {
+export interface FrameworkLayer {
   label: string;
   name: string;
   color: string;
@@ -69,16 +69,31 @@ export interface MonoCheck {
 // ── DATA ──────────────────────────────────────────────────────────────────────
 
 export const TABS: TabDefinition[] = [
-  { id: "sequence", label: "SEQUENCE", sublabel: "Full workflow" },
-  { id: "phase0", label: "PHASE 0", sublabel: "Production", color: "#6FCF8A" },
-  { id: "phase1", label: "PHASE 1", sublabel: "Static Mix", color: "#4A9ED4" },
-  { id: "phase2", label: "PHASE 2", sublabel: "Dynamic Mix", color: "#CF6F6F" },
+  { id: "overview", label: "OVERVIEW", sublabel: "How to use this" },
+  {
+    id: "foundation",
+    label: "FOUNDATION",
+    sublabel: "Throughout production",
+    color: "#6FCF8A",
+  },
+  {
+    id: "structure",
+    label: "STRUCTURE",
+    sublabel: "Six elements",
+    color: "#4A9ED4",
+  },
+  {
+    id: "movement",
+    label: "MOVEMENT",
+    sublabel: "Time & automation",
+    color: "#CF6F6F",
+  },
 ];
 
-export const sequencePhases: SequencePhase[] = [
+export const frameworkLayers: FrameworkLayer[] = [
   {
-    label: "Phase 0",
-    name: "Production-Integrated",
+    label: "Foundation",
+    name: "Throughout Production",
     color: "#6FCF8A",
     steps: [
       "Gain staging at source (clip to 0 dBFS)",
@@ -89,24 +104,24 @@ export const sequencePhases: SequencePhase[] = [
     ],
   },
   {
-    label: "Phase 1",
-    name: "Static Mix",
+    label: "Structure",
+    name: "Six Elements — Ordered by Impact",
     color: "#4A9ED4",
     steps: [
-      "01 — Balance: faders, rough levels",
+      "01 — Balance: highest impact; establish before anything else",
       "02 — Frequency: assign regions, EQ, high-pass",
       "03 — Panorama: pan placement, M/S width",
       "04 — Dimension: reverb/delay placement",
       "05 — Dynamics: compression, transient shaping",
-      "→ Mono check after each element",
+      "→ Revisit any element when new sounds are introduced",
     ],
   },
   {
-    label: "Phase 2",
-    name: "Dynamic Mix",
+    label: "Movement",
+    name: "Time & Automation",
     color: "#CF6F6F",
     steps: [
-      "Interest: write volume automation first",
+      "Interest: volume automation first, then sends and filters",
       "Section-level balance automation",
       "Reverb send rides and throws",
       "Filter and tonal automation",
@@ -123,29 +138,29 @@ export const monoChecks: MonoCheck[] = [
     why: "Catch phase issues before they compound into the mix",
   },
   {
-    when: "After Balance + Frequency (Phase 1, step 2)",
+    when: "After Balance + Frequency (Structure, elements 1–2)",
     why: "Low-end decisions must be mono-safe before proceeding",
   },
   {
-    when: "After Panorama (Phase 1, step 3)",
+    when: "After Panorama (Structure, element 3)",
     why: "Confirm stereo width is real, not phase artefact",
   },
   {
-    when: "After all Phase 1 decisions locked",
+    when: "After all Structure elements are settled",
     why: "Static mix must be solid in mono before automation begins",
   },
   {
-    when: "At the peak moment in Phase 2",
+    when: "At the peak moment in Movement",
     why: "Automation shifts M/S balance over time — check at the loudest, densest point",
   },
 ];
 
-export const phase0: PhaseData = {
-  label: "PHASE 0",
-  name: "Production-Integrated",
+export const foundation: PhaseData = {
+  label: "FOUNDATION",
+  name: "Throughout Production",
   color: "#6FCF8A",
   tagline:
-    "Decisions made during composition that shape every mix choice downstream.",
+    "Habits that apply from the first sound to the final export. Return to these whenever a new element is introduced or a sound changes significantly.",
   sections: [
     {
       title: "Gain Staging",
@@ -221,7 +236,7 @@ export const phase0: PhaseData = {
         {
           rule: "Group tracks logically before mixing",
           detail:
-            "Drums, bass, keys, pads, leads, FX. Grouping tracks makes phase 1 decisions faster and more coherent.",
+            "Drums, bass, keys, pads, leads, FX. Grouping tracks makes Structure decisions faster and more coherent.",
         },
       ],
     },
@@ -244,14 +259,14 @@ export const phase0: PhaseData = {
   ],
 };
 
-export const phase1Elements: Phase1Element[] = [
+export const structureElements: StructureElement[] = [
   {
     number: "01",
     name: "Balance",
     subtitle: "Volume & Level",
     color: "#4A9ED4",
     description:
-      "The relative loudness of every element. All other decisions are meaningless if the balance is wrong.",
+      "The relative loudness of every element. The highest-impact decision in any mix — return to this whenever a new sound enters the arrangement.",
     spectrum: null,
     tools: ["Faders", "VCA groups", "Gain utility"],
     rules: [
@@ -527,12 +542,12 @@ export const phase1Elements: Phase1Element[] = [
   },
 ];
 
-export const phase2: PhaseData = {
-  label: "PHASE 2",
-  name: "Dynamic Mix",
+export const movement: PhaseData = {
+  label: "MOVEMENT",
+  name: "Time & Automation",
   color: "#CF6F6F",
   tagline:
-    "Re-examine every Phase 1 decision over time. Static choices become dynamic gestures.",
+    "Where structural decisions become dynamic gestures. These considerations apply once sounds are established, but can be revisited at any stage.",
   sections: [
     {
       title: "Interest — Automation & Movement",
@@ -561,7 +576,7 @@ export const phase2: PhaseData = {
         {
           rule: "Automate after all static decisions are locked",
           detail:
-            "Don't automate a bad balance. Get Phase 1 right first, then animate it.",
+            "Don't automate a poor balance. Settle the structural elements first — balance, frequency, panorama, dimension, dynamics — then animate them.",
         },
       ],
     },
