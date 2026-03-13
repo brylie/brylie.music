@@ -1,0 +1,38 @@
+---
+title: "Audio Compression Visualizer"
+description: "Explore how dynamic range compression works. Adjust threshold, ratio, attack, and release to see compression applied to an audio waveform in real time."
+component: "AudioCompression"
+category: "learning"
+keywords:
+  - "compression"
+  - "dynamic range"
+  - "threshold"
+  - "ratio"
+  - "attack"
+  - "release"
+  - "gain reduction"
+  - "mixing"
+  - "audio processing"
+---
+
+import AudioCompression from '../../apps/AudioCompression.svelte';
+
+<AudioCompression client:load />
+
+## About Dynamic Range Compression
+
+Dynamic range compression reduces the difference between the loudest and quietest parts of an audio signal. It is one of the most fundamental tools in mixing and mastering.
+
+### Parameters
+
+- **Threshold** — the level (in dB) above which compression begins. Signal below the threshold passes through unchanged.
+- **Ratio** — how much the signal is reduced once it crosses the threshold. A ratio of 4:1 means that for every 4 dB above the threshold, only 1 dB comes through.
+- **Attack** — how quickly (in ms) the compressor responds when the signal rises above the threshold.
+- **Release** — how quickly (in ms) the compressor stops reducing gain after the signal falls below the threshold.
+
+### Reading the Display
+
+- **Gray line** — the original (input) waveform.
+- **Blue line** — the compressed (output) waveform.
+- **Red zone** — the region above and below the threshold; audio in this zone is subject to gain reduction.
+- **Gain reduction meter** — shows the average amount of level reduction being applied.
