@@ -24,7 +24,7 @@ describe("foundation", (): void => {
   it("every item has non-empty rule and detail strings", (): void => {
     for (const section of foundation.sections) {
       for (const item of section.items) {
-        expect(item.rule.length).toBeGreaterThan(0);
+        expect(item.guideline.length).toBeGreaterThan(0);
         expect(item.detail.length).toBeGreaterThan(0);
       }
     }
@@ -68,7 +68,7 @@ describe("structureElements", (): void => {
   it("every rule has non-empty rule and detail strings", (): void => {
     for (const el of structureElements) {
       for (const r of el.guidelines) {
-        expect(r.rule.length).toBeGreaterThan(0);
+        expect(r.guideline.length).toBeGreaterThan(0);
         expect(r.detail.length).toBeGreaterThan(0);
       }
     }
@@ -113,7 +113,7 @@ describe("movement", (): void => {
   it("every item has non-empty rule and detail strings", (): void => {
     for (const section of movement.sections) {
       for (const item of section.items) {
-        expect(item.rule.length).toBeGreaterThan(0);
+        expect(item.guideline.length).toBeGreaterThan(0);
         expect(item.detail.length).toBeGreaterThan(0);
       }
     }

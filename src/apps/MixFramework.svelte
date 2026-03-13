@@ -228,7 +228,7 @@
             </div>
             {#each sec.items as item}
               <MixFrameworkRuleItem
-                rule={item.rule}
+                rule={item.guideline}
                 detail={item.detail}
                 accentColor={foundation.color}
               />
@@ -334,7 +334,7 @@
           </p>
           {#each el.guidelines as r}
             <MixFrameworkRuleItem
-              rule={r.rule}
+              rule={r.guideline}
               detail={r.detail}
               accentColor={el.color}
             />
@@ -399,7 +399,7 @@
             </div>
             {#each sec.items as item}
               <MixFrameworkRuleItem
-                rule={item.rule}
+                rule={item.guideline}
                 detail={item.detail}
                 accentColor={movement.color}
               />
