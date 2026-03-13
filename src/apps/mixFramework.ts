@@ -140,7 +140,7 @@ export const monoChecks: MonoCheck[] = [
   },
 ];
 
-export const phase0: PhaseData = {
+export const foundation: PhaseData = {
   label: "FOUNDATION",
   name: "Throughout Production",
   color: "#6FCF8A",
@@ -244,7 +244,7 @@ export const phase0: PhaseData = {
   ],
 };
 
-export const phase1Elements: Phase1Element[] = [
+export const structureElements: Phase1Element[] = [
   {
     number: "01",
     name: "Balance",
@@ -527,7 +527,7 @@ export const phase1Elements: Phase1Element[] = [
   },
 ];
 
-export const phase2: PhaseData = {
+export const movement: PhaseData = {
   label: "MOVEMENT",
   name: "Time & Automation",
   color: "#CF6F6F",
