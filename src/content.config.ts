@@ -129,7 +129,10 @@ const apps = defineCollection({
 			appStoreUrl: z.string().url().optional(), // iOS App Store
 			playStoreUrl: z.string().url().optional(), // Google Play Store
 			webUrl: z.string().url().optional(), // Standalone web app URL
-			
+
+			// Licensing
+			license: CreativeCommonsLicense.optional(),
+
 			// SEO fields
 			keywords: z.array(z.string()).optional(),
 			canonicalURL: z.string().url().optional(),

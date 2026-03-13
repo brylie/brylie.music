@@ -54,7 +54,7 @@ export interface TabDefinition {
   color?: string;
 }
 
-export interface SequencePhase {
+export interface FrameworkLayer {
   label: string;
   name: string;
   color: string;
@@ -75,7 +75,7 @@ export const TABS: TabDefinition[] = [
   { id: "movement", label: "MOVEMENT", sublabel: "Time & automation", color: "#CF6F6F" },
 ];
 
-export const frameworkLayers: SequencePhase[] = [
+export const frameworkLayers: FrameworkLayer[] = [
   {
     label: "Foundation",
     name: "Throughout Production",
