@@ -11,6 +11,7 @@ streamingLinks:
   bandcamp: "https://brylie.bandcamp.com/album/renewed-energy"
   appleMusic: "https://music.apple.com/fi/album/renewed-energy/1715833322"
   spotify: "https://open.spotify.com/album/5ZFnigyZigvyH2W2jBFxDu"
+  subvertFm: "https://www.subvert.fm/brylie/renewed-energy"
 ---
 
 Inspired by sources from sunshine to centering prayer that breathe life into our being.

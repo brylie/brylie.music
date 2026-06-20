@@ -10,6 +10,7 @@ streamingLinks:
   bandcamp: "https://brylie.bandcamp.com/album/liminal-space"
   appleMusic: "https://music.apple.com/fi/album/liminal-space-ep/1694224333"
   spotify: "https://open.spotify.com/album/0DifRtnVDLsYzfqipMpjoW"
+  subvertFm: "https://www.subvert.fm/brylie/liminal-space"
 ---
 
 Created during a transition period, this EP explores themes of love, life, and relationships through jazz-infused electronic and synth pop soundscapes.

@@ -10,6 +10,7 @@ streamingLinks:
   bandcamp: "https://brylie.bandcamp.com/album/rational-limits"
   appleMusic: "https://music.apple.com/fi/album/rational-limits-single/1666678621"
   spotify: "https://open.spotify.com/album/7LKyABBYOyyW13lR8XkysZ"
+  subvertFm: "https://www.subvert.fm/brylie/rational-limits"
 ---
 
 Ambient, electronic composition blending beats, piano, and choir elements with experimental and minimalist influences.

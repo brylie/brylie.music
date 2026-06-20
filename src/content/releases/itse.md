@@ -11,6 +11,7 @@ streamingLinks:
   bandcamp: "https://brylie.bandcamp.com/album/itse"
   appleMusic: "https://music.apple.com/fi/album/itse-ep/1703912054"
   spotify: "https://open.spotify.com/album/1LOX3bMGNczudJzjrtaA32"
+  subvertFm: "https://www.subvert.fm/brylie/itse"
 ---
 
 "Itse" celebrates self-reliance and independence while remaining open to connections with others.
